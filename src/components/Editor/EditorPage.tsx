@@ -30,7 +30,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
     try {
       const formData = new FormData();
       formData.append('title', postInfo.title);
-      formData.append('category_name', postInfo.category);
+      formData.append('category_id', postInfo.categoryId);
       formData.append('content', json);
       if (postInfo.logoFile) {
         formData.append('logo', postInfo.logoFile);
@@ -58,35 +58,69 @@ const SaveButton = ({ postInfo, isNew }: any) => {
     <Button
       onClick={handleSave}
       isLoading={saving}
-      className="bg-indigo-600 text-white font-black px-8 h-12 rounded-2xl shadow-lg shadow-indigo-100"
-      startContent={<Rocket size={18} />}
+      style={{ background: '#6366f1', color: 'white' }}
+      startContent={<Save size={18} />}
     >
-      {isNew ? 'Publish website' : 'Update changes'}
+      {isNew ? 'Publish' : 'Update'}
     </Button>
   );
+};
+
+// Component mới để load content vào Editor
+const ContentLoader = ({ content }: { content: string | null }) => {
+  const { actions } = useEditor();
+
+  useEffect(() => {
+    if (content) {
+      try {
+        actions.deserialize(content);
+      } catch (err) {
+        console.error('Failed to deserialize content:', err);
+      }
+    }
+  }, [content, actions]);
+
+  return null;
 };
 
 export function EditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isNew = id === 'new' || !id;
+
   const [postInfo, setPostInfo] = useState({
     title: '',
-    category: '',
+    categoryId: '',
     logoFile: null as File | null,
     logoUrl: ''
   });
+
+  const [categories, setCategories] = useState<any[]>([]);
   const [loadedContent, setLoadedContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(!isNew);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isNew) {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/categories');
+        setCategories(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+        setCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (!isNew && id) {
       const loadPost = async () => {
         try {
           const res = await api.get(`/posts/public/${id}`);
           setPostInfo({
             title: res.data.title,
-            category: res.data.category_name || '',
+            categoryId: res.data.category_id || '',
             logoFile: null,
             logoUrl: res.data.logo ? `${SERVER_URL}${res.data.logo}` : ''
           });
@@ -110,7 +144,7 @@ export function EditorPage() {
   );
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 text-slate-900 selection:bg-indigo-100 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen bg-black text-white selection:bg-purple-500/30">
       <Editor
         resolver={{
           TextComponent,
@@ -124,118 +158,101 @@ export function EditorPage() {
           ShapeComponent,
         }}
       >
-        {/* Top Header */}
-        <div className="h-20 border-b border-slate-200 bg-white px-6 flex items-center justify-between shrink-0 shadow-sm relative z-50">
-          <div className="flex items-center gap-6">
+        {/* Component để load content */}
+        <ContentLoader content={loadedContent} />
+        
+        <div style={{ height: '80px', background: '#1e293b', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <Button
               variant="flat"
-              className="text-slate-400 hover:bg-slate-50 h-12 w-12 min-w-0 p-0 rounded-2xl"
               onClick={() => navigate('/dashboard')}
-              startContent={<ChevronLeft size={20} />}
-            />
-            <div className="flex gap-4 items-center">
-              <div className="flex flex-col">
-                <Input
-                  placeholder="Site Name"
-                  variant="flat"
-                  value={postInfo.title}
-                  onChange={(e) => setPostInfo({ ...postInfo, title: e.target.value })}
-                  classNames={{
-                    input: "text-lg font-black text-slate-900 placeholder:text-slate-300",
-                    inputWrapper: "bg-transparent h-8 min-h-0 p-0 shadow-none border-none"
-                  }}
-                  className="w-56"
-                />
-                <div className="flex items-center gap-2">
-                  <Layout size={12} className="text-indigo-500" />
-                  <Input
-                    placeholder="Tag (e.g. Portfolio)"
-                    variant="flat"
-                    value={postInfo.category}
-                    onChange={(e) => setPostInfo({ ...postInfo, category: e.target.value })}
-                    classNames={{
-                      input: "text-[10px] font-bold text-slate-400 uppercase tracking-widest p-0",
-                      inputWrapper: "bg-transparent h-4 min-h-0 p-0 shadow-none border-none"
-                    }}
-                    className="w-40"
-                  />
-                </div>
+              style={{ minWidth: '48px', width: '48px', height: '48px', padding: 0, background: 'rgba(255,255,255,0.05)' }}
+            >
+              <ChevronLeft size={20} style={{ color: 'white' }} />
+            </Button>
+            <div>
+              <Input
+                placeholder="Site Name"
+                value={postInfo.title}
+                onChange={(e) => setPostInfo({ ...postInfo, title: e.target.value })}
+                style={{ width: '300px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white' }}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                <Layout size={12} style={{ color: '#6366f1' }} />
+                <select
+                  value={postInfo.categoryId}
+                  onChange={(e) => setPostInfo({ ...postInfo, categoryId: e.target.value })}
+                  style={{ background: 'transparent', fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', border: 'none', outline: 'none', cursor: 'pointer' }}
+                >
+                  <option value="">Select Category</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
-
-          <div className="flex items-center gap-4">
-            <div className="flex items-center bg-slate-100 p-1.5 rounded-2xl">
-              <label className="cursor-pointer hover:bg-white p-2 rounded-xl transition-all shadow-sm flex items-center gap-2">
-                <ImageIcon size={18} className="text-indigo-600" />
-                <span className="text-xs font-bold text-slate-600 px-1">{postInfo.logoFile ? 'Image Selected' : 'Upload Icon'}</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={(e) => setPostInfo({ ...postInfo, logoFile: e.target.files?.[0] || null })}
-                />
-              </label>
-            </div>
-            <div className="w-[1px] h-8 bg-slate-200 mx-2"></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <label style={{ cursor: 'pointer', background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ImageIcon size={18} style={{ color: '#6366f1' }} />
+              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#94a3b8' }}>
+                {postInfo.logoFile ? 'Image Selected' : 'Upload Icon'}
+              </span>
+              <input
+                type="file"
+                style={{ display: 'none' }}
+                onChange={(e) => setPostInfo({ ...postInfo, logoFile: e.target.files?.[0] || null })}
+              />
+            </label>
             <SaveButton postInfo={postInfo} isNew={isNew} />
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden relative flex">
-          {/* Main Stage */}
-          <div className="flex-1 h-full overflow-y-auto custom-scrollbar bg-slate-100 p-12">
-            <div className="max-w-[1280px] mx-auto min-h-full">
-              <div className="bg-white rounded-[3rem] shadow-2xl shadow-indigo-100/50 overflow-hidden ring-1 ring-slate-200">
-                <Frame data={loadedContent || undefined}>
-                  <Element
-                    canvas
-                    background="#ffffff"
-                    is={Container}
-                    padding={60}
-                    margin={0}
-                    width="100%"
-                    height="auto"
-                    flexDirection="column"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    gap={0}
-                    borderRadius={0}
-                  >
-                    {!loadedContent && (
-                      <div className="py-40 flex flex-col items-center justify-center border-4 border-dashed border-slate-50 rounded-[2.5rem] m-10 group hover:border-indigo-100 transition-all">
-                        <div className="bg-slate-50 p-6 rounded-full group-hover:bg-indigo-50 transition-all mb-6">
-                          <Layout size={40} className="text-slate-200 group-hover:text-indigo-200 transition-all" />
-                        </div>
-                        <h3 className="text-xl font-black text-slate-300 group-hover:text-indigo-300 mb-2">Editor Canvas Empty</h3>
-                        <p className="text-sm font-bold text-slate-200 uppercase tracking-widest">Drag and drop components from the library</p>
-                      </div>
-                    )}
-                  </Element>
-                </Frame>
+        
+        <div className="flex-1 overflow-hidden relative">
+          <div className="grid grid-cols-12 h-full">
+            <div className="col-span-12 lg:col-span-9 h-full overflow-y-auto custom-scrollbar bg-black">
+              <div className="min-h-full p-8 pb-32 max-w-[1200px] mx-auto flex flex-col gap-8">
+
+                <div className="h-[100vh] ">
+                  <Frame>
+                    <Element
+                      canvas
+                      background="#18181b"
+                      is={Container}
+                      padding={40}
+                      margin={0}
+                      width="100%"
+                      height="100%"
+                      flexDirection="column"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      gap={0}
+                      borderRadius={0}
+                    >
+                    </Element>
+                  </Frame>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Side Panels */}
-          <div className="w-[380px] h-full bg-white border-l border-slate-200 flex flex-col overflow-hidden shadow-2xl relative z-10">
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
-              <div className="p-6 border-b border-slate-100 flex items-center gap-3">
-                <div className="bg-amber-100 p-2 rounded-xl">
-                  <Settings className="text-amber-600" size={16} />
+            {/* Right Sidebar - Tools & Settings */}
+            <div className="col-span-12 lg:col-span-3 h-full bg-zinc-900/80 border-l border-white/10 backdrop-blur-md flex flex-col overflow-hidden">
+              <div className="p-4 border-b border-white/10">
+                <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+                  Inspector
+                </h2>
+              </div>
+              <div className="flex-1 overflow-y-auto custom-scrollbar">
+                <div className="p-2">
+                  <SettingsPanel />
                 </div>
-                <h2 className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Property Inspector</h2>
-              </div>
-              <div className="p-4 bg-slate-50/50">
-                <SettingsPanel />
-              </div>
-              <div className="mt-4 border-t border-slate-100">
-                <div className="p-6 border-b border-slate-100 flex items-center gap-3">
-                  <div className="bg-indigo-100 p-2 rounded-xl">
-                    <Layout className="text-indigo-600" size={16} />
+                <div className="border-t border-white/10 mt-4">
+                  <div className="p-4 border-b border-white/10">
+                    <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+                      Library
+                    </h2>
                   </div>
-                  <h2 className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Component Library</h2>
-                </div>
-                <div className="p-4">
                   <Toolbox />
                 </div>
               </div>

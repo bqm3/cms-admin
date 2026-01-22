@@ -91,6 +91,26 @@ export function DashboardPage() {
                         </div>
                     </div>
                     <div className="flex gap-3">
+                        {user.role === 'admin' && (
+                            <>
+                                <Button
+                                    as={Link}
+                                    to="/categories"
+                                    variant="flat"
+                                    className="bg-slate-100 text-slate-600 font-bold h-11 rounded-2xl"
+                                >
+                                    Categories
+                                </Button>
+                                <Button
+                                    as={Link}
+                                    to="/users"
+                                    variant="flat"
+                                    className="bg-slate-100 text-slate-600 font-bold h-11 rounded-2xl"
+                                >
+                                    Users
+                                </Button>
+                            </>
+                        )}
                         <Button
                             as={Link}
                             to="/editor/new"
@@ -160,7 +180,7 @@ export function DashboardPage() {
                                         </div>
                                         <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-6 flex items-center gap-2">
                                             <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
-                                            {post.category_name || 'Personal Project'}
+                                            {post.category?.name || 'Personal Project'}
                                         </p>
 
                                         <div className="flex items-center justify-between pb-6 border-b border-slate-100 mb-6">

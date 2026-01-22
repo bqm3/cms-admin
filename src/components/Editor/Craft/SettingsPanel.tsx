@@ -1,3 +1,4 @@
+import React from "react";
 import { useEditor } from "@craftjs/core";
 import { Chip } from "@heroui/chip";
 
@@ -48,5 +49,3 @@ export const SettingsPanel = () => {
     </div>
   );
 };
-
-import React from "react";

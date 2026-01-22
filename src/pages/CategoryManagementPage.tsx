@@ -1,0 +1,166 @@
+import { useEffect, useState } from 'react';
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { Card, CardBody } from "@heroui/card";
+import { Plus, Trash, Edit, Tag, Save, X } from 'lucide-react';
+import api from '../services/api';
+import { useNavigate } from 'react-router-dom';
+
+export function CategoryManagementPage() {
+    const [categories, setCategories] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [name, setName] = useState('');
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editName, setEditName] = useState('');
+    const navigate = useNavigate();
+
+    const fetchCategories = async () => {
+        try {
+            const response = await api.get('/categories');
+            setCategories(response.data);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user.role !== 'admin') {
+            navigate('/dashboard');
+            return;
+        }
+        fetchCategories();
+    }, []);
+
+    const handleCreate = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!name.trim()) return;
+        try {
+            await api.post('/categories', { name });
+            setName('');
+            fetchCategories();
+        } catch (err) {
+            alert('Failed to create category');
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+        if (!window.confirm('Are you sure? This might affect posts in this category.')) return;
+        try {
+            await api.delete(`/categories/${id}`);
+            fetchCategories();
+        } catch (err) {
+            alert('Failed to delete category');
+        }
+    };
+
+    const startEdit = (cat: any) => {
+        setEditingId(cat.id);
+        setEditName(cat.name);
+    };
+
+    const handleUpdate = async (id: number) => {
+        try {
+            await api.put(`/categories/${id}`, { name: editName });
+            setEditingId(null);
+            fetchCategories();
+        } catch (err) {
+            alert('Failed to update category');
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-50 p-8">
+            <div className="max-w-4xl mx-auto">
+                <header className="flex justify-between items-center mb-12 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-amber-500 p-3 rounded-2xl shadow-lg shadow-amber-100">
+                            <Tag className="text-white" size={24} />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-black text-slate-800 tracking-tight">Category Manager</h1>
+                            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Organize your content structure</p>
+                        </div>
+                    </div>
+                </header>
+
+                <form onSubmit={handleCreate} className="mb-10 flex gap-4">
+                    <Input
+                        placeholder="New Category Name (e.g. Portfolio, Blog...)"
+                        variant="flat"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        classNames={{
+                            inputWrapper: "bg-white border-none shadow-sm h-14 rounded-2xl px-6 flex-1",
+                            input: "font-bold text-slate-700"
+                        }}
+                    />
+                    <Button
+                        type="submit"
+                        className="bg-indigo-600 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
+                        startContent={<Plus size={20} />}
+                    >
+                        Create
+                    </Button>
+                </form>
+
+                {loading ? (
+                    <div className="flex justify-center py-20">
+                        <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                        {categories.map((cat) => (
+                            <Card key={cat.id} className="border-none shadow-sm hover:shadow-md transition-all rounded-2xl">
+                                <CardBody className="p-4 flex flex-row items-center justify-between">
+                                    <div className="flex items-center gap-4 flex-1">
+                                        <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+                                            <Tag size={18} className="text-slate-400" />
+                                        </div>
+                                        {editingId === cat.id ? (
+                                            <Input
+                                                variant="underlined"
+                                                value={editName}
+                                                onChange={(e) => setEditName(e.target.value)}
+                                                className="max-w-xs"
+                                                autoFocus
+                                            />
+                                        ) : (
+                                            <div>
+                                                <p className="font-black text-slate-700">{cat.name}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">ID: {cat.id}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {editingId === cat.id ? (
+                                            <>
+                                                <Button isIconOnly variant="flat" className="bg-emerald-50 text-emerald-600 rounded-xl" onClick={() => handleUpdate(cat.id)}>
+                                                    <Save size={18} />
+                                                </Button>
+                                                <Button isIconOnly variant="flat" className="bg-slate-50 text-slate-600 rounded-xl" onClick={() => setEditingId(null)}>
+                                                    <X size={18} />
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Button isIconOnly variant="flat" className="bg-indigo-50 text-indigo-600 rounded-xl" onClick={() => startEdit(cat)}>
+                                                    <Edit size={18} />
+                                                </Button>
+                                                <Button isIconOnly variant="flat" className="bg-rose-50 text-rose-500 rounded-xl" onClick={() => handleDelete(cat.id)}>
+                                                    <Trash size={18} />
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

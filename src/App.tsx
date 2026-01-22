@@ -4,6 +4,9 @@ import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { PublicPostPage } from "./pages/PublicPostPage";
 import { ClientHomePage } from "./pages/ClientHomePage";
+import { CategoryManagementPage } from "./pages/CategoryManagementPage";
+import { UserManagementPage } from "./pages/UserManagementPage";
+import { NewPage } from "./pages/NewPage";
 
 function App() {
   return (
@@ -11,9 +14,12 @@ function App() {
       <Route element={<ClientHomePage />} path="/" />
       <Route element={<LoginPage />} path="/login" />
       <Route element={<DashboardPage />} path="/dashboard" />
-      <Route element={<EditorPage />} path="/editor/:id" />
       <Route element={<EditorPage />} path="/editor/new" />
+      <Route element={<EditorPage />} path="/editor/:id" />
+      <Route element={<NewPage />} path="/new-page-test" />
       <Route element={<PublicPostPage />} path="/site/:id" />
+      <Route element={<CategoryManagementPage />} path="/categories" />
+      <Route element={<UserManagementPage />} path="/users" />
       <Route element={<Navigate replace to="/" />} path="*" />
     </Routes>
   );

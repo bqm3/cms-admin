@@ -93,7 +93,7 @@ export function ClientHomePage() {
                                         <div className="p-8">
                                             <div className="flex items-center gap-2 mb-3">
                                                 <span className="bg-indigo-50 text-indigo-600 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-indigo-100">
-                                                    {post.category_name || 'Project'}
+                                                    {post.category?.name || 'Project'}
                                                 </span>
                                                 <span className="text-slate-300 text-[10px]">•</span>
                                                 <div className="text-[10px] text-slate-400 font-bold flex items-center gap-1">
