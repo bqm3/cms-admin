@@ -5,6 +5,7 @@ import { Card, CardBody } from "@heroui/card";
 import { Users, Trash, Save, X, UserCog, UserPlus, Lock, Shield } from 'lucide-react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { AdminLayout } from '../layouts/AdminLayout';
 
 export function UserManagementPage() {
     const [users, setUsers] = useState<any[]>([]);
@@ -90,19 +91,21 @@ export function UserManagementPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-8">
-            <div className="max-w-5xl mx-auto">
-                <header className="flex justify-between items-center mb-12 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-emerald-500 p-3 rounded-2xl shadow-lg shadow-emerald-100">
-                            <Users className="text-white" size={24} />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-black text-slate-800 tracking-tight">User Management</h1>
-                            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Manage access and roles</p>
-                        </div>
+        <AdminLayout>
+            {/* Page Header */}
+            <div className="mb-8">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-lg shadow-blue-100">
+                        <Users className="text-white" size={28} />
                     </div>
-                </header>
+                    <div>
+                        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Quản lý User</h1>
+                        <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
+                            Quản lý người dùng và phân quyền
+                        </p>
+                    </div>
+                </div>
+            </div>
 
                 {/* Create User Form */}
                 <Card className="mb-12 border-none shadow-sm rounded-[2rem] overflow-hidden">
@@ -236,7 +239,6 @@ export function UserManagementPage() {
                         ))}
                     </div>
                 )}
-            </div>
-        </div>
+        </AdminLayout>
     );
 }

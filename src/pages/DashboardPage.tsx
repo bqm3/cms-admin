@@ -12,12 +12,12 @@ import {
     Trash,
     CheckCircle,
     Clock,
-    LogOut,
     Eye,
-    Shield,
-    Globe
+    Globe,
+    LayoutDashboard
 } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
+import { AdminLayout } from '../layouts/AdminLayout';
 
 export function DashboardPage() {
     const [posts, setPosts] = useState<any[]>([]);
@@ -47,12 +47,6 @@ export function DashboardPage() {
         fetchPosts();
     }, [search]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-    };
-
     const handleApprove = async (id: number) => {
         try {
             await api.patch(`/posts/${id}/approve`);
@@ -73,77 +67,39 @@ export function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-8 text-slate-900 font-sans">
-            <div className="max-w-7xl mx-auto">
-                <nav className="flex justify-between items-center mb-12 bg-white px-8 py-5 rounded-[2rem] shadow-sm border border-slate-200">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-indigo-600 p-2.5 rounded-xl shadow-lg shadow-indigo-100">
-                            <Shield className="text-white" size={24} />
-                        </div>
-                        <div>
-                            <h1 className="text-xl font-black text-slate-800 tracking-tight">
-                                Control Center
-                            </h1>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                                {user.username} • {user.role}
-                            </p>
-                        </div>
+        <AdminLayout>
+            {/* Page Header */}
+            <div className="mb-8">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="bg-gradient-to-br from-indigo-600 to-indigo-700 p-4 rounded-2xl shadow-lg shadow-indigo-100">
+                        <LayoutDashboard className="text-white" size={28} />
                     </div>
-                    <div className="flex gap-3">
-                        {user.role === 'admin' && (
-                            <>
-                                <Button
-                                    as={Link}
-                                    to="/categories"
-                                    variant="flat"
-                                    className="bg-slate-100 text-slate-600 font-bold h-11 rounded-2xl"
-                                >
-                                    Categories
-                                </Button>
-                                <Button
-                                    as={Link}
-                                    to="/users"
-                                    variant="flat"
-                                    className="bg-slate-100 text-slate-600 font-bold h-11 rounded-2xl"
-                                >
-                                    Users
-                                </Button>
-                            </>
-                        )}
-                        <Button
-                            as={Link}
-                            to="/editor/new"
-                            className="bg-indigo-600 text-white font-bold h-11 px-6 rounded-2xl shadow-xl shadow-indigo-100"
-                            startContent={<Plus size={18} />}
-                        >
-                            Build New Site
-                        </Button>
-                        <Button
-                            variant="flat"
-                            className="bg-slate-100 text-slate-600 font-bold h-11 rounded-2xl"
-                            onClick={handleLogout}
-                            startContent={<LogOut size={18} />}
-                        >
-                            Log Out
-                        </Button>
+                    <div>
+                        <h1 className="text-3xl font-black text-slate-800 tracking-tight">
+                            Dashboard
+                        </h1>
+                        <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
+                            Quản lý và theo dõi các dự án của bạn
+                        </p>
                     </div>
-                </nav>
+                </div>
 
-                <div className="mb-10 max-w-2xl">
+                {/* Search Bar */}
+                <div className="max-w-2xl">
                     <Input
-                        placeholder="Search for projects, categories, or owners..."
+                        placeholder="Tìm kiếm dự án, danh mục hoặc chủ sở hữu..."
                         variant="flat"
                         startContent={<Search className="text-slate-400" size={20} />}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="w-full"
                         classNames={{
-                            inputWrapper: "bg-white border-none shadow-sm h-14 rounded-2xl px-6",
+                            inputWrapper: "bg-white border border-slate-200 shadow-sm h-14 rounded-2xl px-6 hover:shadow-md transition-shadow",
                             input: "placeholder:text-slate-400 font-medium",
                         }}
                     />
                 </div>
+            </div>
 
                 {loading ? (
                     <div className="flex items-center justify-center py-20">
@@ -225,7 +181,6 @@ export function DashboardPage() {
                         ))}
                     </div>
                 )}
-            </div>
-        </div>
+        </AdminLayout>
     );
 }

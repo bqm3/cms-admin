@@ -5,6 +5,7 @@ import { Card, CardBody } from "@heroui/card";
 import { Plus, Trash, Edit, Tag, Save, X } from 'lucide-react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { AdminLayout } from '../layouts/AdminLayout';
 
 export function CategoryManagementPage() {
     const [categories, setCategories] = useState<any[]>([]);
@@ -72,19 +73,21 @@ export function CategoryManagementPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-8">
-            <div className="max-w-4xl mx-auto">
-                <header className="flex justify-between items-center mb-12 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-amber-500 p-3 rounded-2xl shadow-lg shadow-amber-100">
-                            <Tag className="text-white" size={24} />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-black text-slate-800 tracking-tight">Category Manager</h1>
-                            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Organize your content structure</p>
-                        </div>
+        <AdminLayout>
+            {/* Page Header */}
+            <div className="mb-8">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-4 rounded-2xl shadow-lg shadow-amber-100">
+                        <Tag className="text-white" size={28} />
                     </div>
-                </header>
+                    <div>
+                        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Quản lý Category</h1>
+                        <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
+                            Tổ chức cấu trúc nội dung của bạn
+                        </p>
+                    </div>
+                </div>
+            </div>
 
                 <form onSubmit={handleCreate} className="mb-10 flex gap-4">
                     <Input
@@ -160,7 +163,6 @@ export function CategoryManagementPage() {
                         ))}
                     </div>
                 )}
-            </div>
-        </div>
+        </AdminLayout>
     );
 }
