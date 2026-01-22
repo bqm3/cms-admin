@@ -3,9 +3,17 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import { Save, ChevronLeft, Image as ImageIcon, Layout, Settings, Rocket } from "lucide-react";
+import {
+  Save,
+  ChevronLeft,
+  Image as ImageIcon,
+  Layout,
+  MonitorPlay,
+  Layers
+} from "lucide-react";
 import api, { SERVER_URL } from "../../services/api";
 
+// Import các Craft Components
 import { TextComponent } from "./Craft/Components/TextComponent";
 import { Container } from "./Craft/Components/Container";
 import { ButtonComponent } from "./Craft/Components/ButtonComponent";
@@ -17,6 +25,8 @@ import { TableComponent } from "./Craft/Components/TableComponent";
 import { ShapeComponent } from "./Craft/Components/ShapeComponent";
 import { Toolbox } from "./Craft/Toolbox";
 import { SettingsPanel } from "./Craft/SettingsPanel";
+
+// --- Sub Components ---
 
 const SaveButton = ({ postInfo, isNew }: any) => {
   const { query } = useEditor();
@@ -48,7 +58,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       }
     } catch (err) {
       console.error(err);
-      alert('Save failed');
+      alert('Save failed'); // Nên thay bằng Toast notification
     } finally {
       setSaving(false);
     }
@@ -56,20 +66,19 @@ const SaveButton = ({ postInfo, isNew }: any) => {
 
   return (
     <Button
-      onClick={handleSave}
+      onPress={handleSave} // HeroUI dùng onPress
       isLoading={saving}
-      style={{ background: '#6366f1', color: 'white' }}
-      startContent={<Save size={18} />}
+      color="primary"
+      className="bg-indigo-600 font-medium px-6 shadow-lg shadow-indigo-500/20"
+      startContent={!saving && <Save size={18} />}
     >
-      {isNew ? 'Publish' : 'Update'}
+      {isNew ? 'Publish' : 'Update Changes'}
     </Button>
   );
 };
 
-// Component mới để load content vào Editor
 const ContentLoader = ({ content }: { content: string | null }) => {
   const { actions } = useEditor();
-
   useEffect(() => {
     if (content) {
       try {
@@ -79,9 +88,10 @@ const ContentLoader = ({ content }: { content: string | null }) => {
       }
     }
   }, [content, actions]);
-
   return null;
 };
+
+// --- Main Page ---
 
 export function EditorPage() {
   const { id } = useParams();
@@ -98,8 +108,8 @@ export function EditorPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loadedContent, setLoadedContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(!isNew);
-  const [error, setError] = useState<string | null>(null);
 
+  // Fetch Categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -107,12 +117,12 @@ export function EditorPage() {
         setCategories(res.data || []);
       } catch (err) {
         console.error('Failed to fetch categories:', err);
-        setCategories([]);
       }
     };
     fetchCategories();
   }, []);
 
+  // Fetch Post Data
   useEffect(() => {
     if (!isNew && id) {
       const loadPost = async () => {
@@ -137,14 +147,14 @@ export function EditorPage() {
   }, [id, isNew, navigate]);
 
   if (loading) return (
-    <div className="bg-slate-50 h-screen flex flex-col items-center justify-center gap-4">
-      <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-      <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Booting Editor Core</p>
+    <div className="bg-zinc-950 h-screen flex flex-col items-center justify-center gap-4">
+      <div className="w-8 h-8 border-2 border-zinc-800 border-t-indigo-500 rounded-full animate-spin"></div>
+      <p className="text-zinc-500 font-medium text-xs tracking-widest uppercase">Loading Editor...</p>
     </div>
   );
 
   return (
-    <div className="flex flex-col h-screen bg-black text-white selection:bg-purple-500/30">
+    <div className="flex flex-col h-screen bg-zinc-950 text-white overflow-hidden font-sans">
       <Editor
         resolver={{
           TextComponent,
@@ -158,105 +168,181 @@ export function EditorPage() {
           ShapeComponent,
         }}
       >
-        {/* Component để load content */}
         <ContentLoader content={loadedContent} />
-        
-        <div style={{ height: '80px', background: '#1e293b', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+
+        {/* --- Top Header --- */}
+        {/* --- Top Header (Pro / Clean) --- */}
+        <header className="h-[72px] px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/10 bg-zinc-950/60 backdrop-blur-md z-50">
+          {/* Left */}
+          <div className="flex items-center gap-3 min-w-0">
             <Button
-              variant="flat"
-              onClick={() => navigate('/dashboard')}
-              style={{ minWidth: '48px', width: '48px', height: '48px', padding: 0, background: 'rgba(255,255,255,0.05)' }}
+              isIconOnly
+              variant="light"
+              onPress={() => navigate("/dashboard")}
+              className="min-w-10 w-10 h-10 p-0 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white"
             >
-              <ChevronLeft size={20} style={{ color: 'white' }} />
+              <ChevronLeft size={18} />
             </Button>
-            <div>
-              <Input
-                placeholder="Site Name"
-                value={postInfo.title}
-                onChange={(e) => setPostInfo({ ...postInfo, title: e.target.value })}
-                style={{ width: '300px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white' }}
-              />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                <Layout size={12} style={{ color: '#6366f1' }} />
-                <select
-                  value={postInfo.categoryId}
-                  onChange={(e) => setPostInfo({ ...postInfo, categoryId: e.target.value })}
-                  style={{ background: 'transparent', fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', border: 'none', outline: 'none', cursor: 'pointer' }}
-                >
-                  <option value="">Select Category</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
+
+            <div className="min-w-0">
+              {/* Breadcrumb / meta */}
+              <div className="flex items-center gap-2 text-[11px] text-zinc-400">
+                <span className="font-medium">Dashboard</span>
+                <span className="opacity-50">•</span>
+                <span className="font-medium">Editor</span>
+                <span className="opacity-50">•</span>
+                <span className="truncate max-w-[240px]">
+                  {isNew ? "Bài viết mới" : `Post #${id}`}
+                </span>
+              </div>
+
+              {/* Title + Category */}
+              <div className="mt-1 flex items-center gap-3 min-w-0">
+                <Input
+                  placeholder="Nhập tiêu đề bài viết..."
+                  value={postInfo.title}
+                  onChange={(e) =>
+                    setPostInfo({ ...postInfo, title: e.target.value })
+                  }
+                  classNames={{
+                    base: "w-[320px] max-w-[55vw]",
+                    inputWrapper:
+                      "h-10 rounded-xl bg-white/10 border border-white/20 hover:border-white/30 focus-within:border-indigo-400 focus-within:bg-white/15 transition-all duration-200 shadow-lg shadow-black/20 data-[hover=true]:bg-white/15",
+                    input:
+                      "text-white !text-white placeholder:!text-zinc-400 font-semibold caret-indigo-400",
+                  }}
+                />
+
+                {/* Category pill */}
+                <div className="hidden md:flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 border border-white/10 text-zinc-200">
+                  <Layout size={16} className="text-indigo-400" />
+                  <select
+                    value={postInfo.categoryId}
+                    onChange={(e) => setPostInfo({ ...postInfo, categoryId: e.target.value })}
+                    className="bg-transparent outline-none text-[13px] font-semibold cursor-pointer"
+                  >
+                    <option value="" className="bg-zinc-900">Chọn danh mục</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id} className="bg-zinc-900">
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <label style={{ cursor: 'pointer', background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ImageIcon size={18} style={{ color: '#6366f1' }} />
-              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#94a3b8' }}>
-                {postInfo.logoFile ? 'Image Selected' : 'Upload Icon'}
+
+          {/* Right */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Mobile category */}
+            <div className="md:hidden">
+              <select
+                value={postInfo.categoryId}
+                onChange={(e) => setPostInfo({ ...postInfo, categoryId: e.target.value })}
+                className="h-10 px-3 rounded-xl bg-white/5 border border-white/10 text-[13px] font-semibold text-zinc-200 outline-none"
+              >
+                <option value="" className="bg-zinc-900">Danh mục</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id} className="bg-zinc-900">
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Upload Logo */}
+            <label className="group cursor-pointer h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
+              <span
+                className={`w-7 h-7 grid place-items-center rounded-lg border ${postInfo.logoFile
+                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                  : "bg-white/5 border-white/10 text-indigo-300"
+                  }`}
+              >
+                <ImageIcon size={16} />
               </span>
+
+              <span className="hidden sm:inline text-[13px] font-semibold text-zinc-300 group-hover:text-white">
+                {postInfo.logoFile ? "Đã chọn logo" : "Tải logo"}
+              </span>
+
               <input
                 type="file"
-                style={{ display: 'none' }}
+                accept="image/*"
+                className="hidden"
                 onChange={(e) => setPostInfo({ ...postInfo, logoFile: e.target.files?.[0] || null })}
               />
             </label>
+
+            {/* Divider */}
+            <div className="hidden md:block h-6 w-px bg-white/10 mx-1" />
+
+            {/* Save */}
             <SaveButton postInfo={postInfo} isNew={isNew} />
           </div>
-        </div>
+        </header>
 
-        
-        <div className="flex-1 overflow-hidden relative">
-          <div className="grid grid-cols-12 h-full">
-            <div className="col-span-12 lg:col-span-9 h-full overflow-y-auto custom-scrollbar bg-black">
-              <div className="min-h-full p-8 pb-32 max-w-[1200px] mx-auto flex flex-col gap-8">
 
-                <div className="h-[100vh] ">
+        {/* --- Main Workspace --- */}
+        <div className="flex-1 flex overflow-hidden">
+
+          {/* Canvas Area */}
+          <div className="flex-1 h-full bg-[#09090b] relative overflow-hidden flex flex-col">
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
+              <div className="min-h-full flex justify-center">
+                {/* Visual Frame Wrapper */}
+                <div className="w-full max-w-[1024px] bg-[#18181b] shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
                   <Frame>
                     <Element
                       canvas
-                      background="#18181b"
                       is={Container}
                       padding={40}
-                      margin={0}
                       width="100%"
                       height="100%"
-                      flexDirection="column"
-                      justifyContent="flex-start"
-                      alignItems="stretch"
-                      gap={0}
-                      borderRadius={0}
+                      background="transparent" // Để màu nền container con quyết định hoặc transparent
+                      className="min-h-full"
                     >
+                      {/* Default Content goes here if needed */}
                     </Element>
                   </Frame>
                 </div>
               </div>
             </div>
 
-            {/* Right Sidebar - Tools & Settings */}
-            <div className="col-span-12 lg:col-span-3 h-full bg-zinc-900/80 border-l border-white/10 backdrop-blur-md flex flex-col overflow-hidden">
-              <div className="p-4 border-b border-white/10">
-                <h2 className="text-sm font-bold text-white uppercase tracking-wider">
-                  Inspector
-                </h2>
-              </div>
-              <div className="flex-1 overflow-y-auto custom-scrollbar">
-                <div className="p-2">
-                  <SettingsPanel />
-                </div>
-                <div className="border-t border-white/10 mt-4">
-                  <div className="p-4 border-b border-white/10">
-                    <h2 className="text-sm font-bold text-white uppercase tracking-wider">
-                      Library
-                    </h2>
-                  </div>
-                  <Toolbox />
-                </div>
+            {/* Canvas Info Footer (Optional) */}
+            <div className="h-8 bg-zinc-900 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">
+              <span>1024px (Desktop)</span>
+              <div className="flex gap-2">
+                <span>Auto-save: Ready</span>
               </div>
             </div>
+          </div>
+
+          {/* --- Right Sidebar (Inspector & Toolbox) --- */}
+          <div className="w-80 h-full bg-zinc-900 border-l border-white/5 flex flex-col shadow-xl z-10">
+
+            {/* Inspector Section (Top) */}
+            <div className="flex-1 flex flex-col min-h-0 border-b border-white/5">
+              <div className="h-10 flex items-center px-4 bg-zinc-900 border-b border-white/5">
+                <MonitorPlay size={14} className="text-zinc-400 mr-2" />
+                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Properties</h2>
+              </div>
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
+                <SettingsPanel />
+              </div>
+            </div>
+
+            {/* Library Section (Bottom) */}
+            <div className="h-2/5 flex flex-col min-h-0 bg-zinc-900/50">
+              <div className="h-10 flex items-center px-4 border-b border-white/5 bg-zinc-900/80 backdrop-blur">
+                <Layers size={14} className="text-zinc-400 mr-2" />
+                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Components</h2>
+              </div>
+              <div className="flex-1 overflow-y-auto custom-scrollbar">
+                <Toolbox />
+              </div>
+            </div>
+
           </div>
         </div>
       </Editor>
