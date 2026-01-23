@@ -1,3 +1,6 @@
+/* eslint-disable padding-line-between-statements */
+/* eslint-disable no-console */
+/* eslint-disable prettier/prettier */
 import { useEditor, Editor, Frame, Element } from "@craftjs/core";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -12,6 +15,7 @@ import {
   Layers,
   Eye
 } from "lucide-react";
+
 import api, { SERVER_URL } from "../../services/api";
 
 // Import các Craft Components
@@ -24,8 +28,11 @@ import { CardComponent } from "./Craft/Components/CardComponent";
 import { VideoComponent } from "./Craft/Components/VideoComponent";
 import { TableComponent } from "./Craft/Components/TableComponent";
 import { ShapeComponent } from "./Craft/Components/ShapeComponent";
+import { RowComponent } from "./Craft/Components/RowComponent";
+import { ColumnComponent } from "./Craft/Components/ColumnComponent";
 import { Toolbox } from "./Craft/Toolbox";
 import { SettingsPanel } from "./Craft/SettingsPanel";
+import { DefaultNewPostFrame } from "./DefaultNewPostFrame";
 
 // --- Sub Components ---
 
@@ -38,6 +45,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
   const handleSave = async () => {
     setSaving(true);
     const json = query.serialize();
+
     try {
       const formData = new FormData();
       formData.append('title', postInfo.title);
@@ -49,14 +57,14 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       }
 
       if (isNew) {
-        const res = await api.post('/posts', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
+        const res = await api.post("/posts", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
         alert('Tạo bài viết mới thành công! 🎉');
         navigate(`/editor/${res.data.id}`);
       } else {
         await api.put(`/posts/${id}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
+          headers: { "Content-Type": "multipart/form-data" },
         });
         alert('Cập nhật bài viết thành công! ✨');
       }
@@ -70,11 +78,11 @@ const SaveButton = ({ postInfo, isNew }: any) => {
 
   return (
     <Button
-      onPress={handleSave} // HeroUI dùng onPress
-      isLoading={saving}
-      color="primary"
       className="bg-indigo-600 font-medium px-6 shadow-lg shadow-indigo-500/20"
+      color="primary"
+      isLoading={saving}
       startContent={!saving && <Save size={18} />}
+      onPress={handleSave}
     >
       {isNew ? 'Xuất bản' : 'Cập nhật thay đổi'}
     </Button>
@@ -83,15 +91,16 @@ const SaveButton = ({ postInfo, isNew }: any) => {
 
 const ContentLoader = ({ content }: { content: string | null }) => {
   const { actions } = useEditor();
+
   useEffect(() => {
-    if (content) {
-      try {
-        actions.deserialize(content);
-      } catch (err) {
-        console.error('Failed to deserialize content:', err);
-      }
+    if (!content) return;
+    try {
+      actions.deserialize(content);
+    } catch (err) {
+      console.error("Failed to deserialize content:", err);
     }
   }, [content, actions]);
+
   return null;
 };
 
@@ -100,14 +109,14 @@ const ContentLoader = ({ content }: { content: string | null }) => {
 export function EditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const isNew = id === 'new' || !id;
+  const isNew = id === "new" || !id;
 
   const [postInfo, setPostInfo] = useState({
     title: '',
     categoryId: '',
     viewCount: 0,
     logoFile: null as File | null,
-    logoUrl: ''
+    logoUrl: "",
   });
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -118,10 +127,10 @@ export function EditorPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await api.get('/categories');
+        const res = await api.get("/categories");
         setCategories(res.data || []);
       } catch (err) {
-        console.error('Failed to fetch categories:', err);
+        console.error("Failed to fetch categories:", err);
       }
     };
     fetchCategories();
@@ -152,15 +161,19 @@ export function EditorPage() {
     }
   }, [id, isNew, navigate]);
 
-  if (loading) return (
-    <div className="bg-zinc-950 h-screen flex flex-col items-center justify-center gap-4">
-      <div className="w-8 h-8 border-2 border-zinc-800 border-t-indigo-500 rounded-full animate-spin"></div>
-      <p className="text-zinc-500 font-medium text-xs tracking-widest uppercase">Loading Editor...</p>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="bg-zinc-950 h-screen flex flex-col items-center justify-center gap-4">
+        <div className="w-8 h-8 border-2 border-zinc-800 border-t-indigo-500 rounded-full animate-spin" />
+        <p className="text-zinc-500 font-medium text-xs tracking-widest uppercase">
+          Loading Editor...
+        </p>
+      </div>
+    );
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950 text-white overflow-hidden font-sans">
+    // ✅ Page scroll: bỏ h-screen + overflow-hidden
+    <div className="min-h-screen bg-zinc-950 text-white font-sans overflow-y-auto">
       <Editor
         resolver={{
           TextComponent,
@@ -172,26 +185,26 @@ export function EditorPage() {
           VideoComponent,
           TableComponent,
           ShapeComponent,
+          RowComponent,
+          ColumnComponent,
         }}
       >
         <ContentLoader content={loadedContent} />
 
-        {/* --- Top Header --- */}
-        {/* --- Top Header (Pro / Clean) --- */}
-        <header className="h-[72px] px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/10 bg-zinc-950/60 backdrop-blur-md z-50">
+        {/* ✅ Header sticky */}
+        <header className="sticky top-0 h-[72px] px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/10 bg-zinc-950/60 backdrop-blur-md z-50">
           {/* Left */}
           <div className="flex items-center gap-3 min-w-0">
             <Button
               isIconOnly
+              className="min-w-10 w-10 h-10 p-0 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white"
               variant="light"
               onPress={() => navigate("/dashboard")}
-              className="min-w-10 w-10 h-10 p-0 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white"
             >
               <ChevronLeft size={18} />
             </Button>
 
             <div className="min-w-0">
-              {/* Breadcrumb / meta */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-400">
                 <span className="font-medium">Trang chủ</span>
                 <span className="opacity-50">•</span>
@@ -202,14 +215,8 @@ export function EditorPage() {
                 </span>
               </div>
 
-              {/* Title + Category */}
               <div className="mt-1 flex items-center gap-3 min-w-0">
                 <Input
-                  placeholder="Nhập tiêu đề bài viết..."
-                  value={postInfo.title}
-                  onChange={(e) =>
-                    setPostInfo({ ...postInfo, title: e.target.value })
-                  }
                   classNames={{
                     base: "w-[320px] max-w-[55vw]",
                     inputWrapper:
@@ -217,19 +224,32 @@ export function EditorPage() {
                     input:
                       "text-white !text-white placeholder:!text-zinc-400 font-semibold caret-indigo-400",
                   }}
+                  placeholder="Nhập tiêu đề bài viết..."
+                  value={postInfo.title}
+                  onChange={(e) =>
+                    setPostInfo({ ...postInfo, title: e.target.value })
+                  }
                 />
 
                 {/* Category pill */}
                 <div className="hidden lg:flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 border border-white/10 text-zinc-200">
                   <Layout size={16} className="text-indigo-400" />
                   <select
-                    value={postInfo.categoryId}
-                    onChange={(e) => setPostInfo({ ...postInfo, categoryId: e.target.value })}
                     className="bg-transparent outline-none text-[13px] font-semibold cursor-pointer"
+                    value={postInfo.categoryId}
+                    onChange={(e) =>
+                      setPostInfo({ ...postInfo, categoryId: e.target.value })
+                    }
                   >
-                    <option value="" className="bg-zinc-900">Chọn danh mục</option>
+                    <option className="bg-zinc-900" value="">
+                      Chọn danh mục
+                    </option>
                     {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id} className="bg-zinc-900">
+                      <option
+                        key={cat.id}
+                        className="bg-zinc-900"
+                        value={cat.id}
+                      >
                         {cat.name}
                       </option>
                     ))}
@@ -255,29 +275,32 @@ export function EditorPage() {
 
           {/* Right */}
           <div className="flex items-center gap-2 md:gap-3">
-            {/* Mobile category */}
             <div className="md:hidden">
               <select
-                value={postInfo.categoryId}
-                onChange={(e) => setPostInfo({ ...postInfo, categoryId: e.target.value })}
                 className="h-10 px-3 rounded-xl bg-white/5 border border-white/10 text-[13px] font-semibold text-zinc-200 outline-none"
+                value={postInfo.categoryId}
+                onChange={(e) =>
+                  setPostInfo({ ...postInfo, categoryId: e.target.value })
+                }
               >
-                <option value="" className="bg-zinc-900">Danh mục</option>
+                <option className="bg-zinc-900" value="">
+                  Danh mục
+                </option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id} className="bg-zinc-900">
+                  <option key={cat.id} className="bg-zinc-900" value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Upload Logo */}
             <label className="group cursor-pointer h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
               <span
-                className={`w-7 h-7 grid place-items-center rounded-lg border ${postInfo.logoFile
-                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
-                  : "bg-white/5 border-white/10 text-indigo-300"
-                  }`}
+                className={`w-7 h-7 grid place-items-center rounded-lg border ${
+                  postInfo.logoFile
+                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                    : "bg-white/5 border-white/10 text-indigo-300"
+                }`}
               >
                 <ImageIcon size={16} />
               </span>
@@ -287,49 +310,51 @@ export function EditorPage() {
               </span>
 
               <input
-                type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => setPostInfo({ ...postInfo, logoFile: e.target.files?.[0] || null })}
+                type="file"
+                onChange={(e) =>
+                  setPostInfo({
+                    ...postInfo,
+                    logoFile: e.target.files?.[0] || null,
+                  })
+                }
               />
             </label>
 
-            {/* Divider */}
             <div className="hidden md:block h-6 w-px bg-white/10 mx-1" />
 
-            {/* Save */}
-            <SaveButton postInfo={postInfo} isNew={isNew} />
+            <SaveButton isNew={isNew} postInfo={postInfo} />
           </div>
         </header>
 
-
-        {/* --- Main Workspace --- */}
-        <div className="flex-1 flex overflow-hidden">
-
-          {/* Canvas Area */}
-          <div className="flex-1 h-full bg-[#09090b] relative overflow-hidden flex flex-col">
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
-              <div className="min-h-full flex justify-center">
-                {/* Visual Frame Wrapper */}
-                <div className="w-full max-w-[1024px] bg-[#18181b] shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
-                  <Frame>
-                    <Element
-                      canvas
-                      is={Container}
-                      padding={40}
-                      width="100%"
-                      height="100%"
-                      background="transparent" // Để màu nền container con quyết định hoặc transparent
-                      className="min-h-full"
-                    >
-                      {/* Default Content goes here if needed */}
-                    </Element>
-                  </Frame>
+        {/* ✅ Workspace: không overflow-hidden, để content kéo dài */}
+        <div className="flex">
+          {/* Canvas Area (no internal scroll) */}
+          <div className="flex-1  relative flex flex-col">
+            <div className="p-8">
+              <div className="flex justify-center">
+                <div className="w-full max-w-[1024px]  shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
+                  {isNew ? (
+                    <DefaultNewPostFrame />
+                  ) : (
+                    <Frame>
+                      <Element
+                        canvas
+                        background="transparent"
+                        className="min-h-full"
+                        height="100%"
+                        is={Container}
+                        padding={40}
+                        width="100%"
+                      />
+                    </Frame>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Canvas Info Footer (Optional) */}
+            {/* Footer theo content */}
             <div className="h-8 bg-zinc-900 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">
               <span>1024px (Máy tính)</span>
               <div className="flex gap-2">
@@ -347,7 +372,18 @@ export function EditorPage() {
                 <MonitorPlay size={14} className="text-zinc-400 mr-2" />
                 <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Thuộc tính</h2>
               </div>
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
+              <Toolbox />
+            </div>
+
+            {/* Settings */}
+            <div className="bg-zinc-900">
+              <div className="h-10 flex items-center px-4 bg-zinc-900 border-b border-white/5">
+                <MonitorPlay className="text-zinc-400 mr-2" size={14} />
+                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                  Properties
+                </h2>
+              </div>
+              <div className="p-4">
                 <SettingsPanel />
               </div>
             </div>

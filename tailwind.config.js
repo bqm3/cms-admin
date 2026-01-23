@@ -18,18 +18,20 @@ export default {
     },
   },
   darkMode: "class",
-  plugins: [heroui({
+ plugins: [
+  heroui({
+    defaultTheme: "light",
     themes: {
       light: {
         colors: {
-          background: "#FFFFFF",
+          background: "#ffffff",
           foreground: "#000000",
           primary: {
             DEFAULT: "#000000",
-            foreground: "#FFFFFF",
+            foreground: "#ffffff",
           },
           secondary: {
-            DEFAULT: "#f4f4f5", // zinc-100
+            DEFAULT: "#f4f4f5",
             foreground: "#000000",
           },
           focus: "#000000",
@@ -38,18 +40,11 @@ export default {
       dark: {
         colors: {
           background: "#000000",
-          foreground: "#FFFFFF",
-          primary: {
-            DEFAULT: "#FFFFFF",
-            foreground: "#000000",
-          },
-          secondary: {
-            DEFAULT: "#27272a", // zinc-800
-            foreground: "#FFFFFF",
-          },
-          focus: "#FFFFFF",
+          foreground: "#ffffff",
         },
       },
     },
-  })],
+  }),
+],
+
 }
