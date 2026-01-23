@@ -42,7 +42,7 @@ export const SettingsPanel = () => {
       </div>
     </div>
   ) : (
-    <div className="p-4 border-t border-white/10 mt-4">
+    <div className="p-2 border-t border-white/10 mt-4">
       <p className="text-zinc-500 text-sm text-center">
         Select a component to edit settings
       </p>
