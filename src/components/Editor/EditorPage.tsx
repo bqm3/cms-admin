@@ -9,7 +9,8 @@ import {
   Image as ImageIcon,
   Layout,
   MonitorPlay,
-  Layers
+  Layers,
+  Eye
 } from "lucide-react";
 import api, { SERVER_URL } from "../../services/api";
 
@@ -42,6 +43,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       formData.append('title', postInfo.title);
       formData.append('category_id', postInfo.categoryId);
       formData.append('content', json);
+      formData.append('view_count', postInfo.viewCount.toString());
       if (postInfo.logoFile) {
         formData.append('logo', postInfo.logoFile);
       }
@@ -50,15 +52,17 @@ const SaveButton = ({ postInfo, isNew }: any) => {
         const res = await api.post('/posts', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
+        alert('Tạo bài viết mới thành công! 🎉');
         navigate(`/editor/${res.data.id}`);
       } else {
         await api.put(`/posts/${id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
+        alert('Cập nhật bài viết thành công! ✨');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Save failed'); // Nên thay bằng Toast notification
+      alert('Lỗi khi lưu bài viết: ' + (err.response?.data?.message || err.message));
     } finally {
       setSaving(false);
     }
@@ -72,7 +76,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       className="bg-indigo-600 font-medium px-6 shadow-lg shadow-indigo-500/20"
       startContent={!saving && <Save size={18} />}
     >
-      {isNew ? 'Publish' : 'Update Changes'}
+      {isNew ? 'Xuất bản' : 'Cập nhật thay đổi'}
     </Button>
   );
 };
@@ -101,6 +105,7 @@ export function EditorPage() {
   const [postInfo, setPostInfo] = useState({
     title: '',
     categoryId: '',
+    viewCount: 0,
     logoFile: null as File | null,
     logoUrl: ''
   });
@@ -131,6 +136,7 @@ export function EditorPage() {
           setPostInfo({
             title: res.data.title,
             categoryId: res.data.category_id || '',
+            viewCount: res.data.view_count || 0,
             logoFile: null,
             logoUrl: res.data.logo ? `${SERVER_URL}${res.data.logo}` : ''
           });
@@ -187,12 +193,12 @@ export function EditorPage() {
             <div className="min-w-0">
               {/* Breadcrumb / meta */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-400">
-                <span className="font-medium">Dashboard</span>
+                <span className="font-medium">Trang chủ</span>
                 <span className="opacity-50">•</span>
-                <span className="font-medium">Editor</span>
+                <span className="font-medium">Chỉnh sửa</span>
                 <span className="opacity-50">•</span>
                 <span className="truncate max-w-[240px]">
-                  {isNew ? "Bài viết mới" : `Post #${id}`}
+                  {isNew ? "Bài viết mới" : `Bài viết #${id}`}
                 </span>
               </div>
 
@@ -214,7 +220,7 @@ export function EditorPage() {
                 />
 
                 {/* Category pill */}
-                <div className="hidden md:flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 border border-white/10 text-zinc-200">
+                <div className="hidden lg:flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 border border-white/10 text-zinc-200">
                   <Layout size={16} className="text-indigo-400" />
                   <select
                     value={postInfo.categoryId}
@@ -229,6 +235,20 @@ export function EditorPage() {
                     ))}
                   </select>
                 </div>
+
+                {/* View Count pill */}
+                {!isNew && (
+                  <div className="hidden md:flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 border border-white/10 text-zinc-200">
+                    <Eye size={16} className="text-amber-400" />
+                    <input
+                      type="number"
+                      value={postInfo.viewCount}
+                      onChange={(e) => setPostInfo({ ...postInfo, viewCount: parseInt(e.target.value) || 0 })}
+                      className="bg-transparent outline-none text-[13px] font-semibold w-16 text-center"
+                      title="Chỉnh sửa lượt xem"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -311,9 +331,9 @@ export function EditorPage() {
 
             {/* Canvas Info Footer (Optional) */}
             <div className="h-8 bg-zinc-900 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">
-              <span>1024px (Desktop)</span>
+              <span>1024px (Máy tính)</span>
               <div className="flex gap-2">
-                <span>Auto-save: Ready</span>
+                <span>Trạng thái: Sẵn sàng</span>
               </div>
             </div>
           </div>
@@ -325,7 +345,7 @@ export function EditorPage() {
             <div className="flex-1 flex flex-col min-h-0 border-b border-white/5">
               <div className="h-10 flex items-center px-4 bg-zinc-900 border-b border-white/5">
                 <MonitorPlay size={14} className="text-zinc-400 mr-2" />
-                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Properties</h2>
+                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Thuộc tính</h2>
               </div>
               <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                 <SettingsPanel />
@@ -336,7 +356,7 @@ export function EditorPage() {
             <div className="h-2/5 flex flex-col min-h-0 bg-zinc-900/50">
               <div className="h-10 flex items-center px-4 border-b border-white/5 bg-zinc-900/80 backdrop-blur">
                 <Layers size={14} className="text-zinc-400 mr-2" />
-                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Components</h2>
+                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Thành phần</h2>
               </div>
               <div className="flex-1 overflow-y-auto custom-scrollbar">
                 <Toolbox />

@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
-import { 
-    LayoutDashboard, 
-    Users, 
-    Tag, 
-    Plus, 
+import {
+    LayoutDashboard,
+    Users,
+    Tag,
+    Plus,
     LogOut,
     Shield,
     X
@@ -30,7 +30,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     const menuItems = [
         {
             icon: LayoutDashboard,
-            label: 'Dashboard',
+            label: 'Trang chủ',
             path: '/dashboard',
             activeBg: 'bg-indigo-50',
             activeBorder: 'border-indigo-200',
@@ -51,7 +51,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         ...(user.role === 'admin' ? [
             {
                 icon: Users,
-                label: 'Quản lý User',
+                label: 'Quản lý người dùng',
                 path: '/users',
                 activeBg: 'bg-blue-50',
                 activeBorder: 'border-blue-200',
@@ -61,7 +61,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             },
             {
                 icon: Tag,
-                label: 'Quản lý Category',
+                label: 'Danh mục',
                 path: '/categories',
                 activeBg: 'bg-amber-50',
                 activeBorder: 'border-amber-200',
@@ -83,9 +83,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <>
             {/* Desktop Sidebar */}
             <aside
-                className={`fixed left-0 top-0 h-full bg-white border-r border-slate-200/80 shadow-lg z-50 transition-all duration-300 ${
-                    isOpen ? 'w-64' : 'w-20'
-                } hidden lg:flex flex-col`}
+                className={`fixed left-0 top-0 h-full bg-white border-r border-slate-200/80 shadow-lg z-50 transition-all duration-300 ${isOpen ? 'w-64' : 'w-20'
+                    } hidden lg:flex flex-col`}
             >
                 {/* Logo Section */}
                 <div className="p-6 border-b border-slate-200/80">
@@ -96,10 +95,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                         {isOpen && (
                             <div className="flex-1">
                                 <h1 className="text-xl font-black text-slate-800 tracking-tight">
-                                    Admin Panel
+                                    Quản trị hệ thống
                                 </h1>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                    Control Center
+                                    Trung tâm điều khiển
                                 </p>
                             </div>
                         )}
@@ -111,33 +110,30 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const active = isActive(item.path);
-                        
+
                         return (
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 group ${
-                                    active
+                                className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 group ${active
                                         ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
                                         : 'hover:bg-slate-50'
-                                }`}
+                                    }`}
                             >
                                 <div
-                                    className={`p-2 rounded-xl flex-shrink-0 transition-all ${
-                                        active
+                                    className={`p-2 rounded-xl flex-shrink-0 transition-all ${active
                                             ? `${item.iconBg} ${item.iconText}`
                                             : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
-                                    }`}
+                                        }`}
                                 >
                                     <Icon size={20} />
                                 </div>
                                 {isOpen && (
                                     <span
-                                        className={`font-bold text-sm flex-1 ${
-                                            active
+                                        className={`font-bold text-sm flex-1 ${active
                                                 ? item.activeText
                                                 : 'text-slate-600 group-hover:text-slate-800'
-                                        }`}
+                                            }`}
                                     >
                                         {item.label}
                                     </span>
@@ -160,7 +156,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                         {user.username || 'Admin'}
                                     </p>
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                        {user.role || 'user'}
+                                        {user.role === 'admin' ? 'Quản trị viên' : 'Thành viên'}
                                     </p>
                                 </div>
                             </div>
@@ -178,9 +174,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
             {/* Mobile Sidebar */}
             <aside
-                className={`fixed left-0 top-0 h-full bg-white border-r border-slate-200 shadow-xl z-50 transition-transform duration-300 w-64 ${
-                    isOpen ? 'translate-x-0' : '-translate-x-full'
-                } lg:hidden flex flex-col`}
+                className={`fixed left-0 top-0 h-full bg-white border-r border-slate-200 shadow-xl z-50 transition-transform duration-300 w-64 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                    } lg:hidden flex flex-col`}
             >
                 {/* Mobile Header */}
                 <div className="p-6 border-b border-slate-200 flex items-center justify-between">
@@ -190,10 +185,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                         </div>
                         <div>
                             <h1 className="text-xl font-black text-slate-800 tracking-tight">
-                                Admin Panel
+                                Quản trị hệ thống
                             </h1>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                Control Center
+                                Trung tâm điều khiển
                             </p>
                         </div>
                     </div>
@@ -212,31 +207,28 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const active = isActive(item.path);
-                        
+
                         return (
                             <Link
                                 key={item.path}
                                 to={item.path}
                                 onClick={onClose}
-                                className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 ${
-                                    active
+                                className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 ${active
                                         ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
                                         : 'hover:bg-slate-50'
-                                }`}
+                                    }`}
                             >
                                 <div
-                                    className={`p-2 rounded-xl flex-shrink-0 ${
-                                        active
+                                    className={`p-2 rounded-xl flex-shrink-0 ${active
                                             ? `${item.iconBg} ${item.iconText}`
                                             : 'bg-slate-100 text-slate-400'
-                                    }`}
+                                        }`}
                                 >
                                     <Icon size={20} />
                                 </div>
                                 <span
-                                    className={`font-bold text-sm ${
-                                        active ? item.activeText : 'text-slate-600'
-                                    }`}
+                                    className={`font-bold text-sm ${active ? item.activeText : 'text-slate-600'
+                                        }`}
                                 >
                                     {item.label}
                                 </span>
@@ -257,7 +249,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                     {user.username || 'Admin'}
                                 </p>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                    {user.role || 'user'}
+                                    {user.role === 'admin' ? 'Quản trị viên' : 'Thành viên'}
                                 </p>
                             </div>
                         </div>

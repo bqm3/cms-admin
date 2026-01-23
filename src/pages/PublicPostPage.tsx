@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Editor, Frame } from "@craftjs/core";
 import api from '../services/api';
 
@@ -15,24 +15,32 @@ import { TableComponent } from "../components/Editor/Craft/Components/TableCompo
 import { ShapeComponent } from "../components/Editor/Craft/Components/ShapeComponent";
 
 export function PublicPostPage() {
-    const { id } = useParams();
+    const { slug } = useParams();
+    const [searchParams] = useSearchParams();
     const [content, setContent] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const hasFetched = useRef(false);
 
     useEffect(() => {
         const fetchPost = async () => {
+            if (hasFetched.current) return;
+            hasFetched.current = true;
+
             try {
-                const response = await api.get(`/posts/public/${id}`);
+                const response = await api.get(`/posts/public/${slug}`, {
+                    params: { preview: searchParams.get('preview') }
+                });
                 setContent(response.data.content);
                 document.title = response.data.title;
             } catch (err) {
                 console.error(err);
+                hasFetched.current = false; // Reset if failed
             } finally {
                 setLoading(false);
             }
         };
         fetchPost();
-    }, [id]);
+    }, [slug, searchParams]);
 
     if (loading) return <div className="bg-black text-zinc-500 h-screen flex items-center justify-center">Loading website...</div>;
     if (!content) return <div className="bg-black text-zinc-500 h-screen flex items-center justify-center">Website not found or not approved.</div>;

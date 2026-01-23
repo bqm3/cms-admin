@@ -4,18 +4,19 @@ import { Input } from "@heroui/input";
 import React from "react";
 
 interface ContainerProps {
-  background: string;
-  padding: number;
-  margin: number;
-  width: string;
-  height: string;
-  flexDirection: "row" | "column";
+  background?: string;
+  padding?: number;
+  margin?: number;
+  width?: string;
+  height?: string;
+  flexDirection?: "row" | "column";
   positioning?: "flow" | "absolute";
-  justifyContent: "flex-start" | "center" | "flex-end" | "space-between" | "space-around";
-  alignItems: "flex-start" | "center" | "flex-end" | "stretch";
-  gap: number;
-  borderRadius: number;
+  justifyContent?: "flex-start" | "center" | "flex-end" | "space-between" | "space-around";
+  alignItems?: "flex-start" | "center" | "flex-end" | "stretch";
+  gap?: number;
+  borderRadius?: number;
   children?: React.ReactNode;
+  className?: string;
 }
 
 export const Container = ({
@@ -31,6 +32,7 @@ export const Container = ({
   gap = 0,
   borderRadius = 0,
   children,
+  className = "",
 }: ContainerProps) => {
   const {
     connectors: { connect, drag },
@@ -44,7 +46,7 @@ export const Container = ({
       ref={(ref) => {
         if (ref) connect(drag(ref));
       }}
-      className={`${positioning === 'absolute' ? 'relative' : 'relative'} min-h-[50px] ${selected ? "outline outline-2 outline-blue-500 outline-dashed" : "border border-transparent hover:border-white/10"}`}
+      className={`${positioning === 'absolute' ? 'relative' : 'relative'} min-h-[50px] ${selected ? "outline outline-2 outline-blue-500 outline-dashed" : "border border-transparent hover:border-white/10"} ${className}`}
       style={{
         background,
         padding: `${padding}px`,
@@ -94,19 +96,19 @@ export const ContainerSettings = () => {
       <div>
         <h4 className="text-xs font-semibold text-zinc-400 mb-2">Layout</h4>
         <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="text-[10px] text-zinc-500">Mode</label>
-              <div className="flex bg-zinc-800 rounded p-1 gap-1">
-                <button
-                  className={`flex-1 p-1 text-xs rounded ${positioning === 'flow' ? 'bg-purple-600 text-white' : 'hover:bg-zinc-700'}`}
-                  onClick={() => setProp((props: any) => props.positioning = 'flow')}
-                >Flow</button>
-                <button
-                  className={`flex-1 p-1 text-xs rounded ${positioning === 'absolute' ? 'bg-purple-600 text-white' : 'hover:bg-zinc-700'}`}
-                  onClick={() => setProp((props: any) => props.positioning = 'absolute')}
-                >Free</button>
-              </div>
+          <div>
+            <label className="text-[10px] text-zinc-500">Mode</label>
+            <div className="flex bg-zinc-800 rounded p-1 gap-1">
+              <button
+                className={`flex-1 p-1 text-xs rounded ${positioning === 'flow' ? 'bg-purple-600 text-white' : 'hover:bg-zinc-700'}`}
+                onClick={() => setProp((props: any) => props.positioning = 'flow')}
+              >Flow</button>
+              <button
+                className={`flex-1 p-1 text-xs rounded ${positioning === 'absolute' ? 'bg-purple-600 text-white' : 'hover:bg-zinc-700'}`}
+                onClick={() => setProp((props: any) => props.positioning = 'absolute')}
+              >Free</button>
             </div>
+          </div>
           <div>
             <label className="text-[10px] text-zinc-500">Direction</label>
             <div className="flex bg-zinc-800 rounded p-1 gap-1">

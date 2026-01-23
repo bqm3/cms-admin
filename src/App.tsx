@@ -17,7 +17,7 @@ function App() {
       <Route element={<EditorPage />} path="/editor/new" />
       <Route element={<EditorPage />} path="/editor/:id" />
       <Route element={<NewPage />} path="/new-page-test" />
-      <Route element={<PublicPostPage />} path="/site/:id" />
+      <Route element={<PublicPostPage />} path="/site/:slug" />
       <Route element={<CategoryManagementPage />} path="/categories" />
       <Route element={<UserManagementPage />} path="/users" />
       <Route element={<Navigate replace to="/" />} path="*" />

@@ -67,7 +67,7 @@ export function ClientHomePage() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         {posts.map((post) => (
-                            <Link to={`/site/${post.id}`} key={post.id} className="block group">
+                            <Link to={`/site/${post.slug || post.id}?preview=true`} key={post.id} className="block group">
                                 <Card className="bg-white border-transparent hover:border-indigo-500/30 transition-all duration-500 overflow-hidden shadow-md hover:shadow-2xl rounded-[2rem]">
                                     <CardBody className="p-0">
                                         <div className="aspect-[16/10] bg-slate-100 overflow-hidden relative">
