@@ -1,3 +1,7 @@
+/* eslint-disable react/jsx-sort-props */
+/* eslint-disable padding-line-between-statements */
+/* eslint-disable no-console */
+/* eslint-disable prettier/prettier */
 import { useEditor, Element } from "@craftjs/core";
 import { Card } from "@heroui/card";
 
@@ -12,6 +16,14 @@ import { TableComponent } from "./Components/TableComponent";
 import { ShapeComponent } from "./Components/ShapeComponent";
 import { RowComponent } from "./Components/RowComponent";
 import { ColumnComponent } from "./Components/ColumnComponent";
+
+// ✅ NEW (5 cái)
+import { NavbarComponent } from "./Components/NavbarComponent";
+import { SectionComponent } from "./Components/SectionComponent";
+import { GridComponent } from "./Components/GridComponent";
+import { BadgeComponent } from "./Components/BadgeComponent";
+import { AccordionComponent } from "./Components/AccordionComponent";
+import { SpacerComponent } from "./Components/SpacerComponent";
 
 export const Toolbox = () => {
   const { connectors } = useEditor();
@@ -50,6 +62,11 @@ export const Toolbox = () => {
       ),
     },
     {
+      name: "Badge", // ✅ NEW
+      icon: "🏷️",
+      component: <BadgeComponent text="Verified" color="success" variant="soft" radius={"sm"} size={"sm"} />,
+    },
+    {
       name: "Image",
       icon: "🖼️",
       component: <ImageComponent />,
@@ -64,6 +81,25 @@ export const Toolbox = () => {
       icon: "🎥",
       component: <VideoComponent />,
     },
+    {
+  name: "FAQ",
+  icon: "❓",
+  component: (
+    <AccordionComponent
+      items={[
+        { title: "Question 1", content: "Answer..." },
+        { title: "Question 2", content: "Answer..." },
+      ]}
+      allowMultiple={false}
+      defaultOpenIndex={0}
+      cardBg={"rgba(24,24,27,.55)"}
+      border={"1px solid rgba(255,255,255,.08)"}
+      titleColor={"#FFFFFF"}
+      contentColor={"#A1A1AA"}
+    />
+  ),
+},
+
   ];
 
   const shapeTools = [
@@ -118,6 +154,37 @@ export const Toolbox = () => {
   ];
 
   const layoutTools = [
+    // ✅ NEW: Navbar
+    {
+      name: "Navbar",
+      icon: "≡",
+      component: <NavbarComponent brandText={""} items={[]} sticky={false} blur={false} background={""} border={""} paddingX={0} paddingY={0} ctaText={""} ctaHref={""} ctaNewTab={false} />,
+      label: "Navbar",
+    },
+
+    // ✅ NEW: Section
+    {
+      name: "Section",
+      icon: "▤",
+      component: (
+        <Element is={SectionComponent} canvas background="transparent" paddingY={56} paddingX={24} maxWidth="xl" overlay={{
+          enabled: false,
+          color: ""
+        }} borderRadius={0} />
+      ),
+      label: "Section",
+    },
+
+    // ✅ NEW: Grid
+    {
+      name: "Grid",
+      icon: "▦",
+      component: (
+        <Element is={GridComponent} canvas columns={3} gap={16} minItemWidth={260} align="stretch" />
+      ),
+      label: "Grid",
+    },
+
     {
       name: "Container",
       icon: "□",
@@ -263,27 +330,6 @@ export const Toolbox = () => {
       label: "3 Col",
     },
 
-    // {
-    //   name: "V-Stack",
-    //   icon: "⊟",
-    //   component: (
-    //     <Element
-    //       is={Container}
-    //       canvas
-    //       background="transparent"
-    //       padding={10}
-    //       margin={0}
-    //       width="100%"
-    //       height="auto"
-    //       flexDirection="column"
-    //       justifyContent="flex-start"
-    //       alignItems="flex-start"
-    //       gap={10}
-    //       borderRadius={0}
-    //     />
-    //   ),
-    //   label: "Col",
-    // },
     {
       name: "Card",
       icon: "▭",

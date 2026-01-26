@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useNode } from "@craftjs/core";
+import { useEditor, useNode } from "@craftjs/core";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
+
 
 export const ButtonComponent = ({
   text,
@@ -13,29 +14,20 @@ export const ButtonComponent = ({
   fullWidth,
   href,
   openInNewTab,
-}: {
-  text: string;
-  color: "default" | "primary" | "secondary" | "success" | "warning" | "danger";
-  variant:
-    | "solid"
-    | "bordered"
-    | "light"
-    | "flat"
-    | "faded"
-    | "shadow"
-    | "ghost";
-  size: "sm" | "md" | "lg";
-  radius: "none" | "sm" | "md" | "lg" | "full";
-  fullWidth: boolean;
-  href?: string;
-  openInNewTab?: boolean;
-}) => {
-  const {
-    connectors: { connect, drag },
-    selected,
-  } = useNode((state) => ({
+}: any) => {
+  const { enabled } = useEditor((state) => ({ enabled: state.options.enabled }));
+
+  const { connectors: { connect, drag }, selected } = useNode((state) => ({
     selected: state.events.selected,
   }));
+
+  const handleLinkClick = (e: React.MouseEvent) => {
+    // ✅ Khi đang edit: chặn navigate
+    if (enabled) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
 
   const buttonEl = (
     <Button
@@ -45,6 +37,8 @@ export const ButtonComponent = ({
       radius={radius}
       size={size}
       variant={variant}
+      // ✅ chặn cả onPress khi enabled
+      onPress={() => {}}
     >
       {text}
     </Button>
@@ -52,17 +46,18 @@ export const ButtonComponent = ({
 
   return (
     <div
-      ref={(ref) => {
-        if (ref) connect(drag(ref));
-      }}
+      ref={(ref) => ref && connect(drag(ref))}
       className="inline-block m-1"
+      style={{ width: fullWidth ? "100%" : "auto" }}
     >
       {href ? (
         <a
           className="inline-block"
           href={href}
-          rel={openInNewTab ? "noopener noreferrer" : undefined}
           target={openInNewTab ? "_blank" : "_self"}
+          rel={openInNewTab ? "noopener noreferrer" : undefined}
+          onClick={handleLinkClick}
+          onMouseDown={(e) => enabled && e.preventDefault()} // ✅ tránh mất selection
         >
           {buttonEl}
         </a>
@@ -72,6 +67,7 @@ export const ButtonComponent = ({
     </div>
   );
 };
+
 
 export const ButtonSettings = () => {
   const {

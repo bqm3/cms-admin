@@ -13,7 +13,7 @@ import {
   Layout,
   MonitorPlay,
   Layers,
-  Eye
+  Eye,
 } from "lucide-react";
 
 import api, { SERVER_URL } from "../../services/api";
@@ -30,6 +30,12 @@ import { TableComponent } from "./Craft/Components/TableComponent";
 import { ShapeComponent } from "./Craft/Components/ShapeComponent";
 import { RowComponent } from "./Craft/Components/RowComponent";
 import { ColumnComponent } from "./Craft/Components/ColumnComponent";
+import { NavbarComponent } from "./Craft/Components/NavbarComponent";
+import { SectionComponent } from "./Craft/Components/SectionComponent";
+import { GridComponent } from "./Craft/Components/GridComponent";
+import { BadgeComponent } from "./Craft/Components/BadgeComponent";
+import { AccordionComponent } from "./Craft/Components/AccordionComponent";
+import { SpacerComponent } from "./Craft/Components/SpacerComponent";
 import { Toolbox } from "./Craft/Toolbox";
 import { SettingsPanel } from "./Craft/SettingsPanel";
 import { DefaultNewPostFrame } from "./DefaultNewPostFrame";
@@ -44,33 +50,54 @@ const SaveButton = ({ postInfo, isNew }: any) => {
 
   const handleSave = async () => {
     setSaving(true);
-    const json = query.serialize();
-
     try {
-      const formData = new FormData();
-      formData.append('title', postInfo.title);
-      formData.append('category_id', postInfo.categoryId);
-      formData.append('content', json);
-      formData.append('view_count', postInfo.viewCount.toString());
-      if (postInfo.logoFile) {
-        formData.append('logo', postInfo.logoFile);
+      const state = query?.getState?.();
+      const nodes = state?.nodes ?? {}; // ✅ luôn là object
+
+      // ✅ Nếu editor chưa load nodes thì báo rõ
+      if (!state || !state.nodes) {
+        throw new Error(
+          "Editor chưa sẵn sàng (nodes is null). Thử lại sau 1-2s hoặc sau khi Frame render xong.",
+        );
       }
+
+      const bad: any[] = [];
+      Object.entries(nodes).forEach(([id, n]: any) => {
+        if (!n?.data?.props)
+          bad.push({ id, reason: "props is null/undefined", n });
+        if (n?.data?.custom === null)
+          bad.push({ id, reason: "custom is null", n });
+      });
+
+      if (bad.length) {
+        console.error("BAD NODES:", bad);
+        throw new Error("Có node bị null/undefined props/custom. Xem console.");
+      }
+
+      const json = query.serialize(); // serialize sau khi nodes ok
+
+      console.log("json", json);
+
+      const formData = new FormData();
+      formData.append("title", (postInfo.title || "").trim());
+      formData.append("category_id", String(postInfo.categoryId ?? ""));
+      formData.append("content", json);
+      formData.append("view_count", String(postInfo.viewCount ?? 0));
+      if (postInfo.logoFile) formData.append("logo", postInfo.logoFile);
 
       if (isNew) {
-        const res = await api.post("/posts", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        alert('Tạo bài viết mới thành công! 🎉');
+        const res = await api.post("/posts", formData);
         navigate(`/editor/${res.data.id}`);
       } else {
-        await api.put(`/posts/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        alert('Cập nhật bài viết thành công! ✨');
+        await api.put(`/posts/${id}`, formData);
       }
     } catch (err: any) {
-      console.error(err);
-      alert('Lỗi khi lưu bài viết: ' + (err.response?.data?.message || err.message));
+      console.error("SAVE ERROR:", err);
+      console.error("SERVER:", err?.response?.status, err?.response?.data);
+      alert(
+        "Lỗi khi lưu: " +
+          (err?.response?.data?.message || err?.message || "Unknown"),
+      );
     } finally {
       setSaving(false);
     }
@@ -84,7 +111,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       startContent={!saving && <Save size={18} />}
       onPress={handleSave}
     >
-      {isNew ? 'Xuất bản' : 'Cập nhật thay đổi'}
+      {isNew ? "Xuất bản" : "Cập nhật thay đổi"}
     </Button>
   );
 };
@@ -112,8 +139,8 @@ export function EditorPage() {
   const isNew = id === "new" || !id;
 
   const [postInfo, setPostInfo] = useState({
-    title: '',
-    categoryId: '',
+    title: "",
+    categoryId: "",
     viewCount: 0,
     logoFile: null as File | null,
     logoUrl: "",
@@ -144,15 +171,15 @@ export function EditorPage() {
           const res = await api.get(`/posts/public/${id}`);
           setPostInfo({
             title: res.data.title,
-            categoryId: res.data.category_id || '',
+            categoryId: res.data.category_id || "",
             viewCount: res.data.view_count || 0,
             logoFile: null,
-            logoUrl: res.data.logo ? `${SERVER_URL}${res.data.logo}` : ''
+            logoUrl: res.data.logo ? `${SERVER_URL}${res.data.logo}` : "",
           });
           setLoadedContent(res.data.content);
         } catch (err) {
           console.error(err);
-          navigate('/dashboard');
+          navigate("/dashboard");
         } finally {
           setLoading(false);
         }
@@ -172,10 +199,11 @@ export function EditorPage() {
     );
 
   return (
-    // ✅ Page scroll: bỏ h-screen + overflow-hidden
-    <div className="min-h-screen bg-zinc-950 text-white font-sans overflow-y-auto">
+    // ✅ Không cho page scroll ngoài, chỉ scroll trong 2 cột
+    <div className="h-screen bg-zinc-950 text-white font-sans overflow-hidden">
       <Editor
         resolver={{
+          DefaultNewPostFrame,
           TextComponent,
           Container,
           ButtonComponent,
@@ -187,6 +215,12 @@ export function EditorPage() {
           ShapeComponent,
           RowComponent,
           ColumnComponent,
+          NavbarComponent,
+          SectionComponent,
+          GridComponent,
+          BadgeComponent,
+          AccordionComponent,
+          SpacerComponent
         }}
       >
         <ContentLoader content={loadedContent} />
@@ -263,7 +297,12 @@ export function EditorPage() {
                     <input
                       type="number"
                       value={postInfo.viewCount}
-                      onChange={(e) => setPostInfo({ ...postInfo, viewCount: parseInt(e.target.value) || 0 })}
+                      onChange={(e) =>
+                        setPostInfo({
+                          ...postInfo,
+                          viewCount: parseInt(e.target.value) || 0,
+                        })
+                      }
                       className="bg-transparent outline-none text-[13px] font-semibold w-16 text-center"
                       title="Chỉnh sửa lượt xem"
                     />
@@ -328,34 +367,50 @@ export function EditorPage() {
           </div>
         </header>
 
-        {/* ✅ Workspace: không overflow-hidden, để content kéo dài */}
-        <div className="flex">
-          {/* Canvas Area (no internal scroll) */}
-          <div className="flex-1  relative flex flex-col">
-            <div className="p-8">
-              <div className="flex justify-center">
-                <div className="w-full max-w-[1024px]  shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
-                  {isNew ? (
-                    <DefaultNewPostFrame />
-                  ) : (
+        {/* ✅ Workspace: 3 cột (Left Toolbox | Center Canvas | Right Settings) */}
+        <div className="flex h-[calc(100vh-72px)] overflow-hidden">
+          {/* ================= LEFT: Toolbox ================= */}
+          <div className="w-72 min-h-0 bg-zinc-900 border-r border-white/5 flex flex-col shadow-xl z-10 overflow-hidden">
+            <div className="shrink-0 h-10 flex items-center px-4 border-b border-white/5 bg-zinc-900/80 backdrop-blur">
+              <Layers size={14} className="text-zinc-400 mr-2" />
+              <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                Thành phần
+              </h2>
+            </div>
+
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+              <Toolbox />
+            </div>
+          </div>
+
+          {/* ================= CENTER: Canvas ================= */}
+          <div className="flex-1 relative flex flex-col min-h-0 overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+              <div className="p-8">
+                <div className="flex justify-center">
+                  <div className="w-full max-w-[1024px] shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
                     <Frame>
-                      <Element
-                        canvas
-                        background="transparent"
-                        className="min-h-full"
-                        height="100%"
-                        is={Container}
-                        padding={40}
-                        width="100%"
-                      />
+                      {isNew ? (
+                        <DefaultNewPostFrame />
+                      ) : (
+                        <Element
+                          canvas
+                          is={Container}
+                          padding={40}
+                          background="transparent"
+                          width="100%"
+                          height="100%"
+                          className="min-h-full"
+                        />
+                      )}
                     </Frame>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Footer theo content */}
-            <div className="h-8 bg-zinc-900 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">
+            {/* Footer cố định theo cột center */}
+            <div className="shrink-0 h-8 bg-zinc-900 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">
               <span>1024px (Máy tính)</span>
               <div className="flex gap-2">
                 <span>Trạng thái: Sẵn sàng</span>
@@ -363,42 +418,18 @@ export function EditorPage() {
             </div>
           </div>
 
-          {/* --- Right Sidebar (Inspector & Toolbox) --- */}
-          <div className="w-80 h-full bg-zinc-900 border-l border-white/5 flex flex-col shadow-xl z-10">
-
-            {/* Inspector Section (Top) */}
-            <div className="flex-1 flex flex-col min-h-0 border-b border-white/5">
-              <div className="h-10 flex items-center px-4 bg-zinc-900 border-b border-white/5">
-                <MonitorPlay size={14} className="text-zinc-400 mr-2" />
-                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Thuộc tính</h2>
-              </div>
-              <Toolbox />
+          {/* ================= RIGHT: SettingsPanel ================= */}
+          <div className="w-80 min-h-0 bg-zinc-900 border-l border-white/5 flex flex-col shadow-xl z-10 overflow-hidden">
+            <div className="shrink-0 h-10 flex items-center px-4 bg-zinc-900 border-b border-white/5">
+              <MonitorPlay className="text-zinc-400 mr-2" size={14} />
+              <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                Properties
+              </h2>
             </div>
 
-            {/* Settings */}
-            <div className="bg-zinc-900">
-              <div className="h-10 flex items-center px-4 bg-zinc-900 border-b border-white/5">
-                <MonitorPlay className="text-zinc-400 mr-2" size={14} />
-                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
-                  Properties
-                </h2>
-              </div>
-              <div className="p-4">
-                <SettingsPanel />
-              </div>
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-4">
+              <SettingsPanel />
             </div>
-
-            {/* Library Section (Bottom) */}
-            <div className="h-2/5 flex flex-col min-h-0 bg-zinc-900/50">
-              <div className="h-10 flex items-center px-4 border-b border-white/5 bg-zinc-900/80 backdrop-blur">
-                <Layers size={14} className="text-zinc-400 mr-2" />
-                <h2 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Thành phần</h2>
-              </div>
-              <div className="flex-1 overflow-y-auto custom-scrollbar">
-                <Toolbox />
-              </div>
-            </div>
-
           </div>
         </div>
       </Editor>

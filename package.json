@@ -22,6 +22,7 @@
     "@heroui/modal": "^2.2.26",
     "@heroui/navbar": "2.2.25",
     "@heroui/pagination": "^2.2.26",
+    "@heroui/react": "^2.8.7",
     "@heroui/snippet": "2.2.28",
     "@heroui/switch": "2.2.24",
     "@heroui/system": "2.4.23",
