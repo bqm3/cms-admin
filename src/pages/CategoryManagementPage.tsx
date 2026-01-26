@@ -183,7 +183,7 @@ export function CategoryManagementPage() {
                             onChange={(p) => setPage(p)}
                             showControls
                             color="warning"
-                            radius="xl"
+                            radius="sm"
                             classNames={{
                                 cursor: "bg-amber-500 shadow-lg shadow-amber-100",
                             }}

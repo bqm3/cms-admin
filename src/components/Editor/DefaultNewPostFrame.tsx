@@ -82,7 +82,7 @@ export function DefaultNewPostFrame() {
           ctaHref={"#pricing"}
           ctaNewTab={false}
           // nếu NavbarComponent có className:
-          className="backdrop-blur-md"
+          // className="backdrop-blur-md"
         />
 
         {/* HERO */}

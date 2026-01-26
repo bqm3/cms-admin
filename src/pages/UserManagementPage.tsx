@@ -282,7 +282,7 @@ export function UserManagementPage() {
                             onChange={(p) => setPage(p)}
                             showControls
                             color="primary"
-                            radius="xl"
+                            radius="sm"
                             classNames={{
                                 cursor: "bg-indigo-600 shadow-lg shadow-indigo-200",
                             }}
