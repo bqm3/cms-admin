@@ -11,6 +11,8 @@ export function MediaManagementPage() {
     const [media, setMedia] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [copiedId, setCopiedId] = useState<number | null>(null);
 
     // Pagination state
@@ -29,7 +31,15 @@ export function MediaManagementPage() {
     const fetchMedia = async () => {
         setLoading(true);
         try {
-            const response = await api.get(`/media?page=${page}&limit=${limit}`);
+            const response = await api.get(`/media`, {
+                params: {
+                    page,
+                    limit,
+                    search: searchTerm,
+                    startDate,
+                    endDate
+                }
+            });
             if (response.data.media) {
                 setMedia(response.data.media);
                 setTotalPages(response.data.totalPages);
@@ -48,7 +58,7 @@ export function MediaManagementPage() {
 
     useEffect(() => {
         fetchMedia();
-    }, [page, limit]);
+    }, [page, limit, searchTerm, startDate, endDate]);
 
     const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setLimit(Number(e.target.value));
@@ -109,34 +119,20 @@ export function MediaManagementPage() {
         });
     };
 
-    const filteredMedia = media.filter(m =>
-        m.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
     return (
         <AdminLayout>
-            <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 rounded-2xl shadow-lg shadow-indigo-100">
-                        <ImageIcon className="text-white" size={28} />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Thư viện ảnh</h1>
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
-                            Quản lý tài nguyên hình ảnh của bạn
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-3">
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm ảnh..."
-                            className="h-12 pl-12 pr-4 bg-white border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-64 shadow-sm transition-all"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+            <div className="mb-8 space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 rounded-2xl shadow-lg shadow-indigo-100">
+                            <ImageIcon className="text-white" size={28} />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Thư viện ảnh</h1>
+                            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
+                                Quản lý tài nguyên hình ảnh của bạn
+                            </p>
+                        </div>
                     </div>
                     <Button
                         onPress={onOpen}
@@ -145,6 +141,60 @@ export function MediaManagementPage() {
                     >
                         Thêm ảnh
                     </Button>
+                </div>
+
+                {/* Search & Date Filter Bar */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm ảnh..."
+                            className="h-12 pl-12 pr-4 bg-white border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full shadow-sm transition-all"
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setPage(1);
+                            }}
+                        />
+                    </div>
+                    <div className="flex items-center gap-3 bg-white px-4 py-2 border border-slate-100 rounded-2xl shadow-sm w-full">
+                        <Calendar size={18} className="text-slate-400" />
+                        <div className="flex items-center gap-2 flex-1">
+                            <span className="text-[10px] font-black text-slate-400 uppercase">Từ</span>
+                            <input
+                                type="date"
+                                className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                value={startDate}
+                                onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                    setPage(1);
+                                }}
+                            />
+                            <span className="text-[10px] font-black text-slate-400 uppercase">Đến</span>
+                            <input
+                                type="date"
+                                className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                value={endDate}
+                                onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                    setPage(1);
+                                }}
+                            />
+                        </div>
+                        {(startDate || endDate) && (
+                            <button
+                                onClick={() => {
+                                    setStartDate('');
+                                    setEndDate('');
+                                    setPage(1);
+                                }}
+                                className="text-[10px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
+                            >
+                                Xóa
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -167,7 +217,7 @@ export function MediaManagementPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
-                                    {filteredMedia.map((m) => (
+                                    {media.map((m) => (
                                         <tr key={m.id} className="hover:bg-slate-50/50 transition-colors group">
                                             <td className="px-6 py-5">
                                                 <div className="w-16 h-16 rounded-xl bg-slate-50 overflow-hidden border border-slate-100 shadow-sm relative group/thumb">
@@ -199,8 +249,8 @@ export function MediaManagementPage() {
                                             </td>
                                             <td className="px-6 py-5">
                                                 <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${m.type === 'upload'
-                                                        ? 'bg-indigo-50 text-indigo-600'
-                                                        : 'bg-amber-50 text-amber-600'
+                                                    ? 'bg-indigo-50 text-indigo-600'
+                                                    : 'bg-amber-50 text-amber-600'
                                                     }`}>
                                                     {m.type === 'upload' ? 'Upload' : 'Link'}
                                                 </span>
