@@ -3,7 +3,7 @@ import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
 import { Pagination } from "@heroui/pagination";
-import { Users, Trash, UserCog, Shield, Mail, Phone, Image as ImageIcon, Plus } from 'lucide-react';
+import { Users, Trash, UserCog, Shield, Mail, Phone, Plus, Search, Calendar } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
@@ -12,11 +12,15 @@ export function UserManagementPage() {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingUser, setEditingUser] = useState<any>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     // Pagination state
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [limit] = useState(10);
+    const [limit, setLimit] = useState(10);
+    const [totalItems, setTotalItems] = useState(0);
 
     // Disclosure for modals
     const createModal = useDisclosure();
@@ -48,9 +52,24 @@ export function UserManagementPage() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await api.get(`/users?page=${page}&limit=${limit}`);
-            setUsers(response.data.users);
-            setTotalPages(response.data.totalPages);
+            const response = await api.get(`/users`, {
+                params: {
+                    page,
+                    limit,
+                    search: searchTerm,
+                    startDate,
+                    endDate
+                }
+            });
+            if (response.data.users) {
+                setUsers(response.data.users);
+                setTotalPages(response.data.totalPages);
+                setTotalItems(response.data.total);
+            } else {
+                setUsers(response.data);
+                setTotalPages(1);
+                setTotalItems(response.data.length);
+            }
         } catch (err) {
             console.error(err);
         } finally {
@@ -65,7 +84,12 @@ export function UserManagementPage() {
             return;
         }
         fetchUsers();
-    }, [page]);
+    }, [page, limit, searchTerm, startDate, endDate]);
+
+    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setLimit(Number(e.target.value));
+        setPage(1);
+    };
 
     const handleCreateUser = async () => {
         if (!newUsername || !newPassword) return;
@@ -98,7 +122,7 @@ export function UserManagementPage() {
             setNewAvatarFile(null);
 
             createModal.onClose();
-            fetchUsers();
+            if (page === 1) fetchUsers(); else setPage(1);
             alert('Tạo người dùng thành công! 🎉');
         } catch (err: any) {
             alert(err.response?.data?.message || 'Lỗi khi tạo người dùng');
@@ -162,25 +186,81 @@ export function UserManagementPage() {
     return (
         <AdminLayout>
             {/* Page Header */}
-            <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-lg shadow-blue-100/50">
-                        <Users className="text-white" size={28} />
+            <div className="mb-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-lg shadow-blue-100/50">
+                            <Users className="text-white" size={28} />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Quản lý người dùng</h1>
+                            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
+                                Quản lý tài khoản và phân quyền hệ thống
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Quản lý người dùng</h1>
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
-                            Quản lý tài khoản và phân quyền hệ thống
-                        </p>
+                    <Button
+                        onPress={createModal.onOpen}
+                        className="bg-amber-950 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
+                        startContent={<Plus size={20} />}
+                    >
+                        Thêm người dùng
+                    </Button>
+                </div>
+
+                {/* Search & Date Filter Bar */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm người dùng (Tên, Email, Username)..."
+                            className="h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full shadow-sm transition-all"
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setPage(1);
+                            }}
+                        />
+                    </div>
+                    <div className="flex items-center gap-3 bg-white px-4 py-2 border border-slate-200 rounded-2xl shadow-sm w-full">
+                        <Calendar size={18} className="text-slate-400" />
+                        <div className="flex items-center gap-2 flex-1">
+                            <span className="text-[10px] font-black text-slate-400 uppercase">Từ</span>
+                            <input
+                                type="date"
+                                className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                value={startDate}
+                                onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                    setPage(1);
+                                }}
+                            />
+                            <span className="text-[10px] font-black text-slate-400 uppercase">Đến</span>
+                            <input
+                                type="date"
+                                className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                value={endDate}
+                                onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                    setPage(1);
+                                }}
+                            />
+                        </div>
+                        {(startDate || endDate) && (
+                            <button
+                                onClick={() => {
+                                    setStartDate('');
+                                    setEndDate('');
+                                    setPage(1);
+                                }}
+                                className="text-[10px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
+                            >
+                                Xóa
+                            </button>
+                        )}
                     </div>
                 </div>
-                <Button
-                    onPress={createModal.onOpen}
-                    className="bg-amber-950 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
-                    startContent={<Plus size={20} />}
-                >
-                    Thêm người dùng
-                </Button>
             </div>
 
             {loading ? (
@@ -273,20 +353,43 @@ export function UserManagementPage() {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
 
-                    <div className="flex justify-center pb-8 mt-4">
-                        <Pagination
-                            total={totalPages}
-                            page={page}
-                            onChange={(p) => setPage(p)}
-                            showControls
-                            color="primary"
-                            radius="sm"
-                            classNames={{
-                                cursor: "bg-amber-950 shadow-lg shadow-indigo-200",
-                            }}
-                        />
+                        {/* Footer với phân trang góc phải */}
+                        <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div className="flex items-center gap-4">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                    Hiển thị:
+                                </p>
+                                <select
+                                    className="bg-white border border-slate-200 rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"
+                                    value={limit}
+                                    onChange={handleLimitChange}
+                                >
+                                    <option value={5}>5 mục</option>
+                                    <option value={10}>10 mục</option>
+                                    <option value={20}>20 mục</option>
+                                    <option value={50}>50 mục</option>
+                                </select>
+                                <p className="text-xs font-bold text-slate-400 ml-2">
+                                    Tổng số: {totalItems}
+                                </p>
+                            </div>
+
+                            <div className="flex items-center">
+                                <Pagination
+                                    total={totalPages}
+                                    page={page}
+                                    onChange={(p) => setPage(p)}
+                                    showControls
+                                    color="primary"
+                                    radius="sm"
+                                    size="sm"
+                                    classNames={{
+                                        cursor: "bg-amber-950 shadow-lg shadow-indigo-200",
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -379,21 +482,6 @@ export function UserManagementPage() {
                                             classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
                                         />
                                     </div>
-                                    {/* <div className="md:col-span-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase px-1 mb-2 block">Ảnh đại diện</label>
-                                        <label className="flex items-center gap-3 bg-white h-14 px-4 rounded-2xl cursor-pointer border-2 border-dashed border-slate-200 hover:border-indigo-400 transition-colors shadow-sm">
-                                            <ImageIcon size={20} className="text-slate-400" />
-                                            <span className="text-sm text-slate-500 font-medium">
-                                                {newAvatarFile ? newAvatarFile.name : 'Tải ảnh đại diện'}
-                                            </span>
-                                            <input
-                                                type="file"
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={(e) => setNewAvatarFile(e.target.files?.[0] || null)}
-                                            />
-                                        </label>
-                                    </div> */}
                                 </div>
                             </ModalBody>
                             <ModalFooter>
@@ -483,21 +571,6 @@ export function UserManagementPage() {
                                             classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
                                         />
                                     </div>
-                                    {/* <div className="md:col-span-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase px-1 mb-2 block">Ảnh đại diện mới</label>
-                                        <label className="flex items-center gap-3 bg-white h-14 px-4 rounded-2xl cursor-pointer border-2 border-dashed border-slate-200 hover:border-indigo-400 transition-colors shadow-sm">
-                                            <ImageIcon size={20} className="text-slate-400" />
-                                            <span className="text-sm text-slate-500 font-medium">
-                                                {editAvatarFile ? editAvatarFile.name : 'Tải lên ảnh mới'}
-                                            </span>
-                                            <input
-                                                type="file"
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={(e) => setEditAvatarFile(e.target.files?.[0] || null)}
-                                            />
-                                        </label>
-                                    </div> */}
                                 </div>
                             </ModalBody>
                             <ModalFooter>

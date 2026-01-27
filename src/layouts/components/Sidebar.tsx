@@ -6,7 +6,8 @@ import {
     Plus,
     LogOut,
     Shield,
-    X
+    X,
+    Image as ImageIcon
 } from 'lucide-react';
 import { Button } from '@heroui/button';
 import { useNavigate } from 'react-router-dom';
@@ -68,6 +69,16 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 activeText: 'text-amber-700',
                 iconBg: 'bg-amber-100',
                 iconText: 'text-amber-600'
+            },
+            {
+                icon: ImageIcon,
+                label: 'Thư viện ảnh',
+                path: '/media',
+                activeBg: 'bg-purple-50',
+                activeBorder: 'border-purple-200',
+                activeText: 'text-purple-700',
+                iconBg: 'bg-purple-100',
+                iconText: 'text-purple-600'
             }
         ] : [])
     ];
@@ -116,14 +127,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 key={item.path}
                                 to={item.path}
                                 className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 group ${active
-                                        ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
-                                        : 'hover:bg-slate-50'
+                                    ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
+                                    : 'hover:bg-slate-50'
                                     }`}
                             >
                                 <div
                                     className={`p-2 rounded-xl flex-shrink-0 transition-all ${active
-                                            ? `${item.iconBg} ${item.iconText}`
-                                            : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
+                                        ? `${item.iconBg} ${item.iconText}`
+                                        : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
                                         }`}
                                 >
                                     <Icon size={20} />
@@ -131,8 +142,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 {isOpen && (
                                     <span
                                         className={`font-bold text-sm flex-1 ${active
-                                                ? item.activeText
-                                                : 'text-slate-600 group-hover:text-slate-800'
+                                            ? item.activeText
+                                            : 'text-slate-600 group-hover:text-slate-800'
                                             }`}
                                     >
                                         {item.label}
@@ -214,14 +225,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 to={item.path}
                                 onClick={onClose}
                                 className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 ${active
-                                        ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
-                                        : 'hover:bg-slate-50'
+                                    ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
+                                    : 'hover:bg-slate-50'
                                     }`}
                             >
                                 <div
                                     className={`p-2 rounded-xl flex-shrink-0 ${active
-                                            ? `${item.iconBg} ${item.iconText}`
-                                            : 'bg-slate-100 text-slate-400'
+                                        ? `${item.iconBg} ${item.iconText}`
+                                        : 'bg-slate-100 text-slate-400'
                                         }`}
                                 >
                                     <Icon size={20} />

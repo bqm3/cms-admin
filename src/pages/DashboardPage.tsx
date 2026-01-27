@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@heroui/button";
-import { Card, CardBody } from "@heroui/card";
 import { Chip } from "@heroui/chip";
 import { Input } from "@heroui/input";
 import { Pagination } from "@heroui/pagination";
@@ -16,8 +15,7 @@ import {
     Globe,
     LayoutDashboard,
     Plus,
-    Shield,
-    Briefcase
+    Calendar
 } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { AdminLayout } from '../layouts/AdminLayout';
@@ -27,10 +25,16 @@ export function DashboardPage() {
     const [categories, setCategories] = useState<any[]>([]);
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [loading, setLoading] = useState(true);
+
+    // Pagination state
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const limit = 10; // Increased limit for table view
+    const [limit, setLimit] = useState(10);
+    const [totalItems, setTotalItems] = useState(0);
+
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const navigate = useNavigate();
 
@@ -50,12 +54,15 @@ export function DashboardPage() {
                 params: {
                     search,
                     category: selectedCategory,
+                    startDate,
+                    endDate,
                     page,
                     limit
                 }
             });
             setPosts(response.data.posts);
             setTotalPages(response.data.totalPages);
+            setTotalItems(response.data.total);
         } catch (err) {
             console.error(err);
         } finally {
@@ -73,7 +80,12 @@ export function DashboardPage() {
 
     useEffect(() => {
         fetchPosts();
-    }, [search, selectedCategory, page]);
+    }, [search, selectedCategory, startDate, endDate, page, limit]);
+
+    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setLimit(Number(e.target.value));
+        setPage(1);
+    };
 
     const handleApprove = async (id: number) => {
         try {
@@ -125,38 +137,82 @@ export function DashboardPage() {
                 </div>
 
                 {/* Search & Filter Bar */}
-                <div className="flex flex-col md:flex-row gap-4 items-center">
-                    <div className="flex-1 w-full relative">
-                        <Input
-                            placeholder="Tìm kiếm bài viết..."
-                            variant="flat"
-                            startContent={<Search className="text-slate-400" size={20} />}
-                            value={search}
-                            onChange={(e) => {
-                                setSearch(e.target.value);
-                                setPage(1);
-                            }}
-                            classNames={{
-                                inputWrapper: "bg-white border border-slate-200 shadow-sm h-14 rounded-2xl px-6 hover:shadow-md transition-shadow",
-                                input: "placeholder:text-slate-400 font-medium",
-                            }}
-                        />
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-col md:flex-row gap-4 items-center">
+                        <div className="flex-1 w-full relative">
+                            <Input
+                                placeholder="Tìm kiếm bài viết..."
+                                variant="flat"
+                                startContent={<Search className="text-slate-400" size={20} />}
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setPage(1);
+                                }}
+                                classNames={{
+                                    inputWrapper: "bg-white border border-slate-200 shadow-sm h-14 rounded-2xl px-6 hover:shadow-md transition-shadow",
+                                    input: "placeholder:text-slate-400 font-medium",
+                                }}
+                            />
+                        </div>
+                        <div className="w-full md:w-64">
+                            <select
+                                value={selectedCategory}
+                                onChange={(e) => {
+                                    setSelectedCategory(e.target.value);
+                                    setPage(1);
+                                }}
+                                className="w-full h-14 px-6 rounded-2xl bg-white border border-slate-200 shadow-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all cursor-pointer text-sm"
+                                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.5rem center', backgroundSize: '1.2rem' }}
+                            >
+                                <option value="">Tất cả danh mục</option>
+                                {categories.map((cat) => (
+                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                    <div className="w-full md:w-64">
-                        <select
-                            value={selectedCategory}
-                            onChange={(e) => {
-                                setSelectedCategory(e.target.value);
-                                setPage(1);
-                            }}
-                            className="w-full h-14 px-6 rounded-2xl bg-white border border-slate-200 shadow-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all cursor-pointer text-sm"
-                            style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.5rem center', backgroundSize: '1.2rem' }}
-                        >
-                            <option value="">Tất cả danh mục</option>
-                            {categories.map((cat) => (
-                                <option key={cat.id} value={cat.id}>{cat.name}</option>
-                            ))}
-                        </select>
+
+                    {/* Date Filters */}
+                    <div className="flex flex-col md:flex-row gap-4 items-center">
+                        <div className="flex items-center gap-3 bg-white px-4 py-2 border border-slate-200 rounded-2xl shadow-sm flex-1 w-full">
+                            <Calendar size={18} className="text-slate-400" />
+                            <div className="flex items-center gap-2 flex-1">
+                                <span className="text-[10px] font-black text-slate-400 uppercase">Từ</span>
+                                <input
+                                    type="date"
+                                    className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                    value={startDate}
+                                    onChange={(e) => {
+                                        setStartDate(e.target.value);
+                                        setPage(1);
+                                    }}
+                                />
+                                <span className="text-[10px] font-black text-slate-400 uppercase">Đến</span>
+                                <input
+                                    type="date"
+                                    className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                    value={endDate}
+                                    onChange={(e) => {
+                                        setEndDate(e.target.value);
+                                        setPage(1);
+                                    }}
+                                />
+                            </div>
+                            {(startDate || endDate) && (
+                                <button
+                                    onClick={() => {
+                                        setStartDate('');
+                                        setEndDate('');
+                                        setPage(1);
+                                    }}
+                                    className="text-[10px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
+                                >
+                                    Xóa lọc
+                                </button>
+                            )}
+                        </div>
+                        <div className="md:w-64 hidden md:block"></div>
                     </div>
                 </div>
             </div>
@@ -285,24 +341,46 @@ export function DashboardPage() {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
 
-                    <div className="flex justify-center pb-8 mt-4">
-                        <Pagination
-                            total={totalPages}
-                            page={page}
-                            onChange={(p) => setPage(p)}
-                            showControls
-                            color="primary"
-                            radius="lg"
-                            classNames={{
-                                cursor: "bg-amber-950 shadow-lg shadow-indigo-200",
-                            }}
-                        />
+                        {/* Footer với phân trang góc phải */}
+                        <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div className="flex items-center gap-4">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                    Hiển thị:
+                                </p>
+                                <select
+                                    className="bg-white border border-slate-200 rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer"
+                                    value={limit}
+                                    onChange={handleLimitChange}
+                                >
+                                    <option value={5}>5 mục</option>
+                                    <option value={10}>10 mục</option>
+                                    <option value={20}>20 mục</option>
+                                    <option value={50}>50 mục</option>
+                                </select>
+                                <p className="text-xs font-bold text-slate-400 ml-2">
+                                    Tổng số: {totalItems}
+                                </p>
+                            </div>
+
+                            <div className="flex items-center">
+                                <Pagination
+                                    total={totalPages}
+                                    page={page}
+                                    onChange={(p) => setPage(p)}
+                                    showControls
+                                    color="primary"
+                                    radius="sm"
+                                    size="sm"
+                                    classNames={{
+                                        cursor: "bg-amber-950 shadow-lg shadow-indigo-200",
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
         </AdminLayout>
     );
 }
-
