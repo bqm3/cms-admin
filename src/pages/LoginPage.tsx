@@ -30,34 +30,34 @@ export function LoginPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-indigo-100 selection:text-indigo-900">
-            <Card className="w-full max-w-[480px] bg-white shadow-2xl shadow-indigo-100/50 border-none rounded-[3rem] overflow-hidden">
+        <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-blue-100 selection:text-blue-900">
+            <Card className="w-full max-w-[420px] bg-white shadow-xl shadow-blue-100/50 border-none rounded-2xl overflow-hidden">
                 <CardBody className="p-0">
-                    <div className="bg-amber-950 p-12 text-center relative overflow-hidden">
+                    <div className="bg-blue-600 p-10 text-center relative overflow-hidden">
                         {/* Background pattern */}
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500 rounded-full -mr-20 -mt-20 opacity-50"></div>
-                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-700/30 rounded-full-ml-10 -mb-10 opacity-50"></div>
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500 rounded-full -mr-16 -mt-16 opacity-30"></div>
+                        <div className="absolute bottom-0 left-0 w-20 h-20 bg-blue-700/20 rounded-full -ml-10 -mb-10 opacity-30"></div>
 
-                        <div className="bg-white/10 w-20 h-20 rounded-3xl backdrop-blur-md mx-auto flex items-center justify-center mb-6 shadow-2xl">
-                            <Shield className="text-white" size={40} />
+                        <div className="bg-white/10 w-16 h-16 rounded-2xl backdrop-blur-md mx-auto flex items-center justify-center mb-5 shadow-xl">
+                            <Shield className="text-white" size={32} />
                         </div>
-                        <h1 className="text-3xl font-black text-white tracking-tight mb-2">Welcome Back</h1>
-                        <p className="text-indigo-100 font-bold text-sm uppercase tracking-widest">Administrative Portal</p>
+                        <h1 className="text-2xl font-black text-white tracking-tight mb-1">Hệ thống Quản trị</h1>
+                        <p className="text-blue-100 font-bold text-[10px] uppercase tracking-widest opacity-80">Administrative Portal</p>
                     </div>
 
-                    <form onSubmit={handleLogin} className="p-10 flex flex-col gap-8">
-                        <div className="flex flex-col gap-5">
+                    <form onSubmit={handleLogin} className="p-8 flex flex-col gap-6">
+                        <div className="flex flex-col gap-4">
                             <Input
                                 label="Username"
-                                placeholder="Enter your username"
+                                placeholder="Tên đăng nhập"
                                 variant="flat"
-                                startContent={<UserIcon className="text-slate-400 mr-2" size={18} />}
+                                startContent={<UserIcon className="text-slate-400 mr-2" size={16} />}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 classNames={{
-                                    label: "text-slate-500 font-bold text-xs uppercase tracking-wider mb-2",
+                                    label: "text-slate-500 font-bold text-[10px] uppercase tracking-wider mb-1",
                                     input: "text-slate-900 font-medium",
-                                    inputWrapper: "bg-slate-50 border-2 border-transparent focus-within:border-indigo-500/10 h-16 rounded-[1.25rem] transition-all px-6",
+                                    inputWrapper: "bg-slate-50 border border-slate-100 focus-within:border-blue-500/20 h-12 rounded-lg transition-all px-4",
                                 }}
                             />
                             <Input
@@ -65,19 +65,19 @@ export function LoginPage() {
                                 type="password"
                                 placeholder="••••••••"
                                 variant="flat"
-                                startContent={<Lock className="text-slate-400 mr-2" size={18} />}
+                                startContent={<Lock className="text-slate-400 mr-2" size={16} />}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 classNames={{
-                                    label: "text-slate-500 font-bold text-xs uppercase tracking-wider mb-2",
+                                    label: "text-slate-500 font-bold text-[10px] uppercase tracking-wider mb-1",
                                     input: "text-slate-900 font-medium",
-                                    inputWrapper: "bg-slate-50 border-2 border-transparent focus-within:border-indigo-500/10 h-16 rounded-[1.25rem] transition-all px-6",
+                                    inputWrapper: "bg-slate-50 border border-slate-100 focus-within:border-blue-500/20 h-12 rounded-lg transition-all px-4",
                                 }}
                             />
                         </div>
 
                         {error && (
-                            <div className="bg-rose-50 text-rose-500 p-4 rounded-2xl text-xs font-bold border border-rose-100 animate-shake">
+                            <div className="bg-rose-50 text-rose-500 p-3 rounded-lg text-[11px] font-bold border border-rose-100 animate-shake">
                                 {error}
                             </div>
                         )}
@@ -85,14 +85,14 @@ export function LoginPage() {
                         <Button
                             type="submit"
                             isLoading={isSubmitting}
-                            className="bg-amber-950 hover:bg-indigo-700 text-white font-black h-16 rounded-[1.25rem] shadow-xl shadow-indigo-100 text-lg group transition-all"
-                            endContent={<ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 rounded-lg shadow-lg shadow-blue-100 text-sm group transition-all"
+                            endContent={<ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />}
                         >
-                            Authenticate
+                            Đăng nhập
                         </Button>
 
-                        <p className="text-center text-slate-400 text-xs font-bold tracking-tight">
-                            Protected by enterprise-grade encryption.
+                        <p className="text-center text-slate-400 text-[10px] font-bold tracking-tight uppercase">
+                            Protected by secure encryption
                         </p>
                     </form>
                 </CardBody>

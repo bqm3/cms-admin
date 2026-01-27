@@ -2,21 +2,25 @@ import { useEffect, useState } from 'react';
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
-import { Pagination } from "@heroui/pagination";
-import { Users, Trash, UserCog, Shield, Mail, Phone, Image as ImageIcon, Plus } from 'lucide-react';
+import { Users, Trash, UserCog, Shield, Mail, Phone, Plus, Search, Calendar } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
+import { DataTable } from '../components/Common/DataTable';
 
 export function UserManagementPage() {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingUser, setEditingUser] = useState<any>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     // Pagination state
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [limit] = useState(10);
+    const [limit, setLimit] = useState(10);
+    const [totalItems, setTotalItems] = useState(0);
 
     // Disclosure for modals
     const createModal = useDisclosure();
@@ -48,9 +52,24 @@ export function UserManagementPage() {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await api.get(`/users?page=${page}&limit=${limit}`);
-            setUsers(response.data.users);
-            setTotalPages(response.data.totalPages);
+            const response = await api.get(`/users`, {
+                params: {
+                    page,
+                    limit,
+                    search: searchTerm,
+                    startDate,
+                    endDate
+                }
+            });
+            if (response.data.users) {
+                setUsers(response.data.users);
+                setTotalPages(response.data.totalPages);
+                setTotalItems(response.data.total);
+            } else {
+                setUsers(response.data);
+                setTotalPages(1);
+                setTotalItems(response.data.length);
+            }
         } catch (err) {
             console.error(err);
         } finally {
@@ -65,7 +84,7 @@ export function UserManagementPage() {
             return;
         }
         fetchUsers();
-    }, [page]);
+    }, [page, limit, searchTerm, startDate, endDate]);
 
     const handleCreateUser = async () => {
         if (!newUsername || !newPassword) return;
@@ -98,7 +117,7 @@ export function UserManagementPage() {
             setNewAvatarFile(null);
 
             createModal.onClose();
-            fetchUsers();
+            if (page === 1) fetchUsers(); else setPage(1);
             alert('Tạo người dùng thành công! 🎉');
         } catch (err: any) {
             alert(err.response?.data?.message || 'Lỗi khi tạo người dùng');
@@ -162,166 +181,212 @@ export function UserManagementPage() {
     return (
         <AdminLayout>
             {/* Page Header */}
-            <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-lg shadow-blue-100/50">
-                        <Users className="text-white" size={28} />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Quản lý người dùng</h1>
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
-                            Quản lý tài khoản và phân quyền hệ thống
-                        </p>
-                    </div>
-                </div>
-                <Button
-                    onPress={createModal.onOpen}
-                    className="bg-amber-950 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
-                    startContent={<Plus size={20} />}
-                >
-                    Thêm người dùng
-                </Button>
-            </div>
-
-            {loading ? (
-                <div className="flex justify-center py-20">
-                    <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-                </div>
-            ) : (
-                <div className="space-y-6">
-                    <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse min-w-[800px]">
-                                <thead>
-                                    <tr className="bg-slate-50/50 border-b border-slate-100">
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Người dùng</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Liên hệ</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Vai trò</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50">
-                                    {users.map((user) => (
-                                        <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="relative flex-shrink-0">
-                                                        {user.avatar ? (
-                                                            <img
-                                                                src={`${SERVER_URL}${user.avatar}`}
-                                                                alt={user.username}
-                                                                className="w-12 h-12 rounded-2xl object-cover shadow-sm ring-2 ring-white"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center font-black text-indigo-600 uppercase shadow-sm ring-2 ring-white">
-                                                                {user.username.substring(0, 1)}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <h4 className="font-bold text-slate-800 text-sm leading-tight">
-                                                            {user.fullName || user.username}
-                                                        </h4>
-                                                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">
-                                                            @{user.username}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 text-[13px]">
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <Mail size={12} className="text-slate-400" />
-                                                        <span className="text-slate-600 font-medium">{user.email || 'N/A'}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <Phone size={12} className="text-slate-400" />
-                                                        <span className="text-slate-500 text-xs">{user.phone || 'N/A'}</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${user.role === 'admin' ? 'bg-indigo-50 text-indigo-600 border-indigo-100 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200 opacity-70'}`}>
-                                                    {user.role === 'admin' ? <Shield size={10} /> : <div className="w-2.5 h-2.5 rounded-full bg-slate-400 scale-75"></div>}
-                                                    {user.role}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="flat"
-                                                        className="bg-indigo-50 text-indigo-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        onPress={() => startEdit(user)}
-                                                    >
-                                                        <UserCog size={18} />
-                                                    </Button>
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="flat"
-                                                        className="bg-rose-50 text-rose-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        onPress={() => handleDelete(user.id)}
-                                                    >
-                                                        <Trash size={18} />
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+            <div className="mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-blue-600 p-3 rounded-xl shadow-blue-100 shadow-lg">
+                            <Users className="text-white" size={24} />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Quản lý người dùng</h1>
+                            <p className="text-sm font-medium text-slate-400">
+                                Quản lý tài khoản và phân quyền hệ thống
+                            </p>
                         </div>
                     </div>
+                    <Button
+                        onPress={createModal.onOpen}
+                        className="bg-blue-600 text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-blue-100"
+                        startContent={<Plus size={18} />}
+                    >
+                        Thêm người dùng
+                    </Button>
+                </div>
 
-                    <div className="flex justify-center pb-8 mt-4">
-                        <Pagination
-                            total={totalPages}
-                            page={page}
-                            onChange={(p) => setPage(p)}
-                            showControls
-                            color="primary"
-                            radius="sm"
-                            classNames={{
-                                cursor: "bg-amber-950 shadow-lg shadow-indigo-200",
+                {/* Search & Date Filter Bar */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm người dùng (Tên, Email, Username)..."
+                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full shadow-sm transition-all"
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setPage(1);
                             }}
                         />
                     </div>
+                    <div className="flex items-center gap-3 bg-white px-4 h-11 border border-slate-200 rounded-xl shadow-sm w-full">
+                        <Calendar size={18} className="text-slate-400" />
+                        <div className="flex items-center gap-2 flex-1">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Từ</span>
+                            <input
+                                type="date"
+                                className="bg-transparent border-none outline-none text-sm font-semibold text-slate-600 w-full"
+                                value={startDate}
+                                onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                    setPage(1);
+                                }}
+                            />
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Đến</span>
+                            <input
+                                type="date"
+                                className="bg-transparent border-none outline-none text-sm font-semibold text-slate-600 w-full"
+                                value={endDate}
+                                onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                    setPage(1);
+                                }}
+                            />
+                        </div>
+                        {(startDate || endDate) && (
+                            <button
+                                onClick={() => {
+                                    setStartDate('');
+                                    setEndDate('');
+                                    setPage(1);
+                                }}
+                                className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors px-2"
+                            >
+                                Xóa
+                            </button>
+                        )}
+                    </div>
                 </div>
-            )}
+            </div>
+
+            <DataTable
+                data={users}
+                loading={loading}
+                minWidth="800px"
+                columns={[
+                    {
+                        header: 'Người dùng',
+                        render: (user) => (
+                            <div className="flex items-center gap-4">
+                                <div className="relative flex-shrink-0">
+                                    {user.avatar ? (
+                                        <img
+                                            src={`${SERVER_URL}${user.avatar}`}
+                                            alt={user.username}
+                                            className="w-11 h-11 rounded-xl object-cover shadow-sm ring-2 ring-white border border-slate-100"
+                                        />
+                                    ) : (
+                                        <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center font-bold text-blue-600 uppercase shadow-sm ring-2 ring-white border border-blue-100">
+                                            {user.username.substring(0, 1)}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="min-w-0">
+                                    <h4 className="font-bold text-slate-800 text-sm leading-tight group-hover:text-blue-600 transition-colors">
+                                        {user.fullName || user.username}
+                                    </h4>
+                                    <p className="text-xs font-medium text-slate-400 mt-1 font-mono">
+                                        @{user.username}
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Liên hệ',
+                        render: (user) => (
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2">
+                                    <Mail size={12} className="text-slate-400" />
+                                    <span className="text-slate-700 font-semibold text-sm">{user.email || 'N/A'}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Phone size={12} className="text-slate-400" />
+                                    <span className="text-slate-500 text-xs">{user.phone || 'N/A'}</span>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Vai trò',
+                        render: (user) => (
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border transition-all ${user.role === 'admin' ? 'bg-blue-50 text-blue-600 border-blue-100 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
+                                {user.role === 'admin' ? <Shield size={12} /> : <div className="w-2 h-2 rounded-full bg-slate-300"></div>}
+                                {user.role}
+                            </span>
+                        )
+                    },
+                    {
+                        header: 'Hành động',
+                        align: 'right',
+                        render: (user) => (
+                            <div className="flex items-center justify-end gap-2">
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="flat"
+                                    className="bg-blue-50 text-blue-600 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-blue-100"
+                                    onPress={() => startEdit(user)}
+                                >
+                                    <UserCog size={16} />
+                                </Button>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="flat"
+                                    className="bg-rose-50 text-rose-500 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 hover:text-white"
+                                    onPress={() => handleDelete(user.id)}
+                                >
+                                    <Trash size={16} />
+                                </Button>
+                            </div>
+                        )
+                    }
+                ]}
+                pagination={{
+                    page,
+                    totalPages,
+                    totalItems,
+                    limit,
+                    onChange: setPage,
+                    onLimitChange: (l) => {
+                        setLimit(l);
+                        setPage(1);
+                    },
+                    unitName: 'mục'
+                }}
+            />
 
             {/* Create Modal */}
             <Modal
                 isOpen={createModal.isOpen}
                 onClose={createModal.onClose}
-                size="3xl"
+                size="2xl"
                 scrollBehavior="inside"
                 backdrop="blur"
                 classNames={{
-                    base: "rounded-[2rem] bg-slate-50",
-                    header: "border-b border-slate-100 p-8",
-                    body: "p-8",
-                    footer: "border-t border-slate-100 p-6"
+                    base: "rounded-2xl bg-slate-50",
+                    header: "border-b border-slate-100 p-6",
+                    body: "p-6",
+                    footer: "border-t border-slate-100 p-4"
                 }}
             >
                 <ModalContent>
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">
-                                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Thêm người dùng mới</h2>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Nhập thông tin cho tài khoản mới</p>
+                                <h2 className="text-xl font-bold text-slate-800 tracking-tight">Thêm người dùng mới</h2>
+                                <p className="text-xs font-medium text-slate-400">Nhập thông tin cho tài khoản mới</p>
                             </ModalHeader>
                             <ModalBody>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <Input
                                         label="Tên người dùng"
-                                        placeholder="..."
+                                        placeholder="Username"
                                         variant="flat"
                                         isRequired
                                         value={newUsername}
                                         onChange={(e) => setNewUsername(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <Input
                                         label="Mật khẩu"
@@ -331,22 +396,22 @@ export function UserManagementPage() {
                                         isRequired
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <Input
                                         label="Tên đầy đủ"
-                                        placeholder="..."
+                                        placeholder="Full Name"
                                         variant="flat"
                                         value={newFullName}
                                         onChange={(e) => setNewFullName(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase px-1">Vai trò</label>
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Vai trò</label>
                                         <select
                                             value={newRole}
                                             onChange={(e) => setNewRole(e.target.value)}
-                                            className="bg-white h-14 px-4 rounded-2xl outline-none font-bold text-slate-700 shadow-sm border-none"
+                                            className="bg-white h-12 px-4 rounded-xl outline-none text-sm font-semibold text-slate-700 shadow-sm border border-slate-200 focus:ring-2 focus:ring-blue-500/20"
                                         >
                                             <option value="user">User</option>
                                             <option value="admin">Admin</option>
@@ -355,52 +420,37 @@ export function UserManagementPage() {
                                     <Input
                                         label="Email"
                                         type="email"
-                                        placeholder="..."
+                                        placeholder="Email address"
                                         variant="flat"
                                         value={newEmail}
                                         onChange={(e) => setNewEmail(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <Input
                                         label="Số điện thoại"
-                                        placeholder="..."
+                                        placeholder="Phone number"
                                         variant="flat"
                                         value={newPhone}
                                         onChange={(e) => setNewPhone(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <div className="md:col-span-2 space-y-2">
                                         <Textarea
                                             label="Giới thiệu"
-                                            placeholder="..."
+                                            placeholder="Bio..."
                                             variant="flat"
                                             value={newBio}
                                             onChange={(e) => setNewBio(e.target.value)}
-                                            classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                            classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl" }}
                                         />
                                     </div>
-                                    {/* <div className="md:col-span-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase px-1 mb-2 block">Ảnh đại diện</label>
-                                        <label className="flex items-center gap-3 bg-white h-14 px-4 rounded-2xl cursor-pointer border-2 border-dashed border-slate-200 hover:border-indigo-400 transition-colors shadow-sm">
-                                            <ImageIcon size={20} className="text-slate-400" />
-                                            <span className="text-sm text-slate-500 font-medium">
-                                                {newAvatarFile ? newAvatarFile.name : 'Tải ảnh đại diện'}
-                                            </span>
-                                            <input
-                                                type="file"
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={(e) => setNewAvatarFile(e.target.files?.[0] || null)}
-                                            />
-                                        </label>
-                                    </div> */}
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button variant="light" onPress={onClose} className="font-bold rounded-xl">Hủy</Button>
+                                <Button variant="light" size="sm" onPress={onClose} className="font-bold rounded-xl h-10 px-6">Hủy</Button>
                                 <Button
                                     isLoading={creating}
-                                    className="bg-amber-950 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
+                                    className="bg-blue-600 text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-blue-100"
                                     onPress={handleCreateUser}
                                 >
                                     Tạo người dùng
@@ -415,22 +465,22 @@ export function UserManagementPage() {
             <Modal
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
-                size="3xl"
+                size="2xl"
                 scrollBehavior="inside"
                 backdrop="blur"
                 classNames={{
-                    base: "rounded-[2rem] bg-slate-50",
-                    header: "border-b border-slate-100 p-8",
-                    body: "p-8",
-                    footer: "border-t border-slate-100 p-6"
+                    base: "rounded-2xl bg-slate-50",
+                    header: "border-b border-slate-100 p-6",
+                    body: "p-6",
+                    footer: "border-t border-slate-100 p-4"
                 }}
             >
                 <ModalContent>
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">
-                                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Chỉnh sửa người dùng</h2>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cập nhật thông tin cho @{editUsername}</p>
+                                <h2 className="text-xl font-bold text-slate-800 tracking-tight">Chỉnh sửa người dùng</h2>
+                                <p className="text-xs font-medium text-slate-400">Cập nhật thông tin cho @{editUsername}</p>
                             </ModalHeader>
                             <ModalBody>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -440,14 +490,14 @@ export function UserManagementPage() {
                                         isRequired
                                         value={editUsername}
                                         onChange={(e) => setEditUsername(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase px-1">Vai trò</label>
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Vai trò</label>
                                         <select
                                             value={editRole}
                                             onChange={(e) => setEditRole(e.target.value)}
-                                            className="bg-white h-14 px-4 rounded-2xl outline-none font-bold text-slate-700 shadow-sm border-none"
+                                            className="bg-white h-12 px-4 rounded-xl outline-none text-sm font-semibold text-slate-700 shadow-sm border border-slate-200 focus:ring-2 focus:ring-blue-500/20"
                                         >
                                             <option value="user">User</option>
                                             <option value="admin">Admin</option>
@@ -458,21 +508,21 @@ export function UserManagementPage() {
                                         variant="flat"
                                         value={editFullName}
                                         onChange={(e) => setEditFullName(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <Input
                                         label="Email"
                                         variant="flat"
                                         value={editEmail}
                                         onChange={(e) => setEditEmail(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <Input
                                         label="Số điện thoại"
                                         variant="flat"
                                         value={editPhone}
                                         onChange={(e) => setEditPhone(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                                     />
                                     <div className="md:col-span-2 space-y-2">
                                         <Textarea
@@ -480,31 +530,16 @@ export function UserManagementPage() {
                                             variant="flat"
                                             value={editBio}
                                             onChange={(e) => setEditBio(e.target.value)}
-                                            classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                            classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl" }}
                                         />
                                     </div>
-                                    {/* <div className="md:col-span-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase px-1 mb-2 block">Ảnh đại diện mới</label>
-                                        <label className="flex items-center gap-3 bg-white h-14 px-4 rounded-2xl cursor-pointer border-2 border-dashed border-slate-200 hover:border-indigo-400 transition-colors shadow-sm">
-                                            <ImageIcon size={20} className="text-slate-400" />
-                                            <span className="text-sm text-slate-500 font-medium">
-                                                {editAvatarFile ? editAvatarFile.name : 'Tải lên ảnh mới'}
-                                            </span>
-                                            <input
-                                                type="file"
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={(e) => setEditAvatarFile(e.target.files?.[0] || null)}
-                                            />
-                                        </label>
-                                    </div> */}
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button variant="light" onPress={onClose} className="font-bold rounded-xl">Hủy</Button>
+                                <Button variant="light" size="sm" onPress={onClose} className="font-bold rounded-xl h-10 px-6">Hủy</Button>
                                 <Button
                                     isLoading={updating}
-                                    className="bg-amber-950 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
+                                    className="bg-blue-600 text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-blue-100"
                                     onPress={handleUpdate}
                                 >
                                     Lưu thay đổi
