@@ -16,7 +16,7 @@ type ComponentWithCraft = React.FC<ColumnProps> & {
 export const ColumnComponent: ComponentWithCraft = ({
   span = 6,
   padding = 10,
-  background = "transparent",
+  background = "#ffffff", // ✅ mặc định trắng
   className = "",
   children,
 }) => {
@@ -34,16 +34,16 @@ export const ColumnComponent: ComponentWithCraft = ({
     <div
       ref={(ref: any) => connect(drag(ref))}
       className={[
-        "min-h-[60px] border border-dashed",
+        "min-h-[60px]",
+        "border border-dashed",
         selected ? "border-indigo-400/70" : "border-white/10",
         className,
       ].join(" ")}
       style={{
-        // ✅ quan trọng: dùng flexBasis để giữ đúng tỉ lệ trong Row
         flex: `0 0 ${widthPercent}%`,
         maxWidth: `${widthPercent}%`,
         padding,
-        background,
+        backgroundColor: background || "#ffffff", // ✅ fallback an toàn
         boxSizing: "border-box",
       }}
     >
@@ -52,6 +52,71 @@ export const ColumnComponent: ComponentWithCraft = ({
   );
 };
 
+export const ColumnSettings = () => {
+  const {
+    background,
+    padding,
+    span,
+    actions: { setProp },
+  } = useNode((node) => ({
+    background: node.data.props.background,
+    padding: node.data.props.padding,
+    span: node.data.props.span,
+  }));
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <label className="text-xs text-zinc-400">Span (1–12)</label>
+        <input
+          type="number"
+          min={1}
+          max={12}
+          value={span}
+          className="w-full bg-zinc-800 text-white text-xs p-2 rounded"
+          onChange={(e) =>
+            setProp((p: any) => (p.span = Number(e.target.value) || 6))
+          }
+        />
+      </div>
+
+      <div>
+        <label className="text-xs text-zinc-400">Padding</label>
+        <input
+          type="number"
+          value={padding}
+          className="w-full bg-zinc-800 text-white text-xs p-2 rounded"
+          onChange={(e) =>
+            setProp((p: any) => (p.padding = Number(e.target.value) || 0))
+          }
+        />
+      </div>
+
+      <div>
+        <label className="text-xs text-zinc-400">Background</label>
+        <input
+          type="color"
+          value={background === "transparent" ? "#ffffff" : background}
+          className="w-full h-8 rounded"
+          onChange={(e) =>
+            setProp((p: any) => (p.background = e.target.value))
+          }
+        />
+      </div>
+
+      <button
+        className="text-xs px-2 py-1 bg-white/10 rounded"
+        onClick={() =>
+          setProp((p: any) => (p.background = "transparent"))
+        }
+      >
+        Clear background
+      </button>
+    </div>
+  );
+};
+
+
 ColumnComponent.craft = {
   displayName: "Column",
   props: {
@@ -59,8 +124,11 @@ ColumnComponent.craft = {
     padding: 10,
     background: "transparent",
   },
-  // ✅ Column là vùng chứa: cho thả mọi component vào
+  related: {
+    settings: ColumnSettings,
+  },
   rules: {
     canMoveIn: () => true,
   },
 };
+

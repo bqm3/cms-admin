@@ -69,7 +69,7 @@ export function NewPage() {
                             </Button>
                             <Button
                                 onClick={() => navigate('/editor/new')}
-                                className="bg-indigo-600 text-white font-bold px-8 h-12 rounded-2xl shadow-lg"
+                                className="bg-amber-950 text-white font-bold px-8 h-12 rounded-2xl shadow-lg"
                             >
                                 Try Editor Again
                             </Button>

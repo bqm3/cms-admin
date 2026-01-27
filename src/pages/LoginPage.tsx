@@ -33,7 +33,7 @@ export function LoginPage() {
         <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-indigo-100 selection:text-indigo-900">
             <Card className="w-full max-w-[480px] bg-white shadow-2xl shadow-indigo-100/50 border-none rounded-[3rem] overflow-hidden">
                 <CardBody className="p-0">
-                    <div className="bg-indigo-600 p-12 text-center relative overflow-hidden">
+                    <div className="bg-amber-950 p-12 text-center relative overflow-hidden">
                         {/* Background pattern */}
                         <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500 rounded-full -mr-20 -mt-20 opacity-50"></div>
                         <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-700/30 rounded-full-ml-10 -mb-10 opacity-50"></div>
@@ -85,7 +85,7 @@ export function LoginPage() {
                         <Button
                             type="submit"
                             isLoading={isSubmitting}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-black h-16 rounded-[1.25rem] shadow-xl shadow-indigo-100 text-lg group transition-all"
+                            className="bg-amber-950 hover:bg-indigo-700 text-white font-black h-16 rounded-[1.25rem] shadow-xl shadow-indigo-100 text-lg group transition-all"
                             endContent={<ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />}
                         >
                             Authenticate

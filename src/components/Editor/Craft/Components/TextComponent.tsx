@@ -124,13 +124,10 @@ export const TextSettings = () => {
     color,
     lineHeight,
     letterSpacing,
-
-    // ✅ NEW
     paddingTop,
     paddingRight,
     paddingBottom,
     paddingLeft,
-
     actions: { setProp },
   } = useNode((node) => ({
     fontSize: node.data.props.fontSize,
@@ -140,7 +137,6 @@ export const TextSettings = () => {
     lineHeight: node.data.props.lineHeight,
     letterSpacing: node.data.props.letterSpacing,
 
-    // ✅ NEW
     paddingTop: node.data.props.paddingTop,
     paddingRight: node.data.props.paddingRight,
     paddingBottom: node.data.props.paddingBottom,
@@ -149,94 +145,177 @@ export const TextSettings = () => {
 
   return (
     <div className="space-y-4">
+      {/* Typography */}
       <div>
         <label className="text-xs text-zinc-500 block mb-2">Typography</label>
 
-        {/* ... giữ nguyên phần Typography của bạn ... */}
-
-        {/* ✅ NEW: Padding */}
-        <div className="mt-3">
-          <label className="text-xs text-zinc-500 block mb-2">Padding (px)</label>
-
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="text-[10px] text-zinc-500 mb-1 block">Top</label>
-              <input
-                type="number"
-                className="w-full bg-zinc-800 border-white/10 rounded text-xs p-1 text-white"
-                value={paddingTop ?? 0}
-                onChange={(e) =>
-                  setProp((props: any) => (props.paddingTop = Number(e.target.value) || 0))
-                }
-              />
-            </div>
-
-            <div>
-              <label className="text-[10px] text-zinc-500 mb-1 block">Right</label>
-              <input
-                type="number"
-                className="w-full bg-zinc-800 border-white/10 rounded text-xs p-1 text-white"
-                value={paddingRight ?? 0}
-                onChange={(e) =>
-                  setProp((props: any) => (props.paddingRight = Number(e.target.value) || 0))
-                }
-              />
-            </div>
-
-            <div>
-              <label className="text-[10px] text-zinc-500 mb-1 block">Bottom</label>
-              <input
-                type="number"
-                className="w-full bg-zinc-800 border-white/10 rounded text-xs p-1 text-white"
-                value={paddingBottom ?? 0}
-                onChange={(e) =>
-                  setProp((props: any) => (props.paddingBottom = Number(e.target.value) || 0))
-                }
-              />
-            </div>
-
-            <div>
-              <label className="text-[10px] text-zinc-500 mb-1 block">Left</label>
-              <input
-                type="number"
-                className="w-full bg-zinc-800 border-white/10 rounded text-xs p-1 text-white"
-                value={paddingLeft ?? 0}
-                onChange={(e) =>
-                  setProp((props: any) => (props.paddingLeft = Number(e.target.value) || 0))
-                }
-              />
-            </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Font size</label>
+            <input
+              type="number"
+              className="w-full bg-zinc-800 border-white/10 rounded text-xs p-2 text-white"
+              value={fontSize ?? 16}
+              onChange={(e) =>
+                setProp((p: any) => (p.fontSize = Number(e.target.value) || 16))
+              }
+            />
           </div>
 
-          {/* Optional: quick presets */}
-          <div className="flex gap-2 mt-2">
-            <button
-              className="text-xs px-2 py-1 rounded bg-white/10 border border-white/10"
-              onClick={() =>
-                setProp((p: any) => {
-                  p.paddingTop = 0; p.paddingRight = 0; p.paddingBottom = 0; p.paddingLeft = 0;
-                })
-              }
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Font weight</label>
+            <select
+              className="w-full bg-zinc-800 border border-white/10 rounded text-xs p-2 text-white"
+              value={fontWeight ?? "400"}
+              onChange={(e) => setProp((p: any) => (p.fontWeight = e.target.value))}
             >
-              Reset
-            </button>
-
-            <button
-              className="text-xs px-2 py-1 rounded bg-white/10 border border-white/10"
-              onClick={() =>
-                setProp((p: any) => {
-                  p.paddingTop = 8; p.paddingRight = 8; p.paddingBottom = 8; p.paddingLeft = 8;
-                })
-              }
-            >
-              8px all
-            </button>
+              <option value="300">300</option>
+              <option value="400">400</option>
+              <option value="500">500</option>
+              <option value="600">600</option>
+              <option value="700">700</option>
+              <option value="800">800</option>
+            </select>
           </div>
+
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Text align</label>
+            <select
+              className="w-full bg-zinc-800 border border-white/10 rounded text-xs p-2 text-white"
+              value={textAlign ?? "left"}
+              onChange={(e) => setProp((p: any) => (p.textAlign = e.target.value))}
+            >
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+              <option value="justify">Justify</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Color</label>
+            <input
+              type="color"
+              className="w-full h-9 bg-zinc-800 border border-white/10 rounded"
+              value={color ?? "#e4e4e7"}
+              onChange={(e) => setProp((p: any) => (p.color = e.target.value))}
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Line height</label>
+            <input
+              type="text"
+              className="w-full bg-zinc-800 border-white/10 rounded text-xs p-2 text-white"
+              value={lineHeight ?? "1.5"}
+              onChange={(e) => setProp((p: any) => (p.lineHeight = e.target.value))}
+              placeholder="e.g. 1.5"
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Letter spacing</label>
+            <input
+              type="text"
+              className="w-full bg-zinc-800 border-white/10 rounded text-xs p-2 text-white"
+              value={letterSpacing ?? "normal"}
+              onChange={(e) => setProp((p: any) => (p.letterSpacing = e.target.value))}
+              placeholder="e.g. normal / 0.5px"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Padding */}
+      <div>
+        <label className="text-xs text-zinc-500 block mb-2">Padding (px)</label>
+
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Top</label>
+            <input
+              type="number"
+              className="w-full bg-zinc-800 border-white/10 rounded text-xs p-2 text-white"
+              value={paddingTop ?? 0}
+              onChange={(e) =>
+                setProp((p: any) => (p.paddingTop = Number(e.target.value) || 0))
+              }
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Right</label>
+            <input
+              type="number"
+              className="w-full bg-zinc-800 border-white/10 rounded text-xs p-2 text-white"
+              value={paddingRight ?? 0}
+              onChange={(e) =>
+                setProp((p: any) => (p.paddingRight = Number(e.target.value) || 0))
+              }
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Bottom</label>
+            <input
+              type="number"
+              className="w-full bg-zinc-800 border-white/10 rounded text-xs p-2 text-white"
+              value={paddingBottom ?? 0}
+              onChange={(e) =>
+                setProp((p: any) => (p.paddingBottom = Number(e.target.value) || 0))
+              }
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] text-zinc-500 mb-1 block">Left</label>
+            <input
+              type="number"
+              className="w-full bg-zinc-800 border-white/10 rounded text-xs p-2 text-white"
+              value={paddingLeft ?? 0}
+              onChange={(e) =>
+                setProp((p: any) => (p.paddingLeft = Number(e.target.value) || 0))
+              }
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-2 mt-2">
+          <button
+            type="button"
+            className="text-xs px-2 py-1 rounded bg-white/10 border border-white/10"
+            onClick={() =>
+              setProp((p: any) => {
+                p.paddingTop = 0;
+                p.paddingRight = 0;
+                p.paddingBottom = 0;
+                p.paddingLeft = 0;
+              })
+            }
+          >
+            Reset
+          </button>
+
+          <button
+            type="button"
+            className="text-xs px-2 py-1 rounded bg-white/10 border border-white/10"
+            onClick={() =>
+              setProp((p: any) => {
+                p.paddingTop = 8;
+                p.paddingRight = 8;
+                p.paddingBottom = 8;
+                p.paddingLeft = 8;
+              })
+            }
+          >
+            8px all
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
 
 
 TextComponent.craft = {

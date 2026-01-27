@@ -112,7 +112,7 @@ export function CategoryManagementPage() {
                 </div>
                 <Button
                     onPress={createModal.onOpen}
-                    className="bg-indigo-600 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
+                    className="bg-amber-950 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
                     startContent={<Plus size={20} />}
                 >
                     Thêm danh mục
@@ -222,7 +222,7 @@ export function CategoryManagementPage() {
                     <ModalFooter>
                         <Button variant="light" onPress={createModal.onClose} className="font-bold rounded-xl">Hủy</Button>
                         <Button
-                            className="bg-indigo-600 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
+                            className="bg-amber-950 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
                             onPress={handleCreate}
                         >
                             Tạo mới
@@ -260,7 +260,7 @@ export function CategoryManagementPage() {
                     <ModalFooter>
                         <Button variant="light" onPress={editModal.onClose} className="font-bold rounded-xl">Hủy</Button>
                         <Button
-                            className="bg-indigo-600 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
+                            className="bg-amber-950 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
                             onPress={handleUpdate}
                         >
                             Lưu thay đổi

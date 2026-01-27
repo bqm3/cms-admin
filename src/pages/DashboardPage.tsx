@@ -117,7 +117,7 @@ export function DashboardPage() {
                     <Button
                         as={Link}
                         to="/editor/new"
-                        className="bg-indigo-600 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
+                        className="bg-amber-950 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
                         startContent={<Plus size={20} />}
                     >
                         Viết bài mới
@@ -255,7 +255,7 @@ export function DashboardPage() {
                                                     >
                                                         <Edit size={16} />
                                                     </Button>
-                                                    <a href={`/site/${post.slug || post.id}?preview=true`} target="_blank" rel="noopener noreferrer">
+                                                    <a href={`/site/${post.slug || post.id}`} target="_blank" rel="noopener noreferrer">
                                                         <Button
                                                             isIconOnly
                                                             size="sm"
@@ -296,7 +296,7 @@ export function DashboardPage() {
                             color="primary"
                             radius="lg"
                             classNames={{
-                                cursor: "bg-indigo-600 shadow-lg shadow-indigo-200",
+                                cursor: "bg-amber-950 shadow-lg shadow-indigo-200",
                             }}
                         />
                     </div>

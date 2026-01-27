@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { useNode } from "@craftjs/core";
 import { useState, useEffect, useMemo } from "react";
 import ContentEditable from "react-contenteditable";
@@ -14,7 +15,7 @@ export const HeadingComponent = ({
   text = "Heading",
   level = "h2",
   align = "left",
-  color = "#ffffff",
+  color = "#000000",
 }: HeadingProps) => {
   const {
     connectors: { connect, drag },
@@ -150,7 +151,7 @@ HeadingComponent.craft = {
     text: "Heading",
     level: "h2",
     align: "left",
-    color: "#ffffff",
+    color: "#000000",
   },
   related: {
     settings: HeadingSettings,

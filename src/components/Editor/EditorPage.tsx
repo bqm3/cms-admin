@@ -38,10 +38,19 @@ import { AccordionComponent } from "./Craft/Components/AccordionComponent";
 import { SpacerComponent } from "./Craft/Components/SpacerComponent";
 import { Toolbox } from "./Craft/Toolbox";
 import { SettingsPanel } from "./Craft/SettingsPanel";
+
+// --- Frame Default ---
 import { DefaultNewPostFrame } from "./DefaultNewPostFrame";
+import { MimicPCLandingFrame } from "./MimicPCLandingFrame";
+
+// Presets
+import { PresetHeader } from "./Craft/presets/PresetHeader";
+import { PresetHero } from "./Craft/presets/PresetHero";
+import { PresetOffersGrid } from "./Craft/presets/PresetOffersGrid";
+import { PresetFAQ } from "./Craft/presets/PresetFAQ";
+import { PresetFooter } from "./Craft/presets/PresetFooter";
 
 // --- Sub Components ---
-
 const SaveButton = ({ postInfo, isNew }: any) => {
   const { query } = useEditor();
   const navigate = useNavigate();
@@ -51,32 +60,121 @@ const SaveButton = ({ postInfo, isNew }: any) => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const state = query?.getState?.();
-      const nodes = state?.nodes ?? {}; // ✅ luôn là object
+      const state = query.getState();
+      const nodes = state.nodes;
 
-      // ✅ Nếu editor chưa load nodes thì báo rõ
-      if (!state || !state.nodes) {
+      // ✅ Enhanced validation with more detailed error reporting
+      const bad: any[] = [];
+      const fixedNodes: any = {};
+
+      for (const [nodeId, node] of Object.entries(nodes as any)) {
+        const n = node as any;
+        const d = n?.data;
+
+        // Create a fixed version of the node
+        fixedNodes[nodeId] = { ...n };
+
+        if (!d) {
+          bad.push({
+            nodeId,
+            name: n?.displayName || "Unknown",
+            field: "data (missing entirely)",
+            value: d,
+          });
+          continue;
+        }
+
+        // Fix props if invalid
+        if (!d.props || typeof d.props !== "object" || Array.isArray(d.props)) {
+          bad.push({
+            nodeId,
+            name: d.displayName || "Unknown",
+            field: "data.props",
+            value: d.props,
+            fixed: true,
+          });
+          fixedNodes[nodeId].data = {
+            ...d,
+            props: d.props && typeof d.props === "object" ? d.props : {},
+          };
+        }
+
+        // Fix linkedNodes if invalid
+        if (
+          d.linkedNodes !== undefined &&
+          (d.linkedNodes === null ||
+            typeof d.linkedNodes !== "object" ||
+            Array.isArray(d.linkedNodes))
+        ) {
+          bad.push({
+            nodeId,
+            name: d.displayName || "Unknown",
+            field: "data.linkedNodes",
+            value: d.linkedNodes,
+            fixed: true,
+          });
+          fixedNodes[nodeId].data = {
+            ...fixedNodes[nodeId].data,
+            linkedNodes: typeof d.linkedNodes === "object" ? d.linkedNodes : {},
+          };
+        }
+
+        // Fix nodes if invalid (should be array or undefined)
+        if (
+          d.nodes !== undefined &&
+          d.nodes !== null &&
+          !Array.isArray(d.nodes)
+        ) {
+          bad.push({
+            nodeId,
+            name: d.displayName || "Unknown",
+            field: "data.nodes",
+            value: d.nodes,
+            fixed: true,
+          });
+          fixedNodes[nodeId].data = {
+            ...fixedNodes[nodeId].data,
+            nodes: [],
+          };
+        }
+      }
+
+      console.log("Validation results:", bad);
+      if (bad.length > 0) {
+        console.table(bad);
+      }
+
+      // ✅ Check if there are any unfixable errors
+      const unfixableErrors = bad.filter((b) => !b.fixed);
+      if (unfixableErrors.length > 0) {
         throw new Error(
-          "Editor chưa sẵn sàng (nodes is null). Thử lại sau 1-2s hoặc sau khi Frame render xong.",
+          `Found ${unfixableErrors.length} unfixable node errors. Check console for details.`,
         );
       }
 
-      const bad: any[] = [];
-      Object.entries(nodes).forEach(([id, n]: any) => {
-        if (!n?.data?.props)
-          bad.push({ id, reason: "props is null/undefined", n });
-        if (n?.data?.custom === null)
-          bad.push({ id, reason: "custom is null", n });
-      });
+      // ✅ If we had to fix nodes, temporarily apply fixes
+      let json: string;
+      if (bad.length > 0) {
+        console.warn(`Fixed ${bad.length} node issues before serialization`);
+        // Create temporary state with fixed nodes
+        const tempState = { ...state, nodes: fixedNodes };
 
-      if (bad.length) {
-        console.error("BAD NODES:", bad);
-        throw new Error("Có node bị null/undefined props/custom. Xem console.");
+        // Manually serialize with fixed state
+        // Note: This is a workaround - ideally you'd fix the source of bad nodes
+        try {
+          json = JSON.stringify(tempState.nodes);
+        } catch (err) {
+          console.error("Failed to serialize even after fixes:", err);
+          throw new Error(
+            "Unable to serialize editor state. Please refresh and try again.",
+          );
+        }
+      } else {
+        // Normal serialization
+        json = query.serialize();
       }
 
-      const json = query.serialize(); // serialize sau khi nodes ok
-
-      console.log("json", json);
+      console.log("Serialized JSON length:", json.length);
 
       const formData = new FormData();
       formData.append("title", (postInfo.title || "").trim());
@@ -87,17 +185,27 @@ const SaveButton = ({ postInfo, isNew }: any) => {
 
       if (isNew) {
         const res = await api.post("/posts", formData);
+        console.log("Post created:", res.data);
         navigate(`/editor/${res.data.id}`);
       } else {
-        await api.put(`/posts/${id}`, formData);
+        const res = await api.put(`/posts/${id}`, formData);
+        console.log("Post updated:", res.data);
+        alert("Cập nhật thành công!");
       }
     } catch (err: any) {
       console.error("SAVE ERROR:", err);
       console.error("SERVER:", err?.response?.status, err?.response?.data);
-      alert(
-        "Lỗi khi lưu: " +
-          (err?.response?.data?.message || err?.message || "Unknown"),
-      );
+
+      let errorMessage = "Lỗi khi lưu: ";
+      if (err?.response?.data?.message) {
+        errorMessage += err.response.data.message;
+      } else if (err?.message) {
+        errorMessage += err.message;
+      } else {
+        errorMessage += "Unknown error";
+      }
+
+      alert(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -105,7 +213,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
 
   return (
     <Button
-      className="bg-indigo-600 font-medium px-6 shadow-lg shadow-indigo-500/20"
+      className="bg-amber-950 font-medium px-6 shadow-lg shadow-indigo-500/20"
       color="primary"
       isLoading={saving}
       startContent={!saving && <Save size={18} />}
@@ -122,9 +230,31 @@ const ContentLoader = ({ content }: { content: string | null }) => {
   useEffect(() => {
     if (!content) return;
     try {
-      actions.deserialize(content);
+      // ✅ Validate JSON before deserializing
+      let parsed: any;
+      try {
+        parsed = JSON.parse(content);
+      } catch (e) {
+        console.error("Content is not valid JSON:", e);
+        return;
+      }
+
+      // ✅ Validate structure
+      if (!parsed || typeof parsed !== "object") {
+        console.error("Parsed content is not an object");
+        return;
+      }
+
+      // If content is already in the format of serialized nodes
+      if (typeof content === "string") {
+        actions.deserialize(content);
+      } else {
+        console.warn("Content is not a string, attempting to serialize first");
+        actions.deserialize(JSON.stringify(content));
+      }
     } catch (err) {
       console.error("Failed to deserialize content:", err);
+      alert("Không thể tải nội dung bài viết. Dữ liệu có thể bị lỗi.");
     }
   }, [content, actions]);
 
@@ -179,6 +309,7 @@ export function EditorPage() {
           setLoadedContent(res.data.content);
         } catch (err) {
           console.error(err);
+          alert("Không thể tải bài viết. Chuyển về dashboard.");
           navigate("/dashboard");
         } finally {
           setLoading(false);
@@ -199,11 +330,14 @@ export function EditorPage() {
     );
 
   return (
-    // ✅ Không cho page scroll ngoài, chỉ scroll trong 2 cột
-    <div className="h-screen bg-zinc-950 text-white font-sans overflow-hidden">
+    <div className="h-screen text-white font-sans overflow-hidden">
       <Editor
+        enabled={true}
         resolver={{
+          // Default frame
+          MimicPCLandingFrame,
           DefaultNewPostFrame,
+          // Component
           TextComponent,
           Container,
           ButtonComponent,
@@ -220,7 +354,13 @@ export function EditorPage() {
           GridComponent,
           BadgeComponent,
           AccordionComponent,
-          SpacerComponent
+          SpacerComponent,
+          // Preset
+          PresetHeader,
+          PresetHero,
+          PresetOffersGrid,
+          PresetFAQ,
+          PresetFooter,
         }}
       >
         <ContentLoader content={loadedContent} />
@@ -239,7 +379,7 @@ export function EditorPage() {
             </Button>
 
             <div className="min-w-0">
-              <div className="flex items-center gap-2 text-[11px] text-zinc-400">
+              <div className="flex items-center gap-2 text-[11px] text-white">
                 <span className="font-medium">Trang chủ</span>
                 <span className="opacity-50">•</span>
                 <span className="font-medium">Chỉnh sửa</span>
@@ -275,13 +415,13 @@ export function EditorPage() {
                       setPostInfo({ ...postInfo, categoryId: e.target.value })
                     }
                   >
-                    <option className="bg-zinc-900" value="">
+                    <option className="bg-white/5" value="">
                       Chọn danh mục
                     </option>
                     {categories.map((cat) => (
                       <option
                         key={cat.id}
-                        className="bg-zinc-900"
+                        className="bg-white/5"
                         value={cat.id}
                       >
                         {cat.name}
@@ -291,7 +431,7 @@ export function EditorPage() {
                 </div>
 
                 {/* View Count pill */}
-                {!isNew && (
+                {/* {!isNew && (
                   <div className="hidden md:flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 border border-white/10 text-zinc-200">
                     <Eye size={16} className="text-amber-400" />
                     <input
@@ -307,7 +447,7 @@ export function EditorPage() {
                       title="Chỉnh sửa lượt xem"
                     />
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </div>
@@ -322,11 +462,11 @@ export function EditorPage() {
                   setPostInfo({ ...postInfo, categoryId: e.target.value })
                 }
               >
-                <option className="bg-zinc-900" value="">
+                <option className="bg-white/5" value="">
                   Danh mục
                 </option>
                 {categories.map((cat) => (
-                  <option key={cat.id} className="bg-zinc-900" value={cat.id}>
+                  <option key={cat.id} className="bg-white/5" value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
@@ -391,7 +531,7 @@ export function EditorPage() {
                   <div className="w-full max-w-[1024px] shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
                     <Frame>
                       {isNew ? (
-                        <DefaultNewPostFrame />
+                        <Element canvas is={MimicPCLandingFrame} />
                       ) : (
                         <Element
                           canvas
@@ -410,12 +550,12 @@ export function EditorPage() {
             </div>
 
             {/* Footer cố định theo cột center */}
-            <div className="shrink-0 h-8 bg-zinc-900 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">
+            {/* <div className="shrink-0 h-8 bg-white/5 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">
               <span>1024px (Máy tính)</span>
               <div className="flex gap-2">
                 <span>Trạng thái: Sẵn sàng</span>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* ================= RIGHT: SettingsPanel ================= */}

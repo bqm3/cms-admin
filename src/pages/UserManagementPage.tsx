@@ -176,7 +176,7 @@ export function UserManagementPage() {
                 </div>
                 <Button
                     onPress={createModal.onOpen}
-                    className="bg-indigo-600 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
+                    className="bg-amber-950 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
                     startContent={<Plus size={20} />}
                 >
                     Thêm người dùng
@@ -284,7 +284,7 @@ export function UserManagementPage() {
                             color="primary"
                             radius="sm"
                             classNames={{
-                                cursor: "bg-indigo-600 shadow-lg shadow-indigo-200",
+                                cursor: "bg-amber-950 shadow-lg shadow-indigo-200",
                             }}
                         />
                     </div>
@@ -400,7 +400,7 @@ export function UserManagementPage() {
                                 <Button variant="light" onPress={onClose} className="font-bold rounded-xl">Hủy</Button>
                                 <Button
                                     isLoading={creating}
-                                    className="bg-indigo-600 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
+                                    className="bg-amber-950 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
                                     onPress={handleCreateUser}
                                 >
                                     Tạo người dùng
@@ -504,7 +504,7 @@ export function UserManagementPage() {
                                 <Button variant="light" onPress={onClose} className="font-bold rounded-xl">Hủy</Button>
                                 <Button
                                     isLoading={updating}
-                                    className="bg-indigo-600 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
+                                    className="bg-amber-950 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
                                     onPress={handleUpdate}
                                 >
                                     Lưu thay đổi

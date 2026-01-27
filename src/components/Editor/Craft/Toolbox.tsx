@@ -25,6 +25,25 @@ import { BadgeComponent } from "./Components/BadgeComponent";
 import { AccordionComponent } from "./Components/AccordionComponent";
 import { SpacerComponent } from "./Components/SpacerComponent";
 
+// Preset
+import { PresetHeader } from "./presets/PresetHeader";
+import { PresetHero } from "./presets/PresetHero";
+import { PresetOffersGrid } from "./presets/PresetOffersGrid";
+import { PresetFAQ } from "./presets/PresetFAQ";
+import { PresetFooter } from "./presets/PresetFooter";
+
+const PresetItem = ({ label, comp }: any) => {
+  const { connectors } = useEditor();
+  return (
+    <div
+      ref={(ref: any) => connectors.create(ref, <Element canvas is={comp} />)}
+      className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm cursor-grab"
+    >
+      {label}
+    </div>
+  );
+};
+
 export const Toolbox = () => {
   const { connectors } = useEditor();
 
@@ -64,7 +83,15 @@ export const Toolbox = () => {
     {
       name: "Badge", // ✅ NEW
       icon: "🏷️",
-      component: <BadgeComponent text="Verified" color="success" variant="soft" radius={"sm"} size={"sm"} />,
+      component: (
+        <BadgeComponent
+          text="Verified"
+          color="success"
+          variant="soft"
+          radius={"sm"}
+          size={"sm"}
+        />
+      ),
     },
     {
       name: "Image",
@@ -82,24 +109,23 @@ export const Toolbox = () => {
       component: <VideoComponent />,
     },
     {
-  name: "FAQ",
-  icon: "❓",
-  component: (
-    <AccordionComponent
-      items={[
-        { title: "Question 1", content: "Answer..." },
-        { title: "Question 2", content: "Answer..." },
-      ]}
-      allowMultiple={false}
-      defaultOpenIndex={0}
-      cardBg={"rgba(24,24,27,.55)"}
-      border={"1px solid rgba(255,255,255,.08)"}
-      titleColor={"#FFFFFF"}
-      contentColor={"#A1A1AA"}
-    />
-  ),
-},
-
+      name: "FAQ",
+      icon: "❓",
+      component: (
+        <AccordionComponent
+          items={[
+            { title: "Question 1", content: "Answer..." },
+            { title: "Question 2", content: "Answer..." },
+          ]}
+          allowMultiple={false}
+          defaultOpenIndex={0}
+          cardBg={"rgba(24,24,27,.55)"}
+          border={"1px solid rgba(255,255,255,.08)"}
+          titleColor={"#FFFFFF"}
+          contentColor={"#A1A1AA"}
+        />
+      ),
+    },
   ];
 
   const shapeTools = [
@@ -158,7 +184,21 @@ export const Toolbox = () => {
     {
       name: "Navbar",
       icon: "≡",
-      component: <NavbarComponent brandText={""} items={[]} sticky={false} blur={false} background={""} border={""} paddingX={0} paddingY={0} ctaText={""} ctaHref={""} ctaNewTab={false} />,
+      component: (
+        <NavbarComponent
+          brandText={""}
+          items={[]}
+          sticky={false}
+          blur={false}
+          background={""}
+          border={""}
+          paddingX={0}
+          paddingY={0}
+          ctaText={""}
+          ctaHref={""}
+          ctaNewTab={false}
+        />
+      ),
       label: "Navbar",
     },
 
@@ -167,10 +207,19 @@ export const Toolbox = () => {
       name: "Section",
       icon: "▤",
       component: (
-        <Element is={SectionComponent} canvas background="transparent" paddingY={56} paddingX={24} maxWidth="xl" overlay={{
-          enabled: false,
-          color: ""
-        }} borderRadius={0} />
+        <Element
+          is={SectionComponent}
+          canvas
+          background="transparent"
+          paddingY={56}
+          paddingX={24}
+          maxWidth="xl"
+          overlay={{
+            enabled: false,
+            color: "",
+          }}
+          borderRadius={0}
+        />
       ),
       label: "Section",
     },
@@ -180,7 +229,14 @@ export const Toolbox = () => {
       name: "Grid",
       icon: "▦",
       component: (
-        <Element is={GridComponent} canvas columns={3} gap={16} minItemWidth={260} align="stretch" />
+        <Element
+          is={GridComponent}
+          canvas
+          columns={3}
+          gap={16}
+          minItemWidth={260}
+          align="stretch"
+        />
       ),
       label: "Grid",
     },
@@ -419,6 +475,19 @@ export const Toolbox = () => {
               </Card>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="px-4 py-3 text-[11px] text-zinc-400 uppercase tracking-wider">
+          Presets
+        </div>
+        <div className="px-3 pb-3 flex flex-col gap-2">
+          <PresetItem label="Header (MimicPC)" comp={PresetHeader} />
+          <PresetItem label="Hero (MimicPC)" comp={PresetHero} />
+          <PresetItem label="Offer Cards" comp={PresetOffersGrid} />
+          <PresetItem label="FAQ" comp={PresetFAQ} />
+          <PresetItem label="Footer" comp={PresetFooter} />
         </div>
       </div>
     </div>

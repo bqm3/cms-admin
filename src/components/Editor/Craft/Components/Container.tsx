@@ -2,6 +2,7 @@
 import { useNode } from "@craftjs/core";
 import { Input } from "@heroui/input";
 import React from "react";
+import { useEditorMode } from "../utils/useEditorMode";
 
 interface ContainerProps {
   background?: string;
@@ -36,11 +37,14 @@ export const Container = ({
 }: ContainerProps) => {
   const {
     connectors: { connect, drag },
+    hovered,
     selected,
   } = useNode((state) => ({
+    hovered: state.events.hovered,
     selected: state.events.selected,
   }));
-
+  const enabled = useEditorMode();
+  const showOutline = enabled && (hovered || selected);
   const isFree = positioning === "absolute";
 
   return (
@@ -48,7 +52,7 @@ export const Container = ({
       ref={(ref) => {
         if (ref) connect(drag(ref));
       }}
-      className={`${positioning === 'absolute' ? 'relative' : 'relative'} min-h-[50px] ${selected ? "outline outline-2 outline-blue-500 outline-dashed" : "border border-transparent hover:border-white/10"} ${className}`}
+      className={`${positioning === 'absolute' ? 'relative' : 'relative'} min-h-[50px] ${showOutline ? "outline outline-1 outline-dashed outline-zinc-500/70" : ""} ${className}`}
       style={{
         background,
         padding: `${padding}px`,

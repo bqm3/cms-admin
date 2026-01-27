@@ -52,8 +52,8 @@ export const NavbarComponent = ({
     <div
       ref={(ref) => ref && connect(drag(ref))}
       style={{
-        width: "100%",                // ✅ full width
-        boxSizing: "border-box",       // ✅ tránh co góc
+        width: "100%",
+        boxSizing: "border-box",
         background,
         borderBottom: border,
         paddingLeft: paddingX,
@@ -73,7 +73,7 @@ export const NavbarComponent = ({
           ) : (
             <div className="w-7 h-7 rounded-md bg-white/10 border border-white/10" />
           )}
-          <div className="font-bold text-white">{brandText}</div>
+          <div className="font-bold text-black">{brandText}</div>
         </div>
 
         <div className="hidden md:flex items-center gap-5 text-sm">
@@ -81,7 +81,7 @@ export const NavbarComponent = ({
             <a
               key={idx}
               href={it.href}
-              className="text-white/70 hover:text-white transition"
+              className="text-white/70 hover:text-black transition"
               onClick={(e) => {
                 // editor mode: tránh navigate làm mất selection
                 e.stopPropagation();
@@ -111,7 +111,7 @@ export const NavbarComponent = ({
             <Button
               size="sm"
               radius="full"
-              className="bg-indigo-600 text-white"
+              className="bg-amber-950 text-white"
               onPress={() => {}}
             >
               {ctaText}

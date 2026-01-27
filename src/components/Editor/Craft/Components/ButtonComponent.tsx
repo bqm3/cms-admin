@@ -57,7 +57,7 @@ export const ButtonComponent = ({
           target={openInNewTab ? "_blank" : "_self"}
           rel={openInNewTab ? "noopener noreferrer" : undefined}
           onClick={handleLinkClick}
-          onMouseDown={(e) => enabled && e.preventDefault()} // ✅ tránh mất selection
+          onMouseDown={(e) => enabled && e.preventDefault()}
         >
           {buttonEl}
         </a>
@@ -161,7 +161,6 @@ export const ButtonSettings = () => {
               }
             >
               {[
-                "solid",
                 "bordered",
                 "light",
                 "flat",
@@ -239,7 +238,7 @@ ButtonComponent.craft = {
   props: {
     text: "Click Me",
     color: "primary",
-    variant: "solid",
+    variant: "bordered",
     size: "md",
     radius: "md",
     fullWidth: false,
