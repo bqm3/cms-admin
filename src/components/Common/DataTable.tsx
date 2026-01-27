@@ -37,15 +37,15 @@ export function DataTable<T>({
     minWidth = '800px'
 }: DataTableProps<T>) {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden transition-all duration-300">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-md">
             <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
                 <table className="w-full text-left border-collapse" style={{ minWidth }}>
                     <thead>
-                        <tr className="bg-slate-50 border-b border-slate-100">
+                        <tr className="bg-slate-50/50 border-b border-slate-100">
                             {columns.map((column, index) => (
                                 <th
                                     key={index}
-                                    className={`px-5 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : ''
+                                    className={`px-6 py-5 text-[11px] font-bold uppercase text-slate-400 tracking-widest ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : ''
                                         } ${column.headerClassName || ''}`}
                                 >
                                     {column.header}
@@ -56,33 +56,33 @@ export function DataTable<T>({
                     <tbody className="divide-y divide-slate-50">
                         {loading ? (
                             <tr>
-                                <td colSpan={columns.length} className="px-5 py-20 text-center">
-                                    <div className="flex flex-col items-center justify-center gap-3">
-                                        <div className="w-8 h-8 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-                                        <p className="font-bold text-slate-400 uppercase tracking-widest text-[10px]">Đang tải dữ liệu...</p>
+                                <td colSpan={columns.length} className="px-6 py-24 text-center">
+                                    <div className="flex flex-col items-center justify-center gap-4">
+                                        <div className="w-10 h-10 border-4 border-blue-50 border-t-blue-600 rounded-full animate-spin"></div>
+                                        <p className="font-bold text-slate-400 uppercase tracking-widest text-xs">Đang tải dữ liệu...</p>
                                     </div>
                                 </td>
                             </tr>
                         ) : data.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length} className="px-5 py-20 text-center">
-                                    <div className="flex flex-col items-center justify-center gap-2">
-                                        <div className="bg-slate-50 p-4 rounded-full">
-                                            <svg className="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                <td colSpan={columns.length} className="px-6 py-24 text-center">
+                                    <div className="flex flex-col items-center justify-center gap-3">
+                                        <div className="bg-slate-50 p-6 rounded-full border border-slate-100 shadow-inner">
+                                            <svg className="w-10 h-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                             </svg>
                                         </div>
-                                        <p className="font-bold text-slate-400 uppercase tracking-widest text-[10px]">{emptyMessage}</p>
+                                        <p className="font-bold text-slate-400 uppercase tracking-widest text-xs">{emptyMessage}</p>
                                     </div>
                                 </td>
                             </tr>
                         ) : (
                             data.map((item, rowIndex) => (
-                                <tr key={rowIndex} className="hover:bg-blue-50/20 transition-colors group">
+                                <tr key={rowIndex} className="hover:bg-blue-50/20 transition-all group">
                                     {columns.map((column, colIndex) => (
                                         <td
                                             key={colIndex}
-                                            className={`px-5 py-3 ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : ''
+                                            className={`px-6 py-4 ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : ''
                                                 } ${column.className || ''}`}
                                         >
                                             {column.render(item)}
@@ -97,12 +97,12 @@ export function DataTable<T>({
 
             {/* Footer với phân trang */}
             {pagination && (
-                <div className="px-5 py-4 bg-slate-50/30 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hiện:</p>
+                <div className="px-6 py-5 bg-slate-50/30 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2.5">
+                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Hiển thị:</p>
                             <select
-                                className="bg-white border border-slate-200 rounded-lg text-[10px] font-bold px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer h-7"
+                                className="bg-white border border-slate-200 rounded-xl text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-all cursor-pointer h-9 shadow-sm"
                                 value={pagination.limit}
                                 onChange={(e) => pagination.onLimitChange(Number(e.target.value))}
                             >
@@ -111,8 +111,9 @@ export function DataTable<T>({
                                 ))}
                             </select>
                         </div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-l border-slate-200 pl-4 h-4 flex items-center">
-                            Tổng: <span className="text-slate-600 ml-1">{pagination.totalItems}</span>
+                        <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                            Tổng cộng: <span className="text-blue-600 ml-1">{pagination.totalItems}</span>
                         </p>
                     </div>
 
@@ -122,10 +123,15 @@ export function DataTable<T>({
                         onChange={pagination.onChange}
                         showControls
                         color="primary"
-                        radius="lg"
-                        size="sm"
+                        variant="flat"
+                        radius="full"
+                        size="md"
                         classNames={{
-                            cursor: "bg-blue-600 shadow-md shadow-blue-100",
+                            cursor: "bg-blue-600 text-white shadow-lg shadow-blue-200",
+                            base: "gap-2",
+                            item: "font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all min-w-[36px] h-9",
+                            prev: "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all min-w-[36px] h-9",
+                            next: "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all min-w-[36px] h-9",
                         }}
                     />
                 </div>

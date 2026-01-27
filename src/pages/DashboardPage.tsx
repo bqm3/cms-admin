@@ -109,14 +109,14 @@ export function DashboardPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-3 rounded-lg shadow-blue-100 shadow-md">
+                        <div className="bg-blue-600 p-3 rounded-xl shadow-blue-100 shadow-lg">
                             <LayoutDashboard className="text-white" size={24} />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-800 tracking-tight">
+                            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
                                 Quản lý bài viết
                             </h1>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                            <p className="text-sm font-medium text-slate-400">
                                 Tổng quan và quản lý nội dung hệ thống
                             </p>
                         </div>
@@ -124,7 +124,7 @@ export function DashboardPage() {
                     <Button
                         as={Link}
                         to="/editor/new"
-                        className="bg-blue-600 text-white font-bold h-10 px-6 rounded-lg shadow-md shadow-blue-100"
+                        className="bg-blue-600 text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-blue-100"
                         startContent={<Plus size={18} />}
                     >
                         Viết bài mới
@@ -132,7 +132,7 @@ export function DashboardPage() {
                 </div>
 
                 {/* Search & Filter Bar */}
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-4">
                     <div className="flex flex-col md:flex-row gap-3 items-center">
                         <div className="flex-1 w-full relative">
                             <Input
@@ -145,29 +145,29 @@ export function DashboardPage() {
                                     setPage(1);
                                 }}
                                 classNames={{
-                                    inputWrapper: "bg-white border border-slate-200 shadow-sm h-10 rounded-lg px-4 hover:shadow-md transition-shadow",
+                                    inputWrapper: "bg-white border border-slate-200 shadow-sm h-11 rounded-xl px-4 hover:shadow-md transition-shadow",
                                     input: "placeholder:text-slate-400 text-sm font-medium",
                                 }}
                             />
                         </div>
                         <div className="flex flex-col md:flex-row gap-3 items-center">
-                            <div className="flex items-center gap-3 bg-white px-4 h-10 border border-slate-200 rounded-lg shadow-sm flex-1 w-full">
-                                <Calendar size={16} className="text-slate-400" />
+                            <div className="flex items-center gap-3 bg-white px-4 h-11 border border-slate-200 rounded-xl shadow-sm flex-1 w-full">
+                                <Calendar size={18} className="text-slate-400" />
                                 <div className="flex items-center gap-2 flex-1">
-                                    <span className="text-[9px] font-black text-slate-400 uppercase">Từ</span>
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Từ</span>
                                     <input
                                         type="date"
-                                        className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
+                                        className="bg-transparent border-none outline-none text-sm font-semibold text-slate-600 w-full"
                                         value={startDate}
                                         onChange={(e) => {
                                             setStartDate(e.target.value);
                                             setPage(1);
                                         }}
                                     />
-                                    <span className="text-[9px] font-black text-slate-400 uppercase">Đến</span>
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Đến</span>
                                     <input
                                         type="date"
-                                        className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
+                                        className="bg-transparent border-none outline-none text-sm font-semibold text-slate-600 w-full"
                                         value={endDate}
                                         onChange={(e) => {
                                             setEndDate(e.target.value);
@@ -182,23 +182,22 @@ export function DashboardPage() {
                                             setEndDate('');
                                             setPage(1);
                                         }}
-                                        className="text-[9px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
+                                        className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors px-2"
                                     >
                                         Xóa lọc
                                     </button>
                                 )}
                             </div>
-                            <div className="md:w-56 hidden md:block"></div>
                         </div>
-                        <div className="w-full md:w-56">
+                        <div className="w-full md:w-64">
                             <select
                                 value={selectedCategory}
                                 onChange={(e) => {
                                     setSelectedCategory(e.target.value);
                                     setPage(1);
                                 }}
-                                className="w-full h-10 px-4 rounded-lg bg-white border border-slate-200 shadow-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-xs"
-                                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1rem' }}
+                                className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
+                                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                             >
                                 <option value="">Tất cả danh mục</option>
                                 {categories.map((cat) => (
@@ -207,9 +206,6 @@ export function DashboardPage() {
                             </select>
                         </div>
                     </div>
-
-                    {/* Date Filters */}
-
                 </div>
             </div>
 
@@ -221,21 +217,21 @@ export function DashboardPage() {
                     {
                         header: 'Dự án',
                         render: (post) => (
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-8 rounded bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
+                            <div className="flex items-center gap-4">
+                                <div className="w-14 h-10 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200 shadow-sm">
                                     {post.logo ? (
                                         <img src={`${SERVER_URL}${post.logo}`} alt={post.title} className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center bg-blue-50/50">
-                                            <Globe size={14} className="text-blue-300" />
+                                            <Globe size={16} className="text-blue-300" />
                                         </div>
                                     )}
                                 </div>
-                                <div className="min-w-0 max-w-[280px]">
-                                    <h4 className="font-bold text-slate-800 text-xs leading-tight truncate" title={post.title}>
+                                <div className="min-w-0 max-w-[320px]">
+                                    <h4 className="font-bold text-slate-800 text-sm leading-tight truncate group-hover:text-blue-600 transition-colors" title={post.title}>
                                         {post.title}
                                     </h4>
-                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+                                    <p className="text-xs font-medium text-slate-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis font-mono">
                                         /{post.slug || post.id}
                                     </p>
                                 </div>
@@ -245,17 +241,22 @@ export function DashboardPage() {
                     {
                         header: 'Phân loại',
                         render: (post) => (
-                            <div className="flex flex-col">
-                                <span className="text-[9px] font-bold text-blue-600 bg-blue-50/80 w-fit px-1.5 py-0.5 rounded border border-blue-100/50 mb-1 leading-none">{post.category?.name || 'Chưa phân loại'}</span>
-                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter leading-none">@{post.creator?.username || 'vô danh'}</span>
+                            <div className="flex flex-col gap-1">
+                                <span className="text-xs font-bold text-blue-600 bg-blue-50 w-fit px-2 py-0.5 rounded-md border border-blue-100">
+                                    {post.category?.name || 'Chưa phân loại'}
+                                </span>
+                                <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                                    <div className="w-1 h-1 rounded-full bg-slate-300"></div>
+                                    @{post.creator?.username || 'vô danh'}
+                                </span>
                             </div>
                         )
                     },
                     {
                         header: 'Ngày tạo',
                         render: (post) => (
-                            <div className="text-[10px] font-bold text-slate-500 whitespace-nowrap">
-                                {new Date(post.created_at).toLocaleDateString('vi-VN')}
+                            <div className="text-sm font-medium text-slate-500 whitespace-nowrap">
+                                {new Date(post.created_at).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                             </div>
                         )
                     },
@@ -263,11 +264,11 @@ export function DashboardPage() {
                         header: 'Trạng thái',
                         render: (post) => (
                             <Chip
-                                startContent={post.is_approved ? <CheckCircle size={10} /> : <Clock size={10} />}
+                                startContent={post.is_approved ? <CheckCircle size={12} /> : <Clock size={12} />}
                                 variant="flat"
                                 color={post.is_approved ? "success" : "warning"}
                                 size="sm"
-                                className="rounded font-black text-[8px] uppercase h-5"
+                                className="rounded-lg font-bold text-xs uppercase px-2 h-6"
                             >
                                 {post.is_approved ? 'Đã duyệt' : 'Chờ duyệt'}
                             </Chip>
@@ -277,8 +278,8 @@ export function DashboardPage() {
                         header: 'Lượt xem',
                         align: 'center',
                         render: (post) => (
-                            <div className="inline-flex items-center gap-1 text-blue-600 font-bold text-[10px] bg-blue-50/50 border border-blue-100/50 px-2 py-0.5 rounded-full">
-                                <Eye size={10} /> {post.view_count || 0}
+                            <div className="inline-flex items-center gap-1.5 text-blue-600 font-bold text-xs bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full">
+                                <Eye size={12} /> {post.view_count || 0}
                             </div>
                         )
                     },
@@ -286,12 +287,12 @@ export function DashboardPage() {
                         header: 'Thao tác',
                         align: 'right',
                         render: (post) => (
-                            <div className="flex items-center justify-end gap-1.5">
+                            <div className="flex items-center justify-end gap-2">
                                 {user.role === 'admin' && !post.is_approved && (
                                     <Button
                                         size="sm"
                                         variant="flat"
-                                        className="bg-emerald-50 text-emerald-600 font-bold text-[9px] uppercase h-7 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="bg-emerald-50 text-emerald-600 font-bold text-xs h-8 px-4 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-emerald-100"
                                         onClick={() => handleApprove(post.id)}
                                     >
                                         Duyệt
@@ -303,20 +304,20 @@ export function DashboardPage() {
                                     isIconOnly
                                     size="sm"
                                     variant="flat"
-                                    className="bg-blue-50 text-blue-600 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    className="bg-blue-50 text-blue-600 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-blue-100"
                                     title="Sửa nội dung"
                                 >
-                                    <Edit size={14} />
+                                    <Edit size={16} />
                                 </Button>
                                 <a href={`/site/${post.slug || post.id}`} target="_blank" rel="noopener noreferrer">
                                     <Button
                                         isIconOnly
                                         size="sm"
                                         variant="flat"
-                                        className="bg-slate-50 text-slate-600 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity border border-slate-200/50"
+                                        className="bg-slate-50 text-slate-600 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all border border-slate-200 hover:bg-slate-100"
                                         title="Xem trước"
                                     >
-                                        <ExternalLink size={14} />
+                                        <ExternalLink size={16} />
                                     </Button>
                                 </a>
                                 {(user.role === 'admin' || user.id === post.created_by) && (
@@ -324,11 +325,11 @@ export function DashboardPage() {
                                         isIconOnly
                                         size="sm"
                                         variant="flat"
-                                        className="bg-rose-50 text-rose-500 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-500 hover:text-white"
+                                        className="bg-rose-50 text-rose-500 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 hover:text-white"
                                         onClick={() => handleDelete(post.id)}
                                         title="Xóa bài"
                                     >
-                                        <Trash size={14} />
+                                        <Trash size={16} />
                                     </Button>
                                 )}
                             </div>
