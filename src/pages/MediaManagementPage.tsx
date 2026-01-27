@@ -6,6 +6,7 @@ import { Pagination } from "@heroui/pagination";
 import { Plus, Trash, Image as ImageIcon, Link as LinkIcon, Upload, Search, Copy, Check, Calendar } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { AdminLayout } from '../layouts/AdminLayout';
+import { formatDate } from "../utils/formatDate";
 
 export function MediaManagementPage() {
     const [media, setMedia] = useState<any[]>([]);
@@ -108,49 +109,38 @@ export function MediaManagementPage() {
         setTimeout(() => setCopiedId(null), 2000);
     };
 
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
     return (
         <AdminLayout>
-            <div className="mb-8 space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 rounded-2xl shadow-lg shadow-indigo-100">
-                            <ImageIcon className="text-white" size={28} />
+            <div className="mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-blue-600 p-3 rounded-lg shadow-blue-100 shadow-md">
+                            <ImageIcon className="text-white" size={24} />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Thư viện ảnh</h1>
-                            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
+                            <h1 className="text-xl font-bold text-slate-800 tracking-tight">Thư viện ảnh</h1>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                                 Quản lý tài nguyên hình ảnh của bạn
                             </p>
                         </div>
                     </div>
                     <Button
                         onPress={onOpen}
-                        className="bg-indigo-600 text-white font-black h-12 px-6 rounded-2xl shadow-lg shadow-indigo-100"
-                        startContent={<Plus size={20} />}
+                        className="bg-blue-600 text-white font-bold h-10 px-6 rounded-lg shadow-md shadow-blue-100"
+                        startContent={<Plus size={18} />}
                     >
                         Thêm ảnh
                     </Button>
                 </div>
 
                 {/* Search & Date Filter Bar */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Tìm kiếm ảnh..."
-                            className="h-12 pl-12 pr-4 bg-white border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full shadow-sm transition-all"
+                            className="h-10 pl-11 pr-4 bg-white border border-slate-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-1 focus:ring-blue-500/20 focus:border-blue-500 w-full shadow-sm transition-all"
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -158,23 +148,23 @@ export function MediaManagementPage() {
                             }}
                         />
                     </div>
-                    <div className="flex items-center gap-3 bg-white px-4 py-2 border border-slate-100 rounded-2xl shadow-sm w-full">
-                        <Calendar size={18} className="text-slate-400" />
+                    <div className="flex items-center gap-3 bg-white px-4 h-10 border border-slate-200 rounded-lg shadow-sm w-full">
+                        <Calendar size={16} className="text-slate-400" />
                         <div className="flex items-center gap-2 flex-1">
-                            <span className="text-[10px] font-black text-slate-400 uppercase">Từ</span>
+                            <span className="text-[9px] font-black text-slate-400 uppercase">Từ</span>
                             <input
                                 type="date"
-                                className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
                                 value={startDate}
                                 onChange={(e) => {
                                     setStartDate(e.target.value);
                                     setPage(1);
                                 }}
                             />
-                            <span className="text-[10px] font-black text-slate-400 uppercase">Đến</span>
+                            <span className="text-[9px] font-black text-slate-400 uppercase">Đến</span>
                             <input
                                 type="date"
-                                className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
                                 value={endDate}
                                 onChange={(e) => {
                                     setEndDate(e.target.value);
@@ -189,7 +179,7 @@ export function MediaManagementPage() {
                                     setEndDate('');
                                     setPage(1);
                                 }}
-                                className="text-[10px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
+                                className="text-[9px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
                             >
                                 Xóa
                             </button>
@@ -200,27 +190,27 @@ export function MediaManagementPage() {
 
             {loading ? (
                 <div className="flex justify-center py-20">
-                    <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                    <div className="w-8 h-8 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
                 </div>
             ) : (
-                <div className="space-y-6">
-                    <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                <div className="space-y-4">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse min-w-[900px]">
                                 <thead>
                                     <tr className="bg-slate-50/50 border-b border-slate-100">
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Ảnh</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Thông tin ảnh</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Loại</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Ngày tạo</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">Hành động</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Ảnh</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Thông tin ảnh</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Loại</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Ngày tạo</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest text-right">Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {media.map((m) => (
                                         <tr key={m.id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-6 py-5">
-                                                <div className="w-16 h-16 rounded-xl bg-slate-50 overflow-hidden border border-slate-100 shadow-sm relative group/thumb">
+                                            <td className="px-4 py-3">
+                                                <div className="w-12 h-12 rounded bg-slate-50 overflow-hidden border border-slate-100 shadow-sm relative group/thumb">
                                                     <img
                                                         src={m.url.startsWith('/uploads/') ? `${SERVER_URL}${m.url}` : m.url}
                                                         alt={m.name}
@@ -230,47 +220,47 @@ export function MediaManagementPage() {
                                                         className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
                                                         onClick={() => window.open(m.url.startsWith('/uploads/') ? `${SERVER_URL}${m.url}` : m.url, '_blank')}
                                                     >
-                                                        <Search size={16} className="text-white" />
+                                                        <Search size={14} className="text-white" />
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-5">
-                                                <div className="flex flex-col gap-1 max-w-xs">
-                                                    <p className="font-bold text-slate-700 truncate">{m.name}</p>
+                                            <td className="px-4 py-3">
+                                                <div className="flex flex-col gap-0.5 max-w-xs">
+                                                    <p className="font-bold text-slate-700 truncate text-xs">{m.name}</p>
                                                     <div className="flex items-center gap-2 group/link cursor-pointer" onClick={() => copyToClipboard(m.url, m.id)}>
-                                                        <p className="text-xs text-slate-400 truncate flex-1">{m.url}</p>
+                                                        <p className="text-[10px] text-slate-400 truncate flex-1 font-mono">{m.url}</p>
                                                         {copiedId === m.id ? (
-                                                            <Check size={12} className="text-emerald-500 shrink-0" />
+                                                            <Check size={10} className="text-emerald-500 shrink-0" />
                                                         ) : (
-                                                            <Copy size={12} className="text-slate-300 group-hover/link:text-indigo-500 shrink-0 transition-colors" />
+                                                            <Copy size={10} className="text-slate-300 group-hover/link:text-blue-500 shrink-0 transition-colors" />
                                                         )}
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-5">
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${m.type === 'upload'
-                                                    ? 'bg-indigo-50 text-indigo-600'
+                                            <td className="px-4 py-3">
+                                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${m.type === 'upload'
+                                                    ? 'bg-blue-50 text-blue-600'
                                                     : 'bg-amber-50 text-amber-600'
                                                     }`}>
                                                     {m.type === 'upload' ? 'Upload' : 'Link'}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-5">
-                                                <div className="flex items-center gap-2 text-slate-500">
-                                                    <Calendar size={14} className="text-slate-300" />
-                                                    <span className="text-xs font-medium">{formatDate(m.createdAt)}</span>
+                                            <td className="px-4 py-3">
+                                                <div className="flex items-center gap-1.5 text-slate-500">
+                                                    <Calendar size={12} className="text-slate-300" />
+                                                    <span className="text-[10px] font-medium">{formatDate(m.created_at)}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-5 text-right">
-                                                <div className="flex items-center justify-end gap-2">
+                                            <td className="px-4 py-3 text-right">
+                                                <div className="flex items-center justify-end gap-1.5">
                                                     <Button
                                                         isIconOnly
                                                         variant="flat"
                                                         size="sm"
-                                                        className="bg-rose-50 text-rose-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        className="bg-rose-50 text-rose-500 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
                                                         onPress={() => handleDelete(m.id)}
                                                     >
-                                                        <Trash size={16} />
+                                                        <Trash size={14} />
                                                     </Button>
                                                 </div>
                                             </td>
@@ -281,13 +271,13 @@ export function MediaManagementPage() {
                         </div>
 
                         {/* Footer với phân trang góc phải */}
-                        <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                            <div className="flex items-center gap-4">
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                                    Hiển thị:
+                        <div className="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+                            <div className="flex items-center gap-3">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    Hiện:
                                 </p>
                                 <select
-                                    className="bg-white border border-slate-200 rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer"
+                                    className="bg-white border border-slate-200 rounded text-[10px] font-bold px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer"
                                     value={limit}
                                     onChange={handleLimitChange}
                                 >
@@ -296,8 +286,8 @@ export function MediaManagementPage() {
                                     <option value={20}>20 ảnh</option>
                                     <option value={50}>50 ảnh</option>
                                 </select>
-                                <p className="text-xs font-bold text-slate-400 ml-2">
-                                    Tổng số: {totalItems}
+                                <p className="text-[10px] font-bold text-slate-400">
+                                    Tổng: {totalItems}
                                 </p>
                             </div>
 
@@ -311,7 +301,7 @@ export function MediaManagementPage() {
                                     radius="sm"
                                     size="sm"
                                     classNames={{
-                                        cursor: "bg-indigo-600 shadow-lg shadow-indigo-100",
+                                        cursor: "bg-blue-600 shadow-md shadow-blue-100",
                                     }}
                                 />
                             </div>
@@ -320,36 +310,36 @@ export function MediaManagementPage() {
                 </div>
             )}
 
-            <Modal isOpen={isOpen} onClose={onClose} backdrop="blur" classNames={{ base: "rounded-[2rem] bg-slate-50", header: "border-b border-slate-100 p-8", body: "p-8", footer: "border-t border-slate-100 p-6" }}>
+            <Modal isOpen={isOpen} onClose={onClose} backdrop="blur" classNames={{ base: "rounded-xl bg-slate-50", header: "border-b border-slate-100 p-6", body: "p-6", footer: "border-t border-slate-100 p-4" }}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">
-                        <h2 className="text-2xl font-black text-slate-800 tracking-tight">Thêm ảnh vào thư viện</h2>
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Lưu trữ ảnh để tái sử dụng</p>
+                        <h2 className="text-xl font-bold text-slate-800 tracking-tight">Thêm ảnh vào thư viện</h2>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Lưu trữ ảnh để tái sử dụng</p>
                     </ModalHeader>
                     <ModalBody>
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             <Input
                                 label="Tên gợi nhớ"
                                 placeholder="Ví dụ: Banner trang chủ, Icon dịch vụ..."
                                 variant="flat"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                             />
 
-                            <div className="space-y-3">
-                                <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
+                            <div className="space-y-2">
+                                <div className="flex bg-white p-1 rounded-lg shadow-sm border border-slate-100">
                                     <button
                                         onClick={() => setUploadType('upload')}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all ${uploadType === 'upload' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-1.5 rounded-md text-[10px] font-bold transition-all ${uploadType === 'upload' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-50'}`}
                                     >
-                                        <Upload size={14} /> Tải lên
+                                        <Upload size={12} /> Tải lên
                                     </button>
                                     <button
                                         onClick={() => setUploadType('link')}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold transition-all ${uploadType === 'link' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-1.5 rounded-md text-[10px] font-bold transition-all ${uploadType === 'link' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-50'}`}
                                     >
-                                        <LinkIcon size={14} /> Nhập Link
+                                        <LinkIcon size={12} /> Nhập Link
                                     </button>
                                 </div>
 
@@ -364,21 +354,21 @@ export function MediaManagementPage() {
                                         />
                                         <label
                                             htmlFor="media-upload"
-                                            className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-slate-200 rounded-[2rem] bg-white cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition-all group"
+                                            className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-200 rounded-xl bg-white cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all group"
                                         >
                                             {file ? (
                                                 <div className="relative w-full h-full p-2">
-                                                    <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover rounded-[1.5rem]" />
-                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-[1.5rem] flex items-center justify-center">
-                                                        <ImageIcon className="text-white" size={24} />
+                                                    <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover rounded-lg" />
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                                        <ImageIcon className="text-white" size={20} />
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <>
-                                                    <div className="bg-indigo-50 p-4 rounded-2xl mb-3 group-hover:scale-110 transition-transform">
-                                                        <Upload className="text-indigo-600" size={24} />
+                                                    <div className="bg-blue-50 p-3 rounded-lg mb-2 group-hover:scale-110 transition-transform">
+                                                        <Upload className="text-blue-600" size={20} />
                                                     </div>
-                                                    <p className="text-xs font-bold text-slate-500">Click để chọn ảnh mới</p>
+                                                    <p className="text-[10px] font-bold text-slate-500">Click để chọn ảnh mới</p>
                                                 </>
                                             )}
                                         </label>
@@ -390,15 +380,15 @@ export function MediaManagementPage() {
                                         variant="flat"
                                         value={url}
                                         onChange={(e) => setUrl(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
                                 )}
                             </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="light" onPress={onClose} className="font-bold rounded-xl">Hủy</Button>
-                        <Button className="bg-slate-900 text-white font-black px-8 rounded-xl" onPress={handleCreate}>Hoàn tất</Button>
+                        <Button variant="light" size="sm" onPress={onClose} className="font-bold rounded-lg">Hủy</Button>
+                        <Button className="bg-blue-600 text-white font-bold px-6 rounded-lg shadow-md shadow-blue-100" size="sm" onPress={handleCreate}>Hoàn tất</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

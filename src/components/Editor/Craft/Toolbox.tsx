@@ -413,9 +413,9 @@ export const Toolbox = () => {
               key={idx}
               ref={(ref: any) => connectors.create(ref, tool.component)}
             >
-              <Card className="p-3 bg-zinc-800/50 cursor-move hover:bg-zinc-700/80 hover:border-purple-500/50 transition-all border border-white/5 shadow-none group">
+              <Card className="p-3 bg-zinc-800/50 cursor-move hover:bg-zinc-700/80 hover:border-blue-500/50 transition-all border border-white/5 shadow-none group rounded-lg">
                 <div className="flex flex-col items-center gap-2">
-                  <span className="text-xl font-medium text-zinc-300 group-hover:text-purple-400 transition-colors">
+                  <span className="text-xl font-medium text-zinc-300 group-hover:text-blue-400 transition-colors">
                     {tool.icon}
                   </span>
                   <span className="text-[10px] uppercase tracking-wide text-zinc-500 font-medium group-hover:text-zinc-300 transition-colors">
@@ -438,9 +438,9 @@ export const Toolbox = () => {
               key={idx}
               ref={(ref: any) => connectors.create(ref, tool.component)}
             >
-              <Card className="p-3 bg-zinc-800/50 cursor-move hover:bg-zinc-700/80 hover:border-purple-500/50 transition-all border border-white/5 shadow-none group">
+              <Card className="p-3 bg-zinc-800/50 cursor-move hover:bg-zinc-700/80 hover:border-blue-500/50 transition-all border border-white/5 shadow-none group rounded-lg">
                 <div className="flex flex-col items-center gap-2">
-                  <span className="text-xl font-medium text-zinc-300 group-hover:text-purple-400 transition-colors">
+                  <span className="text-xl font-medium text-zinc-300 group-hover:text-blue-400 transition-colors">
                     {tool.icon}
                   </span>
                   <span className="text-[10px] uppercase tracking-wide text-zinc-500 font-medium group-hover:text-zinc-300 transition-colors">
@@ -463,9 +463,9 @@ export const Toolbox = () => {
               key={idx}
               ref={(ref: any) => connectors.create(ref, tool.component)}
             >
-              <Card className="p-3 bg-zinc-800/50 cursor-move hover:bg-zinc-700/80 hover:border-purple-500/50 transition-all border border-white/5 shadow-none group">
+              <Card className="p-3 bg-zinc-800/50 cursor-move hover:bg-zinc-700/80 hover:border-blue-500/50 transition-all border border-white/5 shadow-none group rounded-lg">
                 <div className="flex flex-col items-center gap-2">
-                  <span className="text-xl font-medium text-zinc-300 group-hover:text-purple-400 transition-colors">
+                  <span className="text-xl font-medium text-zinc-300 group-hover:text-blue-400 transition-colors">
                     {tool.icon}
                   </span>
                   <span className="text-[10px] uppercase tracking-wide text-zinc-500 font-medium group-hover:text-zinc-300 transition-colors">

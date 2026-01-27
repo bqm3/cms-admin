@@ -186,36 +186,36 @@ export function UserManagementPage() {
     return (
         <AdminLayout>
             {/* Page Header */}
-            <div className="mb-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-lg shadow-blue-100/50">
-                            <Users className="text-white" size={28} />
+            <div className="mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-blue-600 p-3 rounded-lg shadow-blue-100 shadow-md">
+                            <Users className="text-white" size={24} />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Quản lý người dùng</h1>
-                            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">
+                            <h1 className="text-xl font-bold text-slate-800 tracking-tight">Quản lý người dùng</h1>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                                 Quản lý tài khoản và phân quyền hệ thống
                             </p>
                         </div>
                     </div>
                     <Button
                         onPress={createModal.onOpen}
-                        className="bg-amber-950 text-white font-black h-14 px-8 rounded-2xl shadow-xl shadow-indigo-100"
-                        startContent={<Plus size={20} />}
+                        className="bg-blue-600 text-white font-bold h-10 px-6 rounded-lg shadow-md shadow-blue-100"
+                        startContent={<Plus size={18} />}
                     >
                         Thêm người dùng
                     </Button>
                 </div>
 
                 {/* Search & Date Filter Bar */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Tìm kiếm người dùng (Tên, Email, Username)..."
-                            className="h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full shadow-sm transition-all"
+                            className="h-10 pl-11 pr-4 bg-white border border-slate-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-1 focus:ring-blue-500/20 focus:border-blue-500 w-full shadow-sm transition-all"
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -223,23 +223,23 @@ export function UserManagementPage() {
                             }}
                         />
                     </div>
-                    <div className="flex items-center gap-3 bg-white px-4 py-2 border border-slate-200 rounded-2xl shadow-sm w-full">
-                        <Calendar size={18} className="text-slate-400" />
+                    <div className="flex items-center gap-3 bg-white px-4 h-10 border border-slate-200 rounded-lg shadow-sm w-full">
+                        <Calendar size={16} className="text-slate-400" />
                         <div className="flex items-center gap-2 flex-1">
-                            <span className="text-[10px] font-black text-slate-400 uppercase">Từ</span>
+                            <span className="text-[9px] font-black text-slate-400 uppercase">Từ</span>
                             <input
                                 type="date"
-                                className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
                                 value={startDate}
                                 onChange={(e) => {
                                     setStartDate(e.target.value);
                                     setPage(1);
                                 }}
                             />
-                            <span className="text-[10px] font-black text-slate-400 uppercase">Đến</span>
+                            <span className="text-[9px] font-black text-slate-400 uppercase">Đến</span>
                             <input
                                 type="date"
-                                className="bg-transparent border-none outline-none text-sm font-bold text-slate-600 w-full"
+                                className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
                                 value={endDate}
                                 onChange={(e) => {
                                     setEndDate(e.target.value);
@@ -254,7 +254,7 @@ export function UserManagementPage() {
                                     setEndDate('');
                                     setPage(1);
                                 }}
-                                className="text-[10px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
+                                className="text-[9px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
                             >
                                 Xóa
                             </button>
@@ -265,86 +265,86 @@ export function UserManagementPage() {
 
             {loading ? (
                 <div className="flex justify-center py-20">
-                    <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                    <div className="w-8 h-8 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
                 </div>
             ) : (
-                <div className="space-y-6">
-                    <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                <div className="space-y-4">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse min-w-[800px]">
                                 <thead>
                                     <tr className="bg-slate-50/50 border-b border-slate-100">
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Người dùng</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Liên hệ</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Vai trò</th>
-                                        <th className="px-6 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">Hành động</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Người dùng</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Liên hệ</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Vai trò</th>
+                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest text-right">Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {users.map((user) => (
                                         <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-4">
+                                            <td className="px-4 py-3">
+                                                <div className="flex items-center gap-3">
                                                     <div className="relative flex-shrink-0">
                                                         {user.avatar ? (
                                                             <img
                                                                 src={`${SERVER_URL}${user.avatar}`}
                                                                 alt={user.username}
-                                                                className="w-12 h-12 rounded-2xl object-cover shadow-sm ring-2 ring-white"
+                                                                className="w-10 h-10 rounded-lg object-cover shadow-sm ring-2 ring-white"
                                                             />
                                                         ) : (
-                                                            <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center font-black text-indigo-600 uppercase shadow-sm ring-2 ring-white">
+                                                            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center font-black text-blue-600 uppercase shadow-sm ring-2 ring-white">
                                                                 {user.username.substring(0, 1)}
                                                             </div>
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-bold text-slate-800 text-sm leading-tight">
+                                                        <h4 className="font-bold text-slate-800 text-xs leading-tight">
                                                             {user.fullName || user.username}
                                                         </h4>
-                                                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">
+                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">
                                                             @{user.username}
                                                         </p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 text-[13px]">
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <Mail size={12} className="text-slate-400" />
+                                            <td className="px-4 py-3 text-[12px]">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Mail size={10} className="text-slate-400" />
                                                         <span className="text-slate-600 font-medium">{user.email || 'N/A'}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <Phone size={12} className="text-slate-400" />
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Phone size={10} className="text-slate-400" />
                                                         <span className="text-slate-500 text-xs">{user.phone || 'N/A'}</span>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${user.role === 'admin' ? 'bg-indigo-50 text-indigo-600 border-indigo-100 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200 opacity-70'}`}>
-                                                    {user.role === 'admin' ? <Shield size={10} /> : <div className="w-2.5 h-2.5 rounded-full bg-slate-400 scale-75"></div>}
+                                            <td className="px-4 py-3">
+                                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all ${user.role === 'admin' ? 'bg-blue-50 text-blue-600 border-blue-100 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200 opacity-70'}`}>
+                                                    {user.role === 'admin' ? <Shield size={9} /> : <div className="w-2 h-2 rounded-full bg-slate-400 scale-75"></div>}
                                                     {user.role}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
+                                            <td className="px-4 py-3 text-right">
+                                                <div className="flex items-center justify-end gap-1.5">
                                                     <Button
                                                         isIconOnly
                                                         size="sm"
                                                         variant="flat"
-                                                        className="bg-indigo-50 text-indigo-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        className="bg-blue-50 text-blue-600 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
                                                         onPress={() => startEdit(user)}
                                                     >
-                                                        <UserCog size={18} />
+                                                        <UserCog size={14} />
                                                     </Button>
                                                     <Button
                                                         isIconOnly
                                                         size="sm"
                                                         variant="flat"
-                                                        className="bg-rose-50 text-rose-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        className="bg-rose-50 text-rose-500 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
                                                         onPress={() => handleDelete(user.id)}
                                                     >
-                                                        <Trash size={18} />
+                                                        <Trash size={14} />
                                                     </Button>
                                                 </div>
                                             </td>
@@ -355,13 +355,13 @@ export function UserManagementPage() {
                         </div>
 
                         {/* Footer với phân trang góc phải */}
-                        <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                            <div className="flex items-center gap-4">
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                                    Hiển thị:
+                        <div className="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+                            <div className="flex items-center gap-3">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    Hiện:
                                 </p>
                                 <select
-                                    className="bg-white border border-slate-200 rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"
+                                    className="bg-white border border-slate-200 rounded text-[10px] font-bold px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer"
                                     value={limit}
                                     onChange={handleLimitChange}
                                 >
@@ -370,8 +370,8 @@ export function UserManagementPage() {
                                     <option value={20}>20 mục</option>
                                     <option value={50}>50 mục</option>
                                 </select>
-                                <p className="text-xs font-bold text-slate-400 ml-2">
-                                    Tổng số: {totalItems}
+                                <p className="text-[10px] font-bold text-slate-400">
+                                    Tổng: {totalItems}
                                 </p>
                             </div>
 
@@ -385,7 +385,7 @@ export function UserManagementPage() {
                                     radius="sm"
                                     size="sm"
                                     classNames={{
-                                        cursor: "bg-amber-950 shadow-lg shadow-indigo-200",
+                                        cursor: "bg-blue-600 shadow-md shadow-blue-100",
                                     }}
                                 />
                             </div>
@@ -398,25 +398,25 @@ export function UserManagementPage() {
             <Modal
                 isOpen={createModal.isOpen}
                 onClose={createModal.onClose}
-                size="3xl"
+                size="2xl"
                 scrollBehavior="inside"
                 backdrop="blur"
                 classNames={{
-                    base: "rounded-[2rem] bg-slate-50",
-                    header: "border-b border-slate-100 p-8",
-                    body: "p-8",
-                    footer: "border-t border-slate-100 p-6"
+                    base: "rounded-xl bg-slate-50",
+                    header: "border-b border-slate-100 p-6",
+                    body: "p-6",
+                    footer: "border-t border-slate-100 p-4"
                 }}
             >
                 <ModalContent>
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">
-                                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Thêm người dùng mới</h2>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Nhập thông tin cho tài khoản mới</p>
+                                <h2 className="text-xl font-bold text-slate-800 tracking-tight">Thêm người dùng mới</h2>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nhập thông tin cho tài khoản mới</p>
                             </ModalHeader>
                             <ModalBody>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <Input
                                         label="Tên người dùng"
                                         placeholder="..."
@@ -424,7 +424,7 @@ export function UserManagementPage() {
                                         isRequired
                                         value={newUsername}
                                         onChange={(e) => setNewUsername(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
                                     <Input
                                         label="Mật khẩu"
@@ -434,7 +434,7 @@ export function UserManagementPage() {
                                         isRequired
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
                                     <Input
                                         label="Tên đầy đủ"
@@ -442,14 +442,14 @@ export function UserManagementPage() {
                                         variant="flat"
                                         value={newFullName}
                                         onChange={(e) => setNewFullName(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase px-1">Vai trò</label>
+                                    <div className="flex flex-col gap-1.5">
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase px-1">Vai trò</label>
                                         <select
                                             value={newRole}
                                             onChange={(e) => setNewRole(e.target.value)}
-                                            className="bg-white h-14 px-4 rounded-2xl outline-none font-bold text-slate-700 shadow-sm border-none"
+                                            className="bg-white h-10 px-3 rounded-lg outline-none text-xs font-bold text-slate-700 shadow-sm border border-slate-200"
                                         >
                                             <option value="user">User</option>
                                             <option value="admin">Admin</option>
@@ -462,7 +462,7 @@ export function UserManagementPage() {
                                         variant="flat"
                                         value={newEmail}
                                         onChange={(e) => setNewEmail(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
                                     <Input
                                         label="Số điện thoại"
@@ -470,7 +470,7 @@ export function UserManagementPage() {
                                         variant="flat"
                                         value={newPhone}
                                         onChange={(e) => setNewPhone(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
                                     <div className="md:col-span-2 space-y-2">
                                         <Textarea
@@ -479,16 +479,16 @@ export function UserManagementPage() {
                                             variant="flat"
                                             value={newBio}
                                             onChange={(e) => setNewBio(e.target.value)}
-                                            classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                            classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                         />
                                     </div>
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button variant="light" onPress={onClose} className="font-bold rounded-xl">Hủy</Button>
+                                <Button variant="light" size="sm" onPress={onClose} className="font-bold rounded-lg">Hủy</Button>
                                 <Button
                                     isLoading={creating}
-                                    className="bg-amber-950 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
+                                    className="bg-blue-600 text-white font-bold px-6 rounded-lg shadow-md shadow-blue-100"
                                     onPress={handleCreateUser}
                                 >
                                     Tạo người dùng
@@ -503,39 +503,39 @@ export function UserManagementPage() {
             <Modal
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
-                size="3xl"
+                size="2xl"
                 scrollBehavior="inside"
                 backdrop="blur"
                 classNames={{
-                    base: "rounded-[2rem] bg-slate-50",
-                    header: "border-b border-slate-100 p-8",
-                    body: "p-8",
-                    footer: "border-t border-slate-100 p-6"
+                    base: "rounded-xl bg-slate-50",
+                    header: "border-b border-slate-100 p-6",
+                    body: "p-6",
+                    footer: "border-t border-slate-100 p-4"
                 }}
             >
                 <ModalContent>
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">
-                                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Chỉnh sửa người dùng</h2>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cập nhật thông tin cho @{editUsername}</p>
+                                <h2 className="text-xl font-bold text-slate-800 tracking-tight">Chỉnh sửa người dùng</h2>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cập nhật thông tin cho @{editUsername}</p>
                             </ModalHeader>
                             <ModalBody>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <Input
                                         label="Tên người dùng"
                                         variant="flat"
                                         isRequired
                                         value={editUsername}
                                         onChange={(e) => setEditUsername(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase px-1">Vai trò</label>
+                                    <div className="flex flex-col gap-1.5">
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase px-1">Vai trò</label>
                                         <select
                                             value={editRole}
                                             onChange={(e) => setEditRole(e.target.value)}
-                                            className="bg-white h-14 px-4 rounded-2xl outline-none font-bold text-slate-700 shadow-sm border-none"
+                                            className="bg-white h-10 px-3 rounded-lg outline-none text-xs font-bold text-slate-700 shadow-sm border border-slate-200"
                                         >
                                             <option value="user">User</option>
                                             <option value="admin">Admin</option>
@@ -546,21 +546,21 @@ export function UserManagementPage() {
                                         variant="flat"
                                         value={editFullName}
                                         onChange={(e) => setEditFullName(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
                                     <Input
                                         label="Email"
                                         variant="flat"
                                         value={editEmail}
                                         onChange={(e) => setEditEmail(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
                                     <Input
                                         label="Số điện thoại"
                                         variant="flat"
                                         value={editPhone}
                                         onChange={(e) => setEditPhone(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                     />
                                     <div className="md:col-span-2 space-y-2">
                                         <Textarea
@@ -568,16 +568,16 @@ export function UserManagementPage() {
                                             variant="flat"
                                             value={editBio}
                                             onChange={(e) => setEditBio(e.target.value)}
-                                            classNames={{ inputWrapper: "bg-white shadow-sm rounded-2xl" }}
+                                            classNames={{ inputWrapper: "bg-white shadow-sm rounded-lg" }}
                                         />
                                     </div>
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button variant="light" onPress={onClose} className="font-bold rounded-xl">Hủy</Button>
+                                <Button variant="light" size="sm" onPress={onClose} className="font-bold rounded-lg">Hủy</Button>
                                 <Button
                                     isLoading={updating}
-                                    className="bg-amber-950 text-white font-black px-8 rounded-xl shadow-lg shadow-indigo-100"
+                                    className="bg-blue-600 text-white font-bold px-6 rounded-lg shadow-md shadow-blue-100"
                                     onPress={handleUpdate}
                                 >
                                     Lưu thay đổi

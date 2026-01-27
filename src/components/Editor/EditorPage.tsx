@@ -213,10 +213,11 @@ const SaveButton = ({ postInfo, isNew }: any) => {
 
   return (
     <Button
-      className="bg-amber-950 font-medium px-6 shadow-lg shadow-indigo-500/20"
+      className="bg-blue-600 font-bold px-6 shadow-md shadow-blue-500/20"
       color="primary"
+      size="sm"
       isLoading={saving}
-      startContent={!saving && <Save size={18} />}
+      startContent={!saving && <Save size={16} />}
       onPress={handleSave}
     >
       {isNew ? "Xuất bản" : "Cập nhật thay đổi"}
@@ -322,8 +323,8 @@ export function EditorPage() {
   if (loading)
     return (
       <div className="bg-zinc-950 h-screen flex flex-col items-center justify-center gap-4">
-        <div className="w-8 h-8 border-2 border-zinc-800 border-t-indigo-500 rounded-full animate-spin" />
-        <p className="text-zinc-500 font-medium text-xs tracking-widest uppercase">
+        <div className="w-8 h-8 border-2 border-zinc-800 border-t-blue-500 rounded-full animate-spin" />
+        <p className="text-zinc-500 font-bold text-[10px] tracking-widest uppercase">
           Loading Editor...
         </p>
       </div>
@@ -366,39 +367,40 @@ export function EditorPage() {
         <ContentLoader content={loadedContent} />
 
         {/* ✅ Header sticky */}
-        <header className="sticky top-0 h-[72px] px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/10 bg-zinc-950/60 backdrop-blur-md z-50">
+        <header className="sticky top-0 h-[60px] px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/10 bg-zinc-950 z-50">
           {/* Left */}
           <div className="flex items-center gap-3 min-w-0">
             <Button
               isIconOnly
-              className="min-w-10 w-10 h-10 p-0 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white"
+              size="sm"
+              className="min-w-8 w-8 h-8 p-0 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white"
               variant="light"
               onPress={() => navigate("/dashboard")}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={16} />
             </Button>
 
             <div className="min-w-0">
-              <div className="flex items-center gap-2 text-[11px] text-white">
-                <span className="font-medium">Trang chủ</span>
+              <div className="flex items-center gap-2 text-[9px] text-zinc-400 uppercase font-black tracking-wider">
+                <span className="">Trang chủ</span>
                 <span className="opacity-50">•</span>
-                <span className="font-medium">Chỉnh sửa</span>
+                <span className="">Chỉnh sửa</span>
                 <span className="opacity-50">•</span>
-                <span className="truncate max-w-[240px]">
-                  {isNew ? "Bài viết mới" : `Bài viết #${id}`}
+                <span className="truncate max-w-[200px] text-zinc-200">
+                  {isNew ? "Mới" : `#${id}`}
                 </span>
               </div>
 
-              <div className="mt-1 flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-3 min-w-0">
                 <Input
                   classNames={{
-                    base: "w-[320px] max-w-[55vw]",
+                    base: "w-[280px] max-w-[50vw]",
                     inputWrapper:
-                      "h-10 rounded-xl bg-white/10 border border-white/20 hover:border-white/30 focus-within:border-indigo-400 focus-within:bg-white/15 transition-all duration-200 shadow-lg shadow-black/20 data-[hover=true]:bg-white/15",
+                      "h-8 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-blue-500 focus-within:bg-white/10 transition-all duration-200 shadow-sm data-[hover=true]:bg-white/10",
                     input:
-                      "text-white !text-white placeholder:!text-zinc-400 font-semibold caret-indigo-400",
+                      "text-white !text-white placeholder:!text-zinc-500 font-bold text-xs caret-blue-500",
                   }}
-                  placeholder="Nhập tiêu đề bài viết..."
+                  placeholder="Tiêu đề..."
                   value={postInfo.title}
                   onChange={(e) =>
                     setPostInfo({ ...postInfo, title: e.target.value })
@@ -406,22 +408,22 @@ export function EditorPage() {
                 />
 
                 {/* Category pill */}
-                <div className="hidden lg:flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 border border-white/10 text-zinc-200">
-                  <Layout size={16} className="text-indigo-400" />
+                <div className="hidden lg:flex items-center gap-2 px-2.5 h-8 rounded-lg bg-white/5 border border-white/10 text-zinc-300">
+                  <Layout size={14} className="text-blue-500" />
                   <select
-                    className="bg-transparent outline-none text-[13px] font-semibold cursor-pointer"
+                    className="bg-transparent outline-none text-[11px] font-bold cursor-pointer"
                     value={postInfo.categoryId}
                     onChange={(e) =>
                       setPostInfo({ ...postInfo, categoryId: e.target.value })
                     }
                   >
-                    <option className="bg-white/5" value="">
+                    <option className="bg-zinc-900" value="">
                       Chọn danh mục
                     </option>
                     {categories.map((cat) => (
                       <option
                         key={cat.id}
-                        className="bg-white/5"
+                        className="bg-zinc-900"
                         value={cat.id}
                       >
                         {cat.name}
@@ -429,25 +431,6 @@ export function EditorPage() {
                     ))}
                   </select>
                 </div>
-
-                {/* View Count pill */}
-                {/* {!isNew && (
-                  <div className="hidden md:flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 border border-white/10 text-zinc-200">
-                    <Eye size={16} className="text-amber-400" />
-                    <input
-                      type="number"
-                      value={postInfo.viewCount}
-                      onChange={(e) =>
-                        setPostInfo({
-                          ...postInfo,
-                          viewCount: parseInt(e.target.value) || 0,
-                        })
-                      }
-                      className="bg-transparent outline-none text-[13px] font-semibold w-16 text-center"
-                      title="Chỉnh sửa lượt xem"
-                    />
-                  </div>
-                )} */}
               </div>
             </div>
           </div>
@@ -456,36 +439,35 @@ export function EditorPage() {
           <div className="flex items-center gap-2 md:gap-3">
             <div className="md:hidden">
               <select
-                className="h-10 px-3 rounded-xl bg-white/5 border border-white/10 text-[13px] font-semibold text-zinc-200 outline-none"
+                className="h-8 px-2 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-zinc-200 outline-none"
                 value={postInfo.categoryId}
                 onChange={(e) =>
                   setPostInfo({ ...postInfo, categoryId: e.target.value })
                 }
               >
-                <option className="bg-white/5" value="">
+                <option className="bg-zinc-900" value="">
                   Danh mục
                 </option>
                 {categories.map((cat) => (
-                  <option key={cat.id} className="bg-white/5" value={cat.id}>
+                  <option key={cat.id} className="bg-zinc-900" value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
               </select>
             </div>
 
-            <label className="group cursor-pointer h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
+            <label className="group cursor-pointer h-8 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
               <span
-                className={`w-7 h-7 grid place-items-center rounded-lg border ${
-                  postInfo.logoFile
+                className={`w-6 h-6 grid place-items-center rounded border ${postInfo.logoFile
                     ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
-                    : "bg-white/5 border-white/10 text-indigo-300"
-                }`}
+                    : "bg-white/5 border-white/10 text-blue-300"
+                  }`}
               >
-                <ImageIcon size={16} />
+                <ImageIcon size={14} />
               </span>
 
-              <span className="hidden sm:inline text-[13px] font-semibold text-zinc-300 group-hover:text-white">
-                {postInfo.logoFile ? "Đã chọn logo" : "Tải logo"}
+              <span className="hidden sm:inline text-[11px] font-bold text-zinc-300 group-hover:text-white">
+                {postInfo.logoFile ? "Logo OK" : "Tải logo"}
               </span>
 
               <input
@@ -501,7 +483,7 @@ export function EditorPage() {
               />
             </label>
 
-            <div className="hidden md:block h-6 w-px bg-white/10 mx-1" />
+            <div className="hidden md:block h-5 w-px bg-white/10 mx-1" />
 
             <SaveButton isNew={isNew} postInfo={postInfo} />
           </div>

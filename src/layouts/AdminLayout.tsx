@@ -29,8 +29,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
                 {/* Page Content */}
-                <main className="p-6 lg:p-8">
-                    <div className="max-w-7xl mx-auto">
+                <main className="p-2 md:p-3 lg:p-4">
+                    <div className="max-w-[90rem] mx-auto">
                         {children}
                     </div>
                 </main>

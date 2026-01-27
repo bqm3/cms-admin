@@ -4,6 +4,7 @@ import { Card, CardBody } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Eye, Clock, ArrowUpDown, Layout } from "lucide-react";
 import api, { SERVER_URL } from "../services/api";
+import { formatDate } from "../utils/formatDate";
 
 export function ClientHomePage() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -34,51 +35,44 @@ export function ClientHomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 p-8">
+    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <header className="flex flex-col md:flex-row justify-between items-center mb-16 gap-6 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-          <div className="flex items-center gap-4">
-            <div className="bg-amber-950 p-3 rounded-2xl shadow-indigo-200 shadow-lg">
-              <Layout className="text-white" size={32} />
+        <header className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white px-5 py-4 rounded-xl shadow-sm border border-slate-200/60">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 p-2.5 rounded-lg shadow-blue-100 shadow-md">
+              <Layout className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-                Danh sách
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+                Danh sách dự án
               </h1>
-              <p className="text-slate-500 font-medium">
-                Khám phá các trang web cao cấp được xây dựng bởi cộng đồng của chúng tôi.
+              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+                Khám phá các trang web cao cấp
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <Button
               variant="flat"
-              className="bg-slate-100 text-slate-700 font-bold"
+              size="sm"
+              className="bg-slate-50 text-slate-700 font-bold rounded-lg border border-slate-200/50"
               onClick={toggleSort}
-              startContent={<ArrowUpDown size={18} />}
+              startContent={<ArrowUpDown size={14} />}
             >
-              Sort by: {sort === "view_count:DESC" ? "Popularity" : "Order"}
+              Lọc theo: {sort === "view_count:DESC" ? "Lượt xem" : "Thứ tự"}
             </Button>
-            {/* <Button
-              as={Link}
-              to="/login"
-              variant="solid"
-              className="bg-amber-950 text-white font-bold shadow-indigo-100 shadow-xl"
-            >
-              Admin Portal
-            </Button> */}
           </div>
         </header>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-40 gap-4">
-            <div className="w-12 h-12 border-4 border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin"></div>
-            <p className="text-slate-400 font-medium tracking-wide">
-              Fetching amazing sites...
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <div className="w-8 h-8 border-3 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
+            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
+              Đang tải danh sách...
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {posts.map((post) => (
               <a
                 href={`/site/${post.slug || post.id}`}
@@ -87,29 +81,44 @@ export function ClientHomePage() {
                 key={post.id}
                 className="block group"
               >
-                <Card className="bg-white border-transparent hover:border-indigo-500/30 transition-all duration-500 overflow-hidden shadow-md hover:shadow-2xl rounded-[2rem]">
+                <Card className="bg-white border-transparent hover:border-blue-500/20 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md rounded-xl">
                   <CardBody className="p-0">
                     <div className="aspect-[16/10] bg-slate-100 overflow-hidden relative">
                       {post.logo ? (
                         <img
                           src={`${SERVER_URL}${post.logo}`}
                           alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-300 font-black text-2xl uppercase italic">
+                        <div className="w-full h-full flex items-center justify-center bg-blue-50/50 text-blue-200 font-black text-2xl uppercase italic">
                           {post.title.substring(0, 2)}
                         </div>
                       )}
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[9px] font-black text-blue-600 shadow-sm border border-blue-100 uppercase">
+                          Xem trang
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="p-8">
-                      <h3 className="text-2xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">
+                    <div className="p-3.5">
+                      <h3 className="text-sm font-bold text-slate-800 mb-0.5 group-hover:text-blue-600 transition-colors line-clamp-1">
                         {post.title}
                       </h3>
-                      <p className="text-slate-500 text-sm">
-                        Built by {post.creator?.username || "Community Expert"}
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-slate-400 text-[10px] font-medium">
+                          @{post.creator?.username || "user"}
+                        </p>
+                        {/* <div className="flex items-center gap-1.5 text-slate-400">
+                          <Eye size={10} />
+                          <span className="text-[10px] font-bold">{post.view_count || 0}</span>
+                        </div> */}
+                        <div className="flex items-center gap-1.5 text-slate-400">
+                          <Clock size={10} />
+                          <span className="text-[10px] font-bold">{formatDate(post.created_at)}</span>
+                        </div>
+                      </div>
                     </div>
                   </CardBody>
                 </Card>
