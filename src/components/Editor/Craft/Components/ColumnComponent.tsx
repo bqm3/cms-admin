@@ -73,7 +73,7 @@ export const ColumnSettings = () => {
           min={1}
           max={12}
           value={span}
-          className="w-full bg-zinc-800 text-white text-xs p-2 rounded"
+          className="w-full bg-white text-white text-xs p-2 rounded"
           onChange={(e) =>
             setProp((p: any) => (p.span = Number(e.target.value) || 6))
           }
@@ -85,7 +85,7 @@ export const ColumnSettings = () => {
         <input
           type="number"
           value={padding}
-          className="w-full bg-zinc-800 text-white text-xs p-2 rounded"
+          className="w-full bg-white text-white text-xs p-2 rounded"
           onChange={(e) =>
             setProp((p: any) => (p.padding = Number(e.target.value) || 0))
           }

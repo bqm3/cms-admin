@@ -24,6 +24,7 @@ import { GridComponent } from "./Components/GridComponent";
 import { BadgeComponent } from "./Components/BadgeComponent";
 import { AccordionComponent } from "./Components/AccordionComponent";
 import { SpacerComponent } from "./Components/SpacerComponent";
+import { SliderComponent } from "./Components/SliderComponent";
 
 // Preset
 import { PresetHeader } from "./presets/PresetHeader";
@@ -126,6 +127,11 @@ export const Toolbox = () => {
         />
       ),
     },
+    {
+      name: "Slide",
+      icon: "📑",
+      component : <SliderComponent slides={[]} height={""} overlay={""} autoPlay={false} intervalMs={0} contentAlign={"left"} maxContentWidth={""} paddingX={0} paddingY={0} titleColor={""} subtitleColor={""}/>
+    }
   ];
 
   const shapeTools = [

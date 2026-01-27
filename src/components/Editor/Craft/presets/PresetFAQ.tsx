@@ -23,8 +23,8 @@ export const PresetFAQ = () => {
         defaultOpenIndex={0}
         cardBg={TOKENS.GLASS_BG}
         border={TOKENS.GLASS_BORDER}
-        titleColor="rgba(255,255,255,.92)"
-        contentColor="rgba(255,255,255,.72)"
+        titleColor="rgba(000,000,000,.92)"
+        contentColor="rgba(000,000,000,.80)"
       />
     </Element>
   );

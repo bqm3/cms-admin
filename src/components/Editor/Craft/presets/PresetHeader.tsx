@@ -10,9 +10,7 @@ type NavItem = { label: string; href: string };
 
 export const PresetHeader = () => {
   const NAV_BG = "#ffffff";
-  const NAV_BORDER = "1px solid rgba(0,0,0,.08)";
-  const TEXT_MAIN = "rgba(24,24,27,.95)";
-  const TEXT_DIM = "rgba(24,24,27,.62)";
+  const TEXT_DIM = "#000";
 
   const items: NavItem[] = [
     { label: "Home", href: "#" },
@@ -31,7 +29,6 @@ export const PresetHeader = () => {
       width="100%"
       height="auto"
       className="w-full"
-      // nếu Container support:
       flexDirection="column"
       justifyContent="flex-start"
       alignItems="stretch"
@@ -55,17 +52,12 @@ export const PresetHeader = () => {
           is={Container}
           background="transparent"
           padding={14}
-          className="w-full rounded-2xl shadow-sm"
+          className="w-full rounded-2xl shadow-sm border border-black/10"
           flexDirection="column"
           justifyContent="flex-start"
           alignItems="stretch"
           gap={0}
-        //   style={{
-        //     border: NAV_BORDER,
-        //     boxSizing: "border-box",
-        //   }}
         >
-          {/* ✅ ROW thật sự */}
           <Element
             id="navbar-row"
             canvas
@@ -76,61 +68,46 @@ export const PresetHeader = () => {
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
-            gap={16}
+            gap={0}
           >
-            {/* Left brand */}
+            {/* ✅ LEFT – fixed width */}
             <Element
-              id="navbar-brand"
+              id="navbar-left"
               canvas
               is={Container}
               background="transparent"
               padding={0}
-              className=""
+              width="120px" // ✅ cố định
               flexDirection="row"
               justifyContent="flex-start"
               alignItems="center"
-              gap={12}
+              gap={10}
             >
               <Element
                 id="navbar-logo"
                 canvas
                 is={Container}
-                background="rgba(0,0,0,.06)"
+                background="rgba(0,0,0,.02)"
                 padding={0}
-                className="w-9 h-9 rounded-xl border border-black/10"
-                flexDirection="column"
-                justifyContent="flex-start"
-                alignItems="stretch"
-                gap={0}
-              />
-
-              <Element
-                id="navbar-brand-text"
-                is={TextComponent}
-                text="MimicPC"
-                fontSize={16}
-                fontWeight="700"
-                textAlign="left"
-                color={TEXT_MAIN}
-                paddingTop={0}
-                paddingRight={0}
-                paddingBottom={0}
-                paddingLeft={0}
+                width="80px"
+                height="40px"
+                className="rounded-lg border border-black/10"
               />
             </Element>
 
-            {/* Middle links (row) */}
+            {/* ✅ CENTER – chiếm phần còn lại & center thật */}
             <Element
-              id="navbar-links"
+              id="navbar-center"
               canvas
               is={Container}
               background="transparent"
               padding={0}
-              className="hidden md:flex"
+              width="100%" // ✅ ăn hết phần giữa
               flexDirection="row"
-              justifyContent="flex-start"
+              justifyContent="center" // ✅ center
               alignItems="center"
-              gap={20}
+              gap={24}
+              className="hidden md:flex"
             >
               {items.map((t, i) => (
                 <Element
@@ -150,31 +127,20 @@ export const PresetHeader = () => {
               ))}
             </Element>
 
-            {/* Right actions (row) */}
+            {/* ✅ RIGHT – fixed width */}
             <Element
               id="navbar-actions"
               canvas
               is={Container}
               background="transparent"
               padding={0}
-              className=""
+              width="120px" // ✅ cố định
               flexDirection="row"
               justifyContent="flex-end"
               alignItems="center"
               gap={10}
             >
-              <Element
-                id="navbar-login"
-                is={ButtonComponent}
-                text="Login"
-                color="default"
-                variant="bordered"
-                size="sm"
-                radius="full"
-                fullWidth={false}
-                href=""
-                openInNewTab={true}
-              />
+              
               <Element
                 id="navbar-cta"
                 is={ButtonComponent}

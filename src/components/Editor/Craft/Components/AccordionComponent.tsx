@@ -53,19 +53,19 @@ export const AccordionComponent = ({
   return (
     <div
       ref={(ref) => ref && connect(drag(ref))}
+      className="space-y-3"
       style={{
         outline: selected ? "1px dashed rgba(255,255,255,.25)" : "none",
         outlineOffset: 4,
       }}
-      className="space-y-3"
     >
       {safeItems.map((it, idx) => {
         const isOpen = open.includes(idx);
         return (
           <div key={idx} style={{ background: cardBg, border, borderRadius: 16 }}>
             <button
-              type="button"
               className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left"
+              type="button"
               onClick={() => toggle(idx)}
             >
               <div className="font-semibold text-sm" style={{ color: titleColor }}>
@@ -77,6 +77,7 @@ export const AccordionComponent = ({
                   opacity: 0.9,
                   transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
                   transition: "transform .15s ease",
+                  color: contentColor
                 }}
               />
             </button>
@@ -129,8 +130,8 @@ const AccordionSettings = () => {
     <div className="space-y-3">
       <label className="flex items-center gap-2 text-sm">
         <input
-          type="checkbox"
           checked={!!allowMultiple}
+          type="checkbox"
           onChange={(e) => setProp((p: any) => (p.allowMultiple = e.target.checked))}
         />
         Allow multiple open
@@ -139,8 +140,8 @@ const AccordionSettings = () => {
       <div>
         <div className="text-xs opacity-70 mb-1">Default open index (-1 none)</div>
         <input
-          type="number"
           className="w-full px-3 py-2 rounded-lg bg-zinc-900 border border-white/10 text-white text-sm"
+          type="number"
           value={defaultOpenIndex}
           onChange={(e) => setProp((p: any) => (p.defaultOpenIndex = Number(e.target.value)))}
         />
@@ -188,8 +189,8 @@ const AccordionSettings = () => {
         <div className="flex items-center justify-between">
           <div className="text-xs opacity-70">Items</div>
           <button
-            type="button"
             className="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs"
+            type="button"
             onClick={addItem}
           >
             + Add
@@ -202,8 +203,8 @@ const AccordionSettings = () => {
               <div className="flex justify-between items-center">
                 <div className="text-xs opacity-70">#{idx}</div>
                 <button
-                  type="button"
                   className="text-xs px-2 py-1 rounded-lg bg-white/10 border border-white/10"
+                  type="button"
                   onClick={() => removeItem(idx)}
                 >
                   Remove
@@ -212,16 +213,16 @@ const AccordionSettings = () => {
 
               <input
                 className="w-full px-3 py-2 rounded-lg bg-black/20 border border-white/10 text-white text-sm"
+                placeholder="Question"
                 value={it.title || ""}
                 onChange={(e) => updateItem(idx, "title", e.target.value)}
-                placeholder="Question"
               />
               <textarea
                 className="w-full px-3 py-2 rounded-lg bg-black/20 border border-white/10 text-white text-sm"
+                placeholder="Answer"
                 rows={3}
                 value={it.content || ""}
                 onChange={(e) => updateItem(idx, "content", e.target.value)}
-                placeholder="Answer"
               />
             </div>
           ))}

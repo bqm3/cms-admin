@@ -10,7 +10,14 @@ import { TOKENS } from "./presetTokens";
 
 export const PresetHero = () => {
   return (
-    <Element canvas background="transparent" className="w-full" id="preset-hero" is={Container} padding={0}>
+    <Element
+      canvas
+      background="transparent"
+      className="w-full"
+      id="preset-hero"
+      is={Container}
+      padding={0}
+    >
       <Element
         canvas
         background="transparent"
@@ -20,7 +27,14 @@ export const PresetHero = () => {
         padding={0}
       >
         {/* Left copy */}
-        <Element canvas background="transparent" className="w-full" id="hero-left" is={Container} padding={0}>
+        <Element
+          canvas
+          background="transparent"
+          className="w-full"
+          id="hero-left"
+          is={Container}
+          padding={0}
+        >
           <Element
             id="hero-title"
             is={HeadingComponent}
@@ -44,8 +58,20 @@ export const PresetHero = () => {
             is={Container}
             padding={0}
           >
-            <Element id="hero-btn-1" is={ButtonComponent} size="md" text="Free Launch" variant="bordered" />
-            <Element id="hero-btn-2" is={ButtonComponent} size="md" text="Book a Demo" variant="bordered" />
+            <Element
+              id="hero-btn-1"
+              is={ButtonComponent}
+              size="md"
+              text="Free Launch"
+              variant="bordered"
+            />
+            <Element
+              id="hero-btn-2"
+              is={ButtonComponent}
+              size="md"
+              text="Book a Demo"
+              variant="bordered"
+            />
           </Element>
 
           {/* small trust row */}
@@ -57,23 +83,32 @@ export const PresetHero = () => {
             is={Container}
             padding={0}
           >
-            {["Fast GPUs", "Private & Secure", "Templates", "Team Collab"].map((t, i) => (
-              <Element
-                key={i}
-                color="rgba(255,255,255,.65)"
-                fontSize={12}
-                fontWeight="500"
-                id={`hero-trust-${i}`}
-                is={TextComponent}
-                text={`• ${t}`}
-                textAlign="left"
-              />
-            ))}
+            {["Fast GPUs", "Private & Secure", "Templates", "Team Collab"].map(
+              (t, i) => (
+                <Element
+                  key={i}
+                  color="rgba(255,255,255,.65)"
+                  fontSize={12}
+                  fontWeight="500"
+                  id={`hero-trust-${i}`}
+                  is={TextComponent}
+                  text={`• ${t}`}
+                  textAlign="left"
+                />
+              ),
+            )}
           </Element>
         </Element>
 
         {/* Right media */}
-        <Element canvas background="transparent" className="w-full" id="hero-right" is={Container} padding={0}>
+        <Element
+          canvas
+          background="transparent"
+          className="w-full"
+          id="hero-right"
+          is={Container}
+          padding={0}
+        >
           <Element
             canvas
             background={TOKENS.GLASS_BG}
@@ -82,17 +117,16 @@ export const PresetHero = () => {
             is={Container}
             padding={14}
           >
-           <Element
-  alt="Hero"
-  id="hero-image"
-  is={ImageComponent}
-  src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1600&q=80"
-  width="100%"
-  height="320px"
-  objectFit="cover"
-  radius="2xl"
-/>
-
+            <Element
+              alt="Hero"
+              id="hero-image"
+              is={ImageComponent}
+              src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1600&q=80"
+              width="100%"
+              height="320px"
+              objectFit="cover"
+              radius="2xl"
+            />
           </Element>
         </Element>
       </Element>

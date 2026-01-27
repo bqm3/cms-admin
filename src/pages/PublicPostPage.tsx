@@ -26,6 +26,13 @@ import { GridComponent } from "../components/Editor/Craft/Components/GridCompone
 import { BadgeComponent } from "../components/Editor/Craft/Components/BadgeComponent";
 import { AccordionComponent } from "../components/Editor/Craft/Components/AccordionComponent";
 import { SpacerComponent } from "../components/Editor/Craft/Components/SpacerComponent";
+import { SliderComponent } from "@/components/Editor/Craft/Components/SliderComponent";
+import { PresetFAQ } from "@/components/Editor/Craft/presets/PresetFAQ";
+import { PresetFooter } from "@/components/Editor/Craft/presets/PresetFooter";
+import { PresetHeader } from "@/components/Editor/Craft/presets/PresetHeader";
+import { PresetHero } from "@/components/Editor/Craft/presets/PresetHero";
+import { PresetOffersGrid } from "@/components/Editor/Craft/presets/PresetOffersGrid";
+import { MimicPCLandingFrame } from "@/components/Editor/MimicPCLandingFrame";
 // nếu bạn có SpacingComponent / v.v... cũng add vào đây
 
 export function PublicPostPage() {
@@ -96,10 +103,10 @@ export function PublicPostPage() {
       <Editor
         enabled={false}
         resolver={{
-          // ROOT frame
+          // Default frame
+          MimicPCLandingFrame,
           DefaultNewPostFrame,
-
-          // base
+          // Component
           TextComponent,
           Container,
           ButtonComponent,
@@ -109,16 +116,21 @@ export function PublicPostPage() {
           VideoComponent,
           TableComponent,
           ShapeComponent,
-          SpacerComponent,
           RowComponent,
           ColumnComponent,
-
-          // layout/sections
           NavbarComponent,
           SectionComponent,
           GridComponent,
           BadgeComponent,
           AccordionComponent,
+          SpacerComponent,
+          SliderComponent,
+          // Preset
+          PresetHeader,
+          PresetHero,
+          PresetOffersGrid,
+          PresetFAQ,
+          PresetFooter,
         }}
       >
         <Frame data={frameData} />

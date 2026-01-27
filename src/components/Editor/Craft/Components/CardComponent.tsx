@@ -55,7 +55,7 @@ export const CardComponent = ({
           fontSize={20}
           fontWeight="600"
           textAlign="left"
-          color="#ffffff"
+          color="#000"
         />
         <div className="h-2" />
         <TextComponent

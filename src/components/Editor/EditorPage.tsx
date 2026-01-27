@@ -49,6 +49,7 @@ import { PresetHero } from "./Craft/presets/PresetHero";
 import { PresetOffersGrid } from "./Craft/presets/PresetOffersGrid";
 import { PresetFAQ } from "./Craft/presets/PresetFAQ";
 import { PresetFooter } from "./Craft/presets/PresetFooter";
+import { SliderComponent } from "./Craft/Components/SliderComponent";
 
 // --- Sub Components ---
 const SaveButton = ({ postInfo, isNew }: any) => {
@@ -355,6 +356,7 @@ export function EditorPage() {
           BadgeComponent,
           AccordionComponent,
           SpacerComponent,
+          SliderComponent,
           // Preset
           PresetHeader,
           PresetHero,
