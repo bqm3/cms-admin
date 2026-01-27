@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Input } from "@heroui/input";
-import { Pagination } from "@heroui/pagination";
 import {
     Search,
     ExternalLink,
@@ -19,6 +18,7 @@ import {
 } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { AdminLayout } from '../layouts/AdminLayout';
+import { DataTable } from '../components/Common/DataTable';
 
 export function DashboardPage() {
     const [posts, setPosts] = useState<any[]>([]);
@@ -81,11 +81,6 @@ export function DashboardPage() {
     useEffect(() => {
         fetchPosts();
     }, [search, selectedCategory, startDate, endDate, page, limit]);
-
-    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setLimit(Number(e.target.value));
-        setPage(1);
-    };
 
     const handleApprove = async (id: number) => {
         try {
@@ -217,168 +212,141 @@ export function DashboardPage() {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="flex items-center justify-center py-20">
-                    <div className="w-8 h-8 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-                    <p className="ml-3 font-bold text-slate-400 uppercase tracking-widest text-[10px]">Đang tải...</p>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse min-w-[1000px]">
-                                <thead>
-                                    <tr className="bg-slate-50 border-b border-slate-100">
-                                        <th className="px-5 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Dự án</th>
-                                        <th className="px-5 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Phân loại</th>
-                                        <th className="px-5 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Ngày tạo</th>
-                                        <th className="px-5 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Trạng thái</th>
-                                        <th className="px-5 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest text-center">Lượt xem</th>
-                                        <th className="px-5 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest text-right">Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50">
-                                    {posts.map((post) => (
-                                        <tr key={post.id} className="hover:bg-blue-50/20 transition-colors group">
-                                            <td className="px-5 py-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-8 rounded bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
-                                                        {post.logo ? (
-                                                            <img src={`${SERVER_URL}${post.logo}`} alt={post.title} className="w-full h-full object-cover" />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center bg-blue-50/50">
-                                                                <Globe size={14} className="text-blue-300" />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className="min-w-0 max-w-[280px]">
-                                                        <h4 className="font-bold text-slate-800 text-xs leading-tight truncate" title={post.title}>
-                                                            {post.title}
-                                                        </h4>
-                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
-                                                            /{post.slug || post.id}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-5 py-3">
-                                                <div className="flex flex-col">
-                                                    <span className="text-[9px] font-bold text-blue-600 bg-blue-50/80 w-fit px-1.5 py-0.5 rounded border border-blue-100/50 mb-1 leading-none">{post.category?.name || 'Chưa phân loại'}</span>
-                                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter leading-none">@{post.creator?.username || 'vô danh'}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-5 py-3">
-                                                <div className="text-[10px] font-bold text-slate-500 whitespace-nowrap">
-                                                    {new Date(post.created_at).toLocaleDateString('vi-VN')}
-                                                </div>
-                                            </td>
-                                            <td className="px-5 py-3">
-                                                <Chip
-                                                    startContent={post.is_approved ? <CheckCircle size={10} /> : <Clock size={10} />}
-                                                    variant="flat"
-                                                    color={post.is_approved ? "success" : "warning"}
-                                                    size="sm"
-                                                    className="rounded font-black text-[8px] uppercase h-5"
-                                                >
-                                                    {post.is_approved ? 'Đã duyệt' : 'Chờ duyệt'}
-                                                </Chip>
-                                            </td>
-                                            <td className="px-5 py-3 text-center">
-                                                <div className="inline-flex items-center gap-1 text-blue-600 font-bold text-[10px] bg-blue-50/50 border border-blue-100/50 px-2 py-0.5 rounded-full">
-                                                    <Eye size={10} /> {post.view_count || 0}
-                                                </div>
-                                            </td>
-                                            <td className="px-5 py-3 text-right">
-                                                <div className="flex items-center justify-end gap-1.5">
-                                                    {user.role === 'admin' && !post.is_approved && (
-                                                        <Button
-                                                            size="sm"
-                                                            variant="flat"
-                                                            className="bg-emerald-50 text-emerald-600 font-bold text-[9px] uppercase h-7 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                                                            onClick={() => handleApprove(post.id)}
-                                                        >
-                                                            Duyệt
-                                                        </Button>
-                                                    )}
-                                                    <Button
-                                                        as={Link}
-                                                        to={`/editor/${post.id}`}
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="flat"
-                                                        className="bg-blue-50 text-blue-600 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        title="Sửa nội dung"
-                                                    >
-                                                        <Edit size={14} />
-                                                    </Button>
-                                                    <a href={`/site/${post.slug || post.id}`} target="_blank" rel="noopener noreferrer">
-                                                        <Button
-                                                            isIconOnly
-                                                            size="sm"
-                                                            variant="flat"
-                                                            className="bg-slate-50 text-slate-600 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity border border-slate-200/50"
-                                                            title="Xem trước"
-                                                        >
-                                                            <ExternalLink size={14} />
-                                                        </Button>
-                                                    </a>
-                                                    {(user.role === 'admin' || user.id === post.created_by) && (
-                                                        <Button
-                                                            isIconOnly
-                                                            size="sm"
-                                                            variant="flat"
-                                                            className="bg-rose-50 text-rose-500 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-500 hover:text-white"
-                                                            onClick={() => handleDelete(post.id)}
-                                                            title="Xóa bài"
-                                                        >
-                                                            <Trash size={14} />
-                                                        </Button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Footer với phân trang */}
-                        <div className="px-5 py-4 bg-slate-50/30 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hiện:</p>
-                                    <select
-                                        className="bg-white border border-slate-200 rounded-lg text-[10px] font-bold px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer h-7"
-                                        value={limit}
-                                        onChange={handleLimitChange}
-                                    >
-                                        <option value={5}>5 dự án</option>
-                                        <option value={10}>10 dự án</option>
-                                        <option value={20}>20 dự án</option>
-                                        <option value={50}>50 dự án</option>
-                                    </select>
+            <DataTable
+                data={posts}
+                loading={loading}
+                minWidth="1000px"
+                columns={[
+                    {
+                        header: 'Dự án',
+                        render: (post) => (
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-8 rounded bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
+                                    {post.logo ? (
+                                        <img src={`${SERVER_URL}${post.logo}`} alt={post.title} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-blue-50/50">
+                                            <Globe size={14} className="text-blue-300" />
+                                        </div>
+                                    )}
                                 </div>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-l border-slate-200 pl-4 h-4 flex items-center">
-                                    Tổng: <span className="text-slate-600 ml-1">{totalItems}</span>
-                                </p>
+                                <div className="min-w-0 max-w-[280px]">
+                                    <h4 className="font-bold text-slate-800 text-xs leading-tight truncate" title={post.title}>
+                                        {post.title}
+                                    </h4>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+                                        /{post.slug || post.id}
+                                    </p>
+                                </div>
                             </div>
-
-                            <Pagination
-                                total={totalPages}
-                                page={page}
-                                onChange={(p) => setPage(p)}
-                                showControls
-                                color="primary"
-                                radius="lg"
+                        )
+                    },
+                    {
+                        header: 'Phân loại',
+                        render: (post) => (
+                            <div className="flex flex-col">
+                                <span className="text-[9px] font-bold text-blue-600 bg-blue-50/80 w-fit px-1.5 py-0.5 rounded border border-blue-100/50 mb-1 leading-none">{post.category?.name || 'Chưa phân loại'}</span>
+                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter leading-none">@{post.creator?.username || 'vô danh'}</span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Ngày tạo',
+                        render: (post) => (
+                            <div className="text-[10px] font-bold text-slate-500 whitespace-nowrap">
+                                {new Date(post.created_at).toLocaleDateString('vi-VN')}
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Trạng thái',
+                        render: (post) => (
+                            <Chip
+                                startContent={post.is_approved ? <CheckCircle size={10} /> : <Clock size={10} />}
+                                variant="flat"
+                                color={post.is_approved ? "success" : "warning"}
                                 size="sm"
-                                classNames={{
-                                    cursor: "bg-blue-600 shadow-md shadow-blue-100",
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )}
+                                className="rounded font-black text-[8px] uppercase h-5"
+                            >
+                                {post.is_approved ? 'Đã duyệt' : 'Chờ duyệt'}
+                            </Chip>
+                        )
+                    },
+                    {
+                        header: 'Lượt xem',
+                        align: 'center',
+                        render: (post) => (
+                            <div className="inline-flex items-center gap-1 text-blue-600 font-bold text-[10px] bg-blue-50/50 border border-blue-100/50 px-2 py-0.5 rounded-full">
+                                <Eye size={10} /> {post.view_count || 0}
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Thao tác',
+                        align: 'right',
+                        render: (post) => (
+                            <div className="flex items-center justify-end gap-1.5">
+                                {user.role === 'admin' && !post.is_approved && (
+                                    <Button
+                                        size="sm"
+                                        variant="flat"
+                                        className="bg-emerald-50 text-emerald-600 font-bold text-[9px] uppercase h-7 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={() => handleApprove(post.id)}
+                                    >
+                                        Duyệt
+                                    </Button>
+                                )}
+                                <Button
+                                    as={Link}
+                                    to={`/editor/${post.id}`}
+                                    isIconOnly
+                                    size="sm"
+                                    variant="flat"
+                                    className="bg-blue-50 text-blue-600 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    title="Sửa nội dung"
+                                >
+                                    <Edit size={14} />
+                                </Button>
+                                <a href={`/site/${post.slug || post.id}`} target="_blank" rel="noopener noreferrer">
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        variant="flat"
+                                        className="bg-slate-50 text-slate-600 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity border border-slate-200/50"
+                                        title="Xem trước"
+                                    >
+                                        <ExternalLink size={14} />
+                                    </Button>
+                                </a>
+                                {(user.role === 'admin' || user.id === post.created_by) && (
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        variant="flat"
+                                        className="bg-rose-50 text-rose-500 rounded-lg h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-500 hover:text-white"
+                                        onClick={() => handleDelete(post.id)}
+                                        title="Xóa bài"
+                                    >
+                                        <Trash size={14} />
+                                    </Button>
+                                )}
+                            </div>
+                        )
+                    }
+                ]}
+                pagination={{
+                    page,
+                    totalPages,
+                    totalItems,
+                    limit,
+                    onChange: setPage,
+                    onLimitChange: (l) => {
+                        setLimit(l);
+                        setPage(1);
+                    },
+                    unitName: 'dự án'
+                }}
+            />
         </AdminLayout>
     );
 }

@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
-import { Pagination } from "@heroui/pagination";
 import { Users, Trash, UserCog, Shield, Mail, Phone, Plus, Search, Calendar } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
+import { DataTable } from '../components/Common/DataTable';
 
 export function UserManagementPage() {
     const [users, setUsers] = useState<any[]>([]);
@@ -85,11 +85,6 @@ export function UserManagementPage() {
         }
         fetchUsers();
     }, [page, limit, searchTerm, startDate, endDate]);
-
-    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setLimit(Number(e.target.value));
-        setPage(1);
-    };
 
     const handleCreateUser = async () => {
         if (!newUsername || !newPassword) return;
@@ -263,136 +258,103 @@ export function UserManagementPage() {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="flex justify-center py-20">
-                    <div className="w-8 h-8 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse min-w-[800px]">
-                                <thead>
-                                    <tr className="bg-slate-50/50 border-b border-slate-100">
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Người dùng</th>
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Liên hệ</th>
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Vai trò</th>
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest text-right">Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50">
-                                    {users.map((user) => (
-                                        <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="relative flex-shrink-0">
-                                                        {user.avatar ? (
-                                                            <img
-                                                                src={`${SERVER_URL}${user.avatar}`}
-                                                                alt={user.username}
-                                                                className="w-10 h-10 rounded-lg object-cover shadow-sm ring-2 ring-white"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center font-black text-blue-600 uppercase shadow-sm ring-2 ring-white">
-                                                                {user.username.substring(0, 1)}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <h4 className="font-bold text-slate-800 text-xs leading-tight">
-                                                            {user.fullName || user.username}
-                                                        </h4>
-                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">
-                                                            @{user.username}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3 text-[12px]">
-                                                <div className="flex flex-col gap-0.5">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Mail size={10} className="text-slate-400" />
-                                                        <span className="text-slate-600 font-medium">{user.email || 'N/A'}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Phone size={10} className="text-slate-400" />
-                                                        <span className="text-slate-500 text-xs">{user.phone || 'N/A'}</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all ${user.role === 'admin' ? 'bg-blue-50 text-blue-600 border-blue-100 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200 opacity-70'}`}>
-                                                    {user.role === 'admin' ? <Shield size={9} /> : <div className="w-2 h-2 rounded-full bg-slate-400 scale-75"></div>}
-                                                    {user.role}
-                                                </span>
-                                            </td>
-                                            <td className="px-4 py-3 text-right">
-                                                <div className="flex items-center justify-end gap-1.5">
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="flat"
-                                                        className="bg-blue-50 text-blue-600 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        onPress={() => startEdit(user)}
-                                                    >
-                                                        <UserCog size={14} />
-                                                    </Button>
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="flat"
-                                                        className="bg-rose-50 text-rose-500 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        onPress={() => handleDelete(user.id)}
-                                                    >
-                                                        <Trash size={14} />
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Footer với phân trang góc phải */}
-                        <div className="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <DataTable
+                data={users}
+                loading={loading}
+                minWidth="800px"
+                columns={[
+                    {
+                        header: 'Người dùng',
+                        render: (user) => (
                             <div className="flex items-center gap-3">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                    Hiện:
-                                </p>
-                                <select
-                                    className="bg-white border border-slate-200 rounded text-[10px] font-bold px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer"
-                                    value={limit}
-                                    onChange={handleLimitChange}
-                                >
-                                    <option value={5}>5 mục</option>
-                                    <option value={10}>10 mục</option>
-                                    <option value={20}>20 mục</option>
-                                    <option value={50}>50 mục</option>
-                                </select>
-                                <p className="text-[10px] font-bold text-slate-400">
-                                    Tổng: {totalItems}
-                                </p>
+                                <div className="relative flex-shrink-0">
+                                    {user.avatar ? (
+                                        <img
+                                            src={`${SERVER_URL}${user.avatar}`}
+                                            alt={user.username}
+                                            className="w-10 h-10 rounded-lg object-cover shadow-sm ring-2 ring-white"
+                                        />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center font-black text-blue-600 uppercase shadow-sm ring-2 ring-white">
+                                            {user.username.substring(0, 1)}
+                                        </div>
+                                    )}
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-slate-800 text-xs leading-tight">
+                                        {user.fullName || user.username}
+                                    </h4>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">
+                                        @{user.username}
+                                    </p>
+                                </div>
                             </div>
-
-                            <div className="flex items-center">
-                                <Pagination
-                                    total={totalPages}
-                                    page={page}
-                                    onChange={(p) => setPage(p)}
-                                    showControls
-                                    color="primary"
-                                    radius="sm"
+                        )
+                    },
+                    {
+                        header: 'Liên hệ',
+                        render: (user) => (
+                            <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-1.5">
+                                    <Mail size={10} className="text-slate-400" />
+                                    <span className="text-slate-600 font-medium text-[12px]">{user.email || 'N/A'}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    <Phone size={10} className="text-slate-400" />
+                                    <span className="text-slate-500 text-xs">{user.phone || 'N/A'}</span>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Vai trò',
+                        render: (user) => (
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all ${user.role === 'admin' ? 'bg-blue-50 text-blue-600 border-blue-100 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200 opacity-70'}`}>
+                                {user.role === 'admin' ? <Shield size={9} /> : <div className="w-2 h-2 rounded-full bg-slate-400 scale-75"></div>}
+                                {user.role}
+                            </span>
+                        )
+                    },
+                    {
+                        header: 'Hành động',
+                        align: 'right',
+                        render: (user) => (
+                            <div className="flex items-center justify-end gap-1.5">
+                                <Button
+                                    isIconOnly
                                     size="sm"
-                                    classNames={{
-                                        cursor: "bg-blue-600 shadow-md shadow-blue-100",
-                                    }}
-                                />
+                                    variant="flat"
+                                    className="bg-blue-50 text-blue-600 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onPress={() => startEdit(user)}
+                                >
+                                    <UserCog size={14} />
+                                </Button>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="flat"
+                                    className="bg-rose-50 text-rose-500 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onPress={() => handleDelete(user.id)}
+                                >
+                                    <Trash size={14} />
+                                </Button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+                        )
+                    }
+                ]}
+                pagination={{
+                    page,
+                    totalPages,
+                    totalItems,
+                    limit,
+                    onChange: setPage,
+                    onLimitChange: (l) => {
+                        setLimit(l);
+                        setPage(1);
+                    },
+                    unitName: 'mục'
+                }}
+            />
 
             {/* Create Modal */}
             <Modal

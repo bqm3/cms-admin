@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
-import { Pagination } from "@heroui/pagination";
-import { Plus, Trash, Edit, Tag, Image as ImageIcon, Link as LinkIcon, Upload, Search, Calendar } from 'lucide-react';
+import { Plus, Trash, Edit, Tag, Search, Calendar, Upload, Link as LinkIcon } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { formatDate } from "../utils/formatDate";
+import { DataTable } from '../components/Common/DataTable';
 
 export function CategoryManagementPage() {
     const [categories, setCategories] = useState<any[]>([]);
@@ -76,11 +76,6 @@ export function CategoryManagementPage() {
         }
         fetchCategories();
     }, [page, limit, searchTerm, startDate, endDate]);
-
-    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setLimit(Number(e.target.value));
-        setPage(1);
-    };
 
     const handleCreate = async () => {
         if (!name.trim()) return;
@@ -232,131 +227,95 @@ export function CategoryManagementPage() {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="flex justify-center py-20">
-                    <div className="w-8 h-8 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-slate-50/50 border-b border-slate-100">
-                                    <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">ID</th>
-                                    <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Tên danh mục</th>
-                                    <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Ngày tạo/cập nhật</th>
-                                    <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest text-right">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {categories.map((cat) => (
-                                    <tr key={cat.id} className="hover:bg-slate-50/50 transition-colors group">
-                                        <td className="px-4 py-3">
-                                            <span className="text-[9px] font-bold text-slate-400 font-mono">#{cat.id}</span>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded bg-blue-50 flex items-center justify-center overflow-hidden border border-blue-100/50 relative group/thumb">
-                                                    {cat.image ? (
-                                                        <img
-                                                            src={cat.image.startsWith('/uploads/') ? `${SERVER_URL}${cat.image}` : cat.image}
-                                                            alt={cat.name}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <Tag size={16} className="text-blue-500" />
-                                                    )}
-                                                    {cat.image && (
-                                                        <div
-                                                            className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
-                                                            onClick={() => window.open(cat.image.startsWith('/uploads/') ? `${SERVER_URL}${cat.image}` : cat.image, '_blank')}
-                                                        >
-                                                            <Search size={12} className="text-white" />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <p className="font-bold text-slate-700 text-xs">{cat.name}</p>
-                                                    {cat.slug && (
-                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{cat.slug}</p>
-                                                    )}
-                                                </div>
-
-                                            </div>
-
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div>
-                                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{formatDate(cat.created_at)}</p>
-                                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{formatDate(cat.updated_at)}</p>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3 text-right">
-                                            <div className="flex items-center justify-end gap-1.5">
-                                                <Button
-                                                    isIconOnly
-                                                    variant="flat"
-                                                    size="sm"
-                                                    className="bg-blue-50 text-blue-600 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                    onPress={() => startEdit(cat)}
-                                                >
-                                                    <Edit size={14} />
-                                                </Button>
-                                                <Button
-                                                    isIconOnly
-                                                    variant="flat"
-                                                    size="sm"
-                                                    className="bg-rose-50 text-rose-500 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                    onPress={() => handleDelete(cat.id)}
-                                                >
-                                                    <Trash size={14} />
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        {/* Footer với phân trang góc phải */}
-                        <div className="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <DataTable
+                data={categories}
+                loading={loading}
+                columns={[
+                    {
+                        header: 'ID',
+                        render: (cat) => <span className="text-[9px] font-bold text-slate-400 font-mono">#{cat.id}</span>
+                    },
+                    {
+                        header: 'Tên danh mục',
+                        render: (cat) => (
                             <div className="flex items-center gap-3">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                    Hiện:
-                                </p>
-                                <select
-                                    className="bg-white border border-slate-200 rounded text-[10px] font-bold px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer"
-                                    value={limit}
-                                    onChange={handleLimitChange}
-                                >
-                                    <option value={5}>5 mục</option>
-                                    <option value={10}>10 mục</option>
-                                    <option value={20}>20 mục</option>
-                                    <option value={50}>50 mục</option>
-                                </select>
-                                <p className="text-[10px] font-bold text-slate-400">
-                                    Tổng: {totalItems}
-                                </p>
+                                <div className="w-10 h-10 rounded bg-blue-50 flex items-center justify-center overflow-hidden border border-blue-100/50 relative group/thumb">
+                                    {cat.image ? (
+                                        <img
+                                            src={cat.image.startsWith('/uploads/') ? `${SERVER_URL}${cat.image}` : cat.image}
+                                            alt={cat.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <Tag size={16} className="text-blue-500" />
+                                    )}
+                                    {cat.image && (
+                                        <div
+                                            className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                                            onClick={() => window.open(cat.image.startsWith('/uploads/') ? `${SERVER_URL}${cat.image}` : cat.image, '_blank')}
+                                        >
+                                            <Search size={12} className="text-white" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div>
+                                    <p className="font-bold text-slate-700 text-xs">{cat.name}</p>
+                                    {cat.slug && (
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{cat.slug}</p>
+                                    )}
+                                </div>
                             </div>
-
-                            <div className="flex items-center">
-                                <Pagination
-                                    total={totalPages}
-                                    page={page}
-                                    onChange={(p) => setPage(p)}
-                                    showControls
-                                    color="primary"
-                                    radius="sm"
+                        )
+                    },
+                    {
+                        header: 'Ngày tạo/cập nhật',
+                        render: (cat) => (
+                            <div>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{formatDate(cat.created_at)}</p>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{formatDate(cat.updated_at)}</p>
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Hành động',
+                        align: 'right',
+                        render: (cat) => (
+                            <div className="flex items-center justify-end gap-1.5">
+                                <Button
+                                    isIconOnly
+                                    variant="flat"
                                     size="sm"
-                                    classNames={{
-                                        cursor: "bg-blue-600 shadow-md shadow-blue-100",
-                                    }}
-                                />
+                                    className="bg-blue-50 text-blue-600 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onPress={() => startEdit(cat)}
+                                >
+                                    <Edit size={14} />
+                                </Button>
+                                <Button
+                                    isIconOnly
+                                    variant="flat"
+                                    size="sm"
+                                    className="bg-rose-50 text-rose-500 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onPress={() => handleDelete(cat.id)}
+                                >
+                                    <Trash size={14} />
+                                </Button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+                        )
+                    }
+                ]}
+                pagination={{
+                    page,
+                    totalPages,
+                    totalItems,
+                    limit,
+                    onChange: setPage,
+                    onLimitChange: (l) => {
+                        setLimit(l);
+                        setPage(1);
+                    },
+                    unitName: 'mục'
+                }}
+            />
 
             {/* Create Category Modal */}
             <Modal

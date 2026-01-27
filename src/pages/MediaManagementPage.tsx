@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
-import { Pagination } from "@heroui/pagination";
 import { Plus, Trash, Image as ImageIcon, Link as LinkIcon, Upload, Search, Copy, Check, Calendar } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { formatDate } from "../utils/formatDate";
+import { DataTable } from '../components/Common/DataTable';
 
 export function MediaManagementPage() {
     const [media, setMedia] = useState<any[]>([]);
@@ -60,11 +60,6 @@ export function MediaManagementPage() {
     useEffect(() => {
         fetchMedia();
     }, [page, limit, searchTerm, startDate, endDate]);
-
-    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setLimit(Number(e.target.value));
-        setPage(1); // Reset to first page when limit changes
-    };
 
     const handleCreate = async () => {
         try {
@@ -188,127 +183,96 @@ export function MediaManagementPage() {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="flex justify-center py-20">
-                    <div className="w-8 h-8 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse min-w-[900px]">
-                                <thead>
-                                    <tr className="bg-slate-50/50 border-b border-slate-100">
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Ảnh</th>
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Thông tin ảnh</th>
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Loại</th>
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest">Ngày tạo</th>
-                                        <th className="px-4 py-4 text-[9px] font-black uppercase text-slate-400 tracking-widest text-right">Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50">
-                                    {media.map((m) => (
-                                        <tr key={m.id} className="hover:bg-slate-50/50 transition-colors group">
-                                            <td className="px-4 py-3">
-                                                <div className="w-12 h-12 rounded bg-slate-50 overflow-hidden border border-slate-100 shadow-sm relative group/thumb">
-                                                    <img
-                                                        src={m.url.startsWith('/uploads/') ? `${SERVER_URL}${m.url}` : m.url}
-                                                        alt={m.name}
-                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover/thumb:scale-110"
-                                                    />
-                                                    <div
-                                                        className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
-                                                        onClick={() => window.open(m.url.startsWith('/uploads/') ? `${SERVER_URL}${m.url}` : m.url, '_blank')}
-                                                    >
-                                                        <Search size={14} className="text-white" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex flex-col gap-0.5 max-w-xs">
-                                                    <p className="font-bold text-slate-700 truncate text-xs">{m.name}</p>
-                                                    <div className="flex items-center gap-2 group/link cursor-pointer" onClick={() => copyToClipboard(m.url, m.id)}>
-                                                        <p className="text-[10px] text-slate-400 truncate flex-1 font-mono">{m.url}</p>
-                                                        {copiedId === m.id ? (
-                                                            <Check size={10} className="text-emerald-500 shrink-0" />
-                                                        ) : (
-                                                            <Copy size={10} className="text-slate-300 group-hover/link:text-blue-500 shrink-0 transition-colors" />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${m.type === 'upload'
-                                                    ? 'bg-blue-50 text-blue-600'
-                                                    : 'bg-amber-50 text-amber-600'
-                                                    }`}>
-                                                    {m.type === 'upload' ? 'Upload' : 'Link'}
-                                                </span>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center gap-1.5 text-slate-500">
-                                                    <Calendar size={12} className="text-slate-300" />
-                                                    <span className="text-[10px] font-medium">{formatDate(m.created_at)}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3 text-right">
-                                                <div className="flex items-center justify-end gap-1.5">
-                                                    <Button
-                                                        isIconOnly
-                                                        variant="flat"
-                                                        size="sm"
-                                                        className="bg-rose-50 text-rose-500 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        onPress={() => handleDelete(m.id)}
-                                                    >
-                                                        <Trash size={14} />
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Footer với phân trang góc phải */}
-                        <div className="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
-                            <div className="flex items-center gap-3">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                    Hiện:
-                                </p>
-                                <select
-                                    className="bg-white border border-slate-200 rounded text-[10px] font-bold px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer"
-                                    value={limit}
-                                    onChange={handleLimitChange}
-                                >
-                                    <option value={5}>5 ảnh</option>
-                                    <option value={10}>10 ảnh</option>
-                                    <option value={20}>20 ảnh</option>
-                                    <option value={50}>50 ảnh</option>
-                                </select>
-                                <p className="text-[10px] font-bold text-slate-400">
-                                    Tổng: {totalItems}
-                                </p>
-                            </div>
-
-                            <div className="flex items-center">
-                                <Pagination
-                                    total={totalPages}
-                                    page={page}
-                                    onChange={(p) => setPage(p)}
-                                    showControls
-                                    color="primary"
-                                    radius="sm"
-                                    size="sm"
-                                    classNames={{
-                                        cursor: "bg-blue-600 shadow-md shadow-blue-100",
-                                    }}
+            <DataTable
+                data={media}
+                loading={loading}
+                minWidth="900px"
+                columns={[
+                    {
+                        header: 'Ảnh',
+                        render: (m) => (
+                            <div className="w-12 h-12 rounded bg-slate-50 overflow-hidden border border-slate-100 shadow-sm relative group/thumb">
+                                <img
+                                    src={m.url.startsWith('/uploads/') ? `${SERVER_URL}${m.url}` : m.url}
+                                    alt={m.name}
+                                    className="w-full h-full object-cover transition-transform duration-300 group-hover/thumb:scale-110"
                                 />
+                                <div
+                                    className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                                    onClick={() => window.open(m.url.startsWith('/uploads/') ? `${SERVER_URL}${m.url}` : m.url, '_blank')}
+                                >
+                                    <Search size={14} className="text-white" />
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+                        )
+                    },
+                    {
+                        header: 'Thông tin ảnh',
+                        render: (m) => (
+                            <div className="flex flex-col gap-0.5 max-w-xs">
+                                <p className="font-bold text-slate-700 truncate text-xs">{m.name}</p>
+                                <div className="flex items-center gap-2 group/link cursor-pointer" onClick={() => copyToClipboard(m.url, m.id)}>
+                                    <p className="text-[10px] text-slate-400 truncate flex-1 font-mono">{m.url}</p>
+                                    {copiedId === m.id ? (
+                                        <Check size={10} className="text-emerald-500 shrink-0" />
+                                    ) : (
+                                        <Copy size={10} className="text-slate-300 group-hover/link:text-blue-500 shrink-0 transition-colors" />
+                                    )}
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Loại',
+                        render: (m) => (
+                            <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${m.type === 'upload'
+                                ? 'bg-blue-50 text-blue-600'
+                                : 'bg-amber-50 text-amber-600'
+                                }`}>
+                                {m.type === 'upload' ? 'Upload' : 'Link'}
+                            </span>
+                        )
+                    },
+                    {
+                        header: 'Ngày tạo',
+                        render: (m) => (
+                            <div className="flex items-center gap-1.5 text-slate-500">
+                                <Calendar size={12} className="text-slate-300" />
+                                <span className="text-[10px] font-medium">{formatDate(m.created_at)}</span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: 'Hành động',
+                        align: 'right',
+                        render: (m) => (
+                            <div className="flex items-center justify-end gap-1.5">
+                                <Button
+                                    isIconOnly
+                                    variant="flat"
+                                    size="sm"
+                                    className="bg-rose-50 text-rose-500 rounded h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onPress={() => handleDelete(m.id)}
+                                >
+                                    <Trash size={14} />
+                                </Button>
+                            </div>
+                        )
+                    }
+                ]}
+                pagination={{
+                    page,
+                    totalPages,
+                    totalItems,
+                    limit,
+                    onChange: setPage,
+                    onLimitChange: (l) => {
+                        setLimit(l);
+                        setPage(1);
+                    },
+                    unitName: 'ảnh'
+                }}
+            />
 
             <Modal isOpen={isOpen} onClose={onClose} backdrop="blur" classNames={{ base: "rounded-xl bg-slate-50", header: "border-b border-slate-100 p-6", body: "p-6", footer: "border-t border-slate-100 p-4" }}>
                 <ModalContent>
