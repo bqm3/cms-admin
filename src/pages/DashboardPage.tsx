@@ -150,6 +150,46 @@ export function DashboardPage() {
                                 }}
                             />
                         </div>
+                        <div className="flex flex-col md:flex-row gap-3 items-center">
+                            <div className="flex items-center gap-3 bg-white px-4 h-10 border border-slate-200 rounded-lg shadow-sm flex-1 w-full">
+                                <Calendar size={16} className="text-slate-400" />
+                                <div className="flex items-center gap-2 flex-1">
+                                    <span className="text-[9px] font-black text-slate-400 uppercase">Từ</span>
+                                    <input
+                                        type="date"
+                                        className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
+                                        value={startDate}
+                                        onChange={(e) => {
+                                            setStartDate(e.target.value);
+                                            setPage(1);
+                                        }}
+                                    />
+                                    <span className="text-[9px] font-black text-slate-400 uppercase">Đến</span>
+                                    <input
+                                        type="date"
+                                        className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
+                                        value={endDate}
+                                        onChange={(e) => {
+                                            setEndDate(e.target.value);
+                                            setPage(1);
+                                        }}
+                                    />
+                                </div>
+                                {(startDate || endDate) && (
+                                    <button
+                                        onClick={() => {
+                                            setStartDate('');
+                                            setEndDate('');
+                                            setPage(1);
+                                        }}
+                                        className="text-[9px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
+                                    >
+                                        Xóa lọc
+                                    </button>
+                                )}
+                            </div>
+                            <div className="md:w-56 hidden md:block"></div>
+                        </div>
                         <div className="w-full md:w-56">
                             <select
                                 value={selectedCategory}
@@ -169,46 +209,7 @@ export function DashboardPage() {
                     </div>
 
                     {/* Date Filters */}
-                    <div className="flex flex-col md:flex-row gap-3 items-center">
-                        <div className="flex items-center gap-3 bg-white px-4 h-10 border border-slate-200 rounded-lg shadow-sm flex-1 w-full">
-                            <Calendar size={16} className="text-slate-400" />
-                            <div className="flex items-center gap-2 flex-1">
-                                <span className="text-[9px] font-black text-slate-400 uppercase">Từ</span>
-                                <input
-                                    type="date"
-                                    className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
-                                    value={startDate}
-                                    onChange={(e) => {
-                                        setStartDate(e.target.value);
-                                        setPage(1);
-                                    }}
-                                />
-                                <span className="text-[9px] font-black text-slate-400 uppercase">Đến</span>
-                                <input
-                                    type="date"
-                                    className="bg-transparent border-none outline-none text-xs font-bold text-slate-600 w-full"
-                                    value={endDate}
-                                    onChange={(e) => {
-                                        setEndDate(e.target.value);
-                                        setPage(1);
-                                    }}
-                                />
-                            </div>
-                            {(startDate || endDate) && (
-                                <button
-                                    onClick={() => {
-                                        setStartDate('');
-                                        setEndDate('');
-                                        setPage(1);
-                                    }}
-                                    className="text-[9px] font-black text-rose-500 uppercase hover:text-rose-600 transition-colors"
-                                >
-                                    Xóa lọc
-                                </button>
-                            )}
-                        </div>
-                        <div className="md:w-56 hidden md:block"></div>
-                    </div>
+
                 </div>
             </div>
 
