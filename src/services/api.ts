@@ -19,7 +19,32 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+    config.withCredentials = true; // Always send cookies for refresh token support
     return config;
 });
+
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const res = await axios.post(`${API_BASE_URL}/auth/refresh`, {}, { withCredentials: true });
+                const { token } = res.data;
+                localStorage.setItem('token', token);
+                api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                originalRequest.headers['Authorization'] = `Bearer ${token}`;
+                return api(originalRequest);
+            } catch (refreshError) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+                return Promise.reject(refreshError);
+            }
+        }
+        return Promise.reject(error);
+    }
+);
 
 export default api;

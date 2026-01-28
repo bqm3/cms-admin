@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@heroui/button';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -22,10 +23,16 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
+    const handleLogout = async () => {
+        try {
+            await api.post('/auth/logout');
+        } catch (err) {
+            console.error('Logout error:', err);
+        } finally {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            navigate('/login');
+        }
     };
 
     const menuItems = [
