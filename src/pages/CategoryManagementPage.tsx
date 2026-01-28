@@ -269,6 +269,9 @@ export function CategoryManagementPage() {
             <Modal
                 isOpen={createModal.isOpen}
                 onClose={createModal.onClose}
+                hideCloseButton
+                isDismissable={false}
+                isKeyboardDismissDisabled={true}
                 backdrop="blur"
                 classNames={{
                     base: "rounded-2xl bg-slate-50",
@@ -310,6 +313,9 @@ export function CategoryManagementPage() {
             <Modal
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
+                hideCloseButton
+                isDismissable={false}
+                isKeyboardDismissDisabled={true}
                 backdrop="blur"
                 classNames={{
                     base: "rounded-2xl bg-slate-50",

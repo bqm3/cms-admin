@@ -425,7 +425,7 @@ export function MediaManagementPage() {
             />
 
             {/* Add Media Modal */}
-            <Modal size="xl" isOpen={mediaModal.isOpen} onClose={mediaModal.onClose} backdrop="blur" classNames={{ base: "rounded-2xl bg-slate-50", header: "border-b border-slate-100 p-6", body: "p-6", footer: "border-t border-slate-100 p-4" }}>
+            <Modal size="xl" hideCloseButton isDismissable={false} isKeyboardDismissDisabled={true} isOpen={mediaModal.isOpen} onClose={mediaModal.onClose} backdrop="blur" classNames={{ base: "rounded-2xl bg-slate-50", header: "border-b border-slate-100 p-6", body: "p-6", footer: "border-t border-slate-100 p-4" }}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">
                         <h2 className="text-xl font-bold text-slate-800 tracking-tight">Thêm ảnh vào thư viện</h2>
@@ -535,7 +535,7 @@ export function MediaManagementPage() {
             </Modal>
 
             {/* Manage Media Types Modal */}
-            <Modal size="lg" isOpen={typeManagementModal.isOpen} onClose={typeManagementModal.onClose} backdrop="blur" classNames={{ base: "rounded-2xl bg-slate-50", header: "border-b border-slate-100 p-6", body: "p-0", footer: "border-t border-slate-100 p-4" }}>
+            <Modal size="lg" hideCloseButton isDismissable={false} isKeyboardDismissDisabled={true} isOpen={typeManagementModal.isOpen} onClose={typeManagementModal.onClose} backdrop="blur" classNames={{ base: "rounded-2xl bg-slate-50", header: "border-b border-slate-100 p-6", body: "p-0", footer: "border-t border-slate-100 p-4" }}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">
                         <h2 className="text-xl font-bold text-slate-800 tracking-tight">Quản lý loại ảnh</h2>

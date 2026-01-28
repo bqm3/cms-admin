@@ -360,6 +360,9 @@ export function UserManagementPage() {
             <Modal
                 isOpen={createModal.isOpen}
                 onClose={createModal.onClose}
+                hideCloseButton
+                isDismissable={false}
+                isKeyboardDismissDisabled={true}
                 size="2xl"
                 scrollBehavior="inside"
                 backdrop="blur"
@@ -465,6 +468,9 @@ export function UserManagementPage() {
             <Modal
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
+                hideCloseButton
+                isDismissable={false}
+                isKeyboardDismissDisabled={true}
                 size="2xl"
                 scrollBehavior="inside"
                 backdrop="blur"
