@@ -158,12 +158,7 @@ export const Toolbox = () => {
       name: "Popup Offer",
       icon: "🪟",
       component: (
-        <Element
-          is={PopupOfferComponent}
-          canvas
-          delayMs={5000}
-          teaserText="GET 5% OFF!"
-        />
+        <PopupOfferComponent delayMs={5000} teaserText="GET DISCOUNT!" />
       ),
     },
   ];

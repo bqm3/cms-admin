@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/jsx-sort-props */
 import React, { useEffect, useMemo, useState } from "react";
-import { Element, useNode } from "@craftjs/core";
+import { Element, useNode, useEditor } from "@craftjs/core";
 import { X } from "lucide-react";
 
 import { Container } from "./Container";
@@ -31,10 +31,8 @@ type PopupOfferComponentProps = {
   dismissOnOverlayClick?: boolean;
   zIndex?: number;
 
-  // ✅ Editor: hiện khung preview để edit
   showEditorPreview?: boolean;
   syncTeaserWithTitle?: boolean;
-  titleNodeId?: string; // id node heading trong modal
 };
 
 export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
@@ -47,7 +45,7 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
   openOnce = true,
 
   teaserEnabled = true,
-  teaserText = "GET 5% OFF!",
+  teaserText = "GET DISCOUNT!",
   teaserWidth = 260,
   teaserOffsetX = 18,
   teaserOffsetY = 18,
@@ -60,12 +58,57 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
 
   showEditorPreview = true,
   syncTeaserWithTitle = true,
-  titleNodeId = "popup-offer-title",
 }) => {
-  const editorEnabled = useEditorMode(); // true=Editor
+  const editorEnabled = useEditorMode();
+  const { query } = useEditor();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTeaserOpen, setIsTeaserOpen] = useState(false);
+
+  const {
+    connectors: { connect, drag },
+    selected,
+    id: nodeId,
+  } = useNode((node) => ({
+    selected: node.events.selected,
+  }));
+
+  // ✅ Tự động sync teaser text với heading đầu tiên trong popup
+  const actualTeaserText = useMemo(() => {
+    if (!syncTeaserWithTitle) return teaserText;
+
+    try {
+      const node = query.node(nodeId).get();
+      if (!node?.data?.nodes || node.data.nodes.length === 0) {
+        return teaserText;
+      }
+
+      // Tìm Element canvas container
+      const canvasNodeId = node.data.nodes[0];
+      const canvasNode = query.node(canvasNodeId).get();
+      
+      if (!canvasNode?.data?.nodes || canvasNode.data.nodes.length === 0) {
+        return teaserText;
+      }
+
+      // Tìm HeadingComponent đầu tiên
+      for (const childId of canvasNode.data.nodes) {
+        const childNode = query.node(childId).get();
+        const displayName = childNode?.data?.displayName;
+        
+        if (displayName === "Heading" || displayName === "HeadingComponent") {
+          const headingText = childNode?.data?.props?.text;
+          if (headingText && typeof headingText === "string") {
+            return headingText;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("Could not sync teaser with title:", err);
+    }
+
+    return teaserText;
+  }, [syncTeaserWithTitle, teaserText, nodeId, query]);
 
   const seen = useMemo(() => {
     if (!openOnce) return false;
@@ -86,14 +129,12 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
   useEffect(() => {
     if (!enabled) return;
 
-    // ✅ Editor: luôn hiện teaser + (tuỳ) editor preview; không auto fixed modal
     if (editorEnabled) {
       setIsModalOpen(false);
       setIsTeaserOpen(true);
       return;
     }
 
-    // Runtime
     if (seen) {
       setIsModalOpen(false);
       setIsTeaserOpen(true);
@@ -110,7 +151,6 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
     );
 
     return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, editorEnabled, seen, delayMs]);
 
   const openModal = () => {
@@ -125,18 +165,9 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
     markSeen();
   };
 
-  // ✅ Craft connectors: connect cho wrapper, drag CHỈ cho handle
-  const {
-    connectors: { connect, drag },
-    selected,
-  } = useNode((node) => ({
-    selected: node.events.selected,
-  }));
-
   if (!enabled) return null;
 
-  // ============= 1) EDITOR PREVIEW (inline, không fixed) =============
-  // ✅ đây là phần giúp bạn click/edit Text/Button/Input bên trong popup như bình thường
+  // ============= 1) EDITOR PREVIEW =============
   const EditorPreview = () => {
     if (!editorEnabled || !showEditorPreview) return null;
 
@@ -148,7 +179,6 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
             selected ? "outline outline-2 outline-indigo-500/60" : "",
           ].join(" ")}
         >
-          {/* drag handle */}
           <div
             ref={(ref: any) => drag(ref)}
             className="mb-3 cursor-grab select-none inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-200 text-xs"
@@ -163,14 +193,13 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
             </button>
           </div>
 
-          {/* modal preview box (relative) */}
           <div
             className="relative bg-white text-black shadow-2xl"
             style={{ width: "100%", borderRadius: modalRadius }}
           >
             <div className="p-8">
               <Element
-                id="popup-offer-v2-content"
+                id="popup-offer-content"
                 is={Container}
                 canvas
                 background="transparent"
@@ -185,10 +214,8 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
                 borderRadius={0}
                 className="min-h-[160px]"
               >
-                {/* default content */}
-                <Element
-                  id={titleNodeId}
-                  is={HeadingComponent}
+                {/* Default children */}
+                <HeadingComponent
                   level="h2"
                   text="UNLOCK 5% OFF"
                   align="center"
@@ -213,13 +240,25 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
             Tip: click từng text/button bên trong box trắng để select & edit.
           </div>
         </div>
+
+        {/* ✅ Preview teaser synced */}
+        {syncTeaserWithTitle && (
+          <div className="mt-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+            <div className="text-xs text-blue-300 font-semibold mb-1">
+              Teaser Preview (synced with heading):
+            </div>
+            <div className="text-sm text-white font-bold">
+              {actualTeaserText}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
 
-  // ============= 2) RUNTIME TEASER (fixed) =============
+  // ============= 2) RUNTIME TEASER =============
   const RuntimeTeaser = () => {
-    if (editorEnabled) return null; // editor đã có preview rồi
+    if (editorEnabled) return null;
     if (!teaserEnabled || !isTeaserOpen) return null;
 
     return (
@@ -250,7 +289,7 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
               type="button"
               onClick={openModal}
             >
-              {teaserText}
+              {actualTeaserText}
             </button>
           </div>
         </div>
@@ -258,9 +297,9 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
     );
   };
 
-  // ============= 3) RUNTIME MODAL (fixed) =============
+  // ============= 3) RUNTIME MODAL =============
   const RuntimeModal = () => {
-    if (editorEnabled) return null; // editor dùng preview để edit
+    if (editorEnabled) return null;
     if (!isModalOpen) return null;
 
     return (
@@ -283,7 +322,7 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
           onClick={(e) => e.stopPropagation()}
         >
           <button
-            className="absolute right-3 top-3 p-2 rounded-full hover:bg-black/5"
+            className="absolute right-3 top-3 p-2 rounded-full hover:bg-black/5 z-10"
             onClick={closeModalToTeaser}
             aria-label="Close modal"
             type="button"
@@ -292,12 +331,9 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
           </button>
 
           <div className="p-8">
-            {/* ✅ runtime cũng dùng chung content tree đã build trong editor */}
             <div className="pointer-events-auto">
-              {/* NOTE: runtime chỉ render tree đã lưu trong state của Craft */}
-              {/* Craft sẽ serialize/deserialize được nếu bạn đã lưu nodes */}
               <Element
-                id="popup-offer-v2-content-runtime"
+                id="popup-offer-content"
                 is={Container}
                 canvas
                 background="transparent"
@@ -311,25 +347,7 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
                 gap={14}
                 borderRadius={0}
                 className="min-h-[160px]"
-              >
-                {/* fallback nếu runtime chưa có tree */}
-                <HeadingComponent
-                  level="h2"
-                  text="UNLOCK 5% OFF"
-                  align="center"
-                  color="#000000"
-                />
-                <TextComponent
-                  fontSize={14}
-                  text="Sign up to receive 5% off..."
-                  fontWeight="400"
-                  textAlign="center"
-                  color="rgba(0,0,0,.75)"
-                />
-                <InputComponent placeholder="Email" type="email" />
-                <ButtonComponent text="SIGN ME UP!" />
-                <ButtonComponent text="NO, THANKS" />
-              </Element>
+              />
             </div>
           </div>
         </div>
@@ -347,14 +365,14 @@ export const PopupOfferComponent: React.FC<PopupOfferComponentProps> & {
 };
 
 PopupOfferComponent.craft = {
-  displayName: "Popup Offer V2",
+  displayName: "Popup Offer",
   props: {
     enabled: true,
     delayMs: 5000,
     storageKey: "promo_popup_seen_v2",
     openOnce: true,
     teaserEnabled: true,
-    teaserText: "GET 5% OFF!",
+    teaserText: "GET DISCOUNT!",
     teaserWidth: 260,
     teaserOffsetX: 18,
     teaserOffsetY: 18,
@@ -365,6 +383,8 @@ PopupOfferComponent.craft = {
     zIndex: 80,
     showEditorPreview: true,
     syncTeaserWithTitle: true,
-    titleNodeId: "popup-offer-title",
+  },
+  rules: {
+    canDrag: () => true,
   },
 };
