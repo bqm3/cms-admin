@@ -38,6 +38,8 @@ import { AccordionComponent } from "./Craft/Components/AccordionComponent";
 import { SpacerComponent } from "./Craft/Components/SpacerComponent";
 import { Toolbox } from "./Craft/Toolbox";
 import { SettingsPanel } from "./Craft/SettingsPanel";
+import { PopupModalComponent } from "./Craft/Components/PopupModalComponent";
+import { InputComponent } from "./Craft/Components/InputComponent";
 
 // --- Frame Default ---
 import { DefaultNewPostFrame } from "./DefaultNewPostFrame";
@@ -50,6 +52,7 @@ import { PresetOffersGrid } from "./Craft/presets/PresetOffersGrid";
 import { PresetFAQ } from "./Craft/presets/PresetFAQ";
 import { PresetFooter } from "./Craft/presets/PresetFooter";
 import { SliderComponent } from "./Craft/Components/SliderComponent";
+import { PopupOfferComponent } from "./Craft/Components/PopupOfferComponent";
 
 // --- Sub Components ---
 const SaveButton = ({ postInfo, isNew }: any) => {
@@ -176,22 +179,30 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       }
 
       console.log("Serialized JSON length:", json.length);
+      if (postInfo.category_id == "") {
+        alert("Thiếu danh mục!");
+        return;
+      }
 
       const formData = new FormData();
       formData.append("title", (postInfo.title || "").trim());
-      formData.append("category_id", String(postInfo.categoryId ?? ""));
+      formData.append("category_id", String(postInfo.category_id ?? ""));
       formData.append("content", json);
       formData.append("view_count", String(postInfo.viewCount ?? 0));
       if (postInfo.logoFile) formData.append("logo", postInfo.logoFile);
 
       if (isNew) {
-        const res = await api.post("/posts", formData);
-        console.log("Post created:", res.data);
-        navigate(`/editor/${res.data.id}`);
+        if (isNew) {
+          const res = await api.post("/posts", formData);
+
+          alert("🎉 Xuất bản thành công!");
+          navigate(`/editor/${res.data.id}`);
+        }
       } else {
         const res = await api.put(`/posts/${id}`, formData);
         console.log("Post updated:", res.data);
-        alert("Cập nhật thành công!");
+
+        alert("✅ Cập nhật thành công!");
       }
     } catch (err: any) {
       console.error("SAVE ERROR:", err);
@@ -232,7 +243,6 @@ const ContentLoader = ({ content }: { content: string | null }) => {
   useEffect(() => {
     if (!content) return;
     try {
-      // ✅ Validate JSON before deserializing
       let parsed: any;
       try {
         parsed = JSON.parse(content);
@@ -241,13 +251,11 @@ const ContentLoader = ({ content }: { content: string | null }) => {
         return;
       }
 
-      // ✅ Validate structure
       if (!parsed || typeof parsed !== "object") {
         console.error("Parsed content is not an object");
         return;
       }
 
-      // If content is already in the format of serialized nodes
       if (typeof content === "string") {
         actions.deserialize(content);
       } else {
@@ -272,7 +280,7 @@ export function EditorPage() {
 
   const [postInfo, setPostInfo] = useState({
     title: "",
-    categoryId: "",
+    category_id: "",
     viewCount: 0,
     logoFile: null as File | null,
     logoUrl: "",
@@ -303,7 +311,7 @@ export function EditorPage() {
           const res = await api.get(`/posts/public/${id}`);
           setPostInfo({
             title: res.data.title,
-            categoryId: res.data.category_id || "",
+            category_id: res.data.category_id || "",
             viewCount: res.data.view_count || 0,
             logoFile: null,
             logoUrl: res.data.logo ? `${SERVER_URL}${res.data.logo}` : "",
@@ -358,6 +366,10 @@ export function EditorPage() {
           AccordionComponent,
           SpacerComponent,
           SliderComponent,
+          InputComponent,
+          PopupModalComponent,
+          PopupOfferComponent,
+
           // Preset
           PresetHeader,
           PresetHero,
@@ -414,9 +426,9 @@ export function EditorPage() {
                   <Layout size={14} className="text-blue-500" />
                   <select
                     className="bg-transparent outline-none text-[11px] font-bold cursor-pointer"
-                    value={postInfo.categoryId}
+                    value={postInfo.category_id}
                     onChange={(e) =>
-                      setPostInfo({ ...postInfo, categoryId: e.target.value })
+                      setPostInfo({ ...postInfo, category_id: e.target.value })
                     }
                   >
                     <option className="bg-zinc-900" value="">
@@ -442,9 +454,9 @@ export function EditorPage() {
             <div className="md:hidden">
               <select
                 className="h-8 px-2 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-zinc-200 outline-none"
-                value={postInfo.categoryId}
+                value={postInfo.category_id}
                 onChange={(e) =>
-                  setPostInfo({ ...postInfo, categoryId: e.target.value })
+                  setPostInfo({ ...postInfo, category_id: e.target.value })
                 }
               >
                 <option className="bg-zinc-900" value="">
@@ -460,10 +472,11 @@ export function EditorPage() {
 
             <label className="group cursor-pointer h-8 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
               <span
-                className={`w-6 h-6 grid place-items-center rounded border ${postInfo.logoFile
+                className={`w-6 h-6 grid place-items-center rounded border ${
+                  postInfo.logoFile
                     ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
                     : "bg-white/5 border-white/10 text-blue-300"
-                  }`}
+                }`}
               >
                 <ImageIcon size={14} />
               </span>

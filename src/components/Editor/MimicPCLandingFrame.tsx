@@ -16,19 +16,20 @@ export function MimicPCLandingFrame() {
       id="mimicpc-page"
       is={Container}
       canvas
-      padding={40}
+      padding={0}                 // ✅ bỏ padding để full width
+      margin={0}
       background="transparent"
       width="100%"
       height="100%"
-      className="min-h-full"
+      className="min-h-screen"    // ✅ full chiều cao màn hình
     >
-      {/* Header */}
+      {/* ✅ Header full width (không maxWidth xl ở wrapper) */}
       <Element
         id="sec-header"
         is={SectionComponent}
         canvas
-        maxWidth="xl"
-        paddingY={20}
+        maxWidth="full"           // ✅ full
+        paddingY={0}
         paddingX={0}
         background="transparent"
         overlay={{ enabled: false, color: "" }}
@@ -37,37 +38,24 @@ export function MimicPCLandingFrame() {
         <PresetHeader />
       </Element>
 
+      {/* ✅ Slider full width - KHÔNG render SliderComponent lần thứ 2 */}
       <Element
         id="sec-slider"
         is={SliderComponent}
         slides={[]}
-        height={""}
-        overlay={""}
+        height={"420px"}
+        overlay={"rgba(0,0,0,.35)"}
         autoPlay={false}
-        intervalMs={0}
+        intervalMs={3000}
         contentAlign={"center"}
-        maxContentWidth={""}
+        maxContentWidth={"xl"}    // nếu muốn text trong slider nằm gọn
         paddingX={0}
         paddingY={0}
-        titleColor={""}
-        subtitleColor={""}
-      >
-        <SliderComponent
-          slides={[]}
-          height={"400px"}
-          overlay={""}
-          autoPlay={false}
-          intervalMs={0}
-          contentAlign={"center"}
-          maxContentWidth={""}
-          paddingX={0}
-          paddingY={0}
-          titleColor={""}
-          subtitleColor={""}
-        />
-      </Element>
+        titleColor={"#fff"}
+        subtitleColor={"rgba(255,255,255,.85)"}
+      />
 
-      {/* Hero */}
+      {/* Hero (giữ xl) */}
       <Element
         id="sec-hero"
         is={SectionComponent}
@@ -82,7 +70,6 @@ export function MimicPCLandingFrame() {
         <PresetHero />
       </Element>
 
-      {/* Offers */}
       <Element
         id="sec-offers"
         is={SectionComponent}
@@ -97,7 +84,6 @@ export function MimicPCLandingFrame() {
         <PresetOffersGrid />
       </Element>
 
-      {/* FAQ */}
       <Element
         id="sec-faq"
         is={SectionComponent}
@@ -112,7 +98,6 @@ export function MimicPCLandingFrame() {
         <PresetFAQ />
       </Element>
 
-      {/* Footer */}
       <Element
         id="sec-footer"
         is={SectionComponent}

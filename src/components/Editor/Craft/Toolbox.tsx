@@ -16,6 +16,8 @@ import { TableComponent } from "./Components/TableComponent";
 import { ShapeComponent } from "./Components/ShapeComponent";
 import { RowComponent } from "./Components/RowComponent";
 import { ColumnComponent } from "./Components/ColumnComponent";
+import { InputComponent } from "./Components/InputComponent";
+import { PopupModalComponent } from "./Components/PopupModalComponent";
 
 // ✅ NEW (5 cái)
 import { NavbarComponent } from "./Components/NavbarComponent";
@@ -25,6 +27,7 @@ import { BadgeComponent } from "./Components/BadgeComponent";
 import { AccordionComponent } from "./Components/AccordionComponent";
 import { SpacerComponent } from "./Components/SpacerComponent";
 import { SliderComponent } from "./Components/SliderComponent";
+import { PopupOfferComponent } from "./Components/PopupOfferComponent";
 
 // Preset
 import { PresetHeader } from "./presets/PresetHeader";
@@ -130,8 +133,39 @@ export const Toolbox = () => {
     {
       name: "Slide",
       icon: "📑",
-      component : <SliderComponent slides={[]} height={""} overlay={""} autoPlay={false} intervalMs={0} contentAlign={"left"} maxContentWidth={""} paddingX={0} paddingY={0} titleColor={""} subtitleColor={""}/>
-    }
+      component: (
+        <SliderComponent
+          slides={[]}
+          height={""}
+          overlay={""}
+          autoPlay={false}
+          intervalMs={0}
+          contentAlign={"left"}
+          maxContentWidth={""}
+          paddingX={0}
+          paddingY={0}
+          titleColor={""}
+          subtitleColor={""}
+        />
+      ),
+    },
+    {
+      name: "Input",
+      icon: "⌨️",
+      component: <InputComponent placeholder="Email" type="email" />,
+    },
+    {
+      name: "Popup Offer",
+      icon: "🪟",
+      component: (
+        <Element
+          is={PopupOfferComponent}
+          canvas
+          delayMs={5000}
+          teaserText="GET 5% OFF!"
+        />
+      ),
+    },
   ];
 
   const shapeTools = [

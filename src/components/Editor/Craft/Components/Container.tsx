@@ -65,7 +65,7 @@ export const Container = ({
   positioning = "flow",
   justifyContent = "flex-start",
   alignItems = "flex-start",
-  gap = 0,
+  gap = 10,
 
   borderRadius = 0,
 

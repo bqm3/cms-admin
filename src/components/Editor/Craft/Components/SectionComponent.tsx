@@ -48,7 +48,10 @@ export const SectionComponent = ({
   className = "",
   children,
 }: SectionProps) => {
-  const { connectors: { connect, drag }, selected } = useNode((node) => ({
+  const {
+    connectors: { connect, drag },
+    selected,
+  } = useNode((node) => ({
     selected: node.events.selected,
   }));
 
@@ -60,14 +63,14 @@ export const SectionComponent = ({
       id={id}
       className={className}
       style={{
-       width: "100%",
-    boxSizing: "border-box",
-    minHeight: 40, // ✅ để dễ chọn / nhìn thấy
-    position: "relative",
-    paddingTop: paddingY,
-    paddingBottom: paddingY,
-    paddingLeft: paddingX,
-    paddingRight: paddingX,
+        width: "100%",
+        boxSizing: "border-box",
+        minHeight: 40, // ✅ để dễ chọn / nhìn thấy
+        position: "relative",
+        paddingTop: paddingY,
+        paddingBottom: paddingY,
+        paddingLeft: paddingX,
+        paddingRight: paddingX,
         background: hasBgImage ? undefined : background,
         backgroundImage: hasBgImage ? `url(${backgroundImage})` : undefined,
         backgroundPosition,
@@ -106,17 +109,26 @@ export const SectionComponent = ({
 };
 
 const SectionSettings = () => {
-  const { actions: { setProp }, maxWidth, paddingY, paddingX, background, backgroundImage, overlay, borderRadius, id } =
-    useNode((node) => ({
-      id: node.data.props.id,
-      maxWidth: node.data.props.maxWidth,
-      paddingY: node.data.props.paddingY,
-      paddingX: node.data.props.paddingX,
-      background: node.data.props.background,
-      backgroundImage: node.data.props.backgroundImage,
-      overlay: node.data.props.overlay,
-      borderRadius: node.data.props.borderRadius,
-    }));
+  const {
+    actions: { setProp },
+    maxWidth,
+    paddingY,
+    paddingX,
+    background,
+    backgroundImage,
+    overlay,
+    borderRadius,
+    id,
+  } = useNode((node) => ({
+    id: node.data.props.id,
+    maxWidth: node.data.props.maxWidth,
+    paddingY: node.data.props.paddingY,
+    paddingX: node.data.props.paddingX,
+    background: node.data.props.background,
+    backgroundImage: node.data.props.backgroundImage,
+    overlay: node.data.props.overlay,
+    borderRadius: node.data.props.borderRadius,
+  }));
 
   return (
     <div className="space-y-3">
@@ -138,7 +150,9 @@ const SectionSettings = () => {
           onChange={(e) => setProp((p: any) => (p.maxWidth = e.target.value))}
         >
           {["sm", "md", "lg", "xl", "2xl", "full"].map((k) => (
-            <option key={k} value={k}>{k}</option>
+            <option key={k} value={k}>
+              {k}
+            </option>
           ))}
         </select>
       </div>
@@ -150,7 +164,9 @@ const SectionSettings = () => {
             type="number"
             className="w-full px-3 py-2 rounded-lg bg-zinc-900 border border-white/10 text-white text-sm"
             value={paddingY}
-            onChange={(e) => setProp((p: any) => (p.paddingY = Number(e.target.value)))}
+            onChange={(e) =>
+              setProp((p: any) => (p.paddingY = Number(e.target.value)))
+            }
           />
         </div>
         <div>
@@ -159,7 +175,9 @@ const SectionSettings = () => {
             type="number"
             className="w-full px-3 py-2 rounded-lg bg-zinc-900 border border-white/10 text-white text-sm"
             value={paddingX}
-            onChange={(e) => setProp((p: any) => (p.paddingX = Number(e.target.value)))}
+            onChange={(e) =>
+              setProp((p: any) => (p.paddingX = Number(e.target.value)))
+            }
           />
         </div>
       </div>
@@ -179,7 +197,9 @@ const SectionSettings = () => {
         <input
           className="w-full px-3 py-2 rounded-lg bg-zinc-900 border border-white/10 text-white text-sm"
           value={backgroundImage || ""}
-          onChange={(e) => setProp((p: any) => (p.backgroundImage = e.target.value))}
+          onChange={(e) =>
+            setProp((p: any) => (p.backgroundImage = e.target.value))
+          }
           placeholder="https://..."
         />
       </div>
@@ -191,7 +211,15 @@ const SectionSettings = () => {
             <input
               type="checkbox"
               checked={!!overlay?.enabled}
-              onChange={(e) => setProp((p: any) => (p.overlay = { ...(p.overlay || {}), enabled: e.target.checked }))}
+              onChange={(e) =>
+                setProp(
+                  (p: any) =>
+                    (p.overlay = {
+                      ...(p.overlay || {}),
+                      enabled: e.target.checked,
+                    }),
+                )
+              }
             />
             Enabled
           </label>
@@ -202,7 +230,10 @@ const SectionSettings = () => {
             className="w-full px-3 py-2 rounded-lg bg-zinc-900 border border-white/10 text-white text-sm"
             value={overlay?.color || "rgba(0,0,0,.4)"}
             onChange={(e) =>
-              setProp((p: any) => (p.overlay = { ...(p.overlay || {}), color: e.target.value }))
+              setProp(
+                (p: any) =>
+                  (p.overlay = { ...(p.overlay || {}), color: e.target.value }),
+              )
             }
             placeholder="rgba(0,0,0,.4)"
           />
@@ -215,7 +246,9 @@ const SectionSettings = () => {
           type="number"
           className="w-full px-3 py-2 rounded-lg bg-zinc-900 border border-white/10 text-white text-sm"
           value={borderRadius}
-          onChange={(e) => setProp((p: any) => (p.borderRadius = Number(e.target.value)))}
+          onChange={(e) =>
+            setProp((p: any) => (p.borderRadius = Number(e.target.value)))
+          }
         />
       </div>
     </div>

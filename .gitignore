@@ -31,4 +31,7 @@ bun.lockb
 .agent
 
 .env
+.env.*
+!.env.example
+
 vite.config.ts

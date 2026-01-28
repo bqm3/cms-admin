@@ -46,7 +46,7 @@ export function ClientHomePage() {
               <h1 className="text-xl font-bold text-slate-900 tracking-tight">
                 Danh sách dự án
               </h1>
-              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+              <p className="text-slate-500 text-[12px] font-bold uppercase tracking-wider">
                 Khám phá các trang web cao cấp
               </p>
             </div>
@@ -67,7 +67,7 @@ export function ClientHomePage() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <div className="w-8 h-8 border-3 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
-            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
+            <p className="text-slate-600 text-xs font-bold uppercase tracking-widest">
               Đang tải danh sách...
             </p>
           </div>
@@ -107,16 +107,16 @@ export function ClientHomePage() {
                         {post.title}
                       </h3>
                       <div className="flex items-center justify-between">
-                        <p className="text-slate-400 text-[10px] font-medium">
+                        <p className="text-slate-600 text-[12px] font-medium">
                           @{post.creator?.username || "user"}
                         </p>
-                        {/* <div className="flex items-center gap-1.5 text-slate-400">
+                        {/* <div className="flex items-center gap-1.5 text-slate-600">
                           <Eye size={10} />
-                          <span className="text-[10px] font-bold">{post.view_count || 0}</span>
+                          <span className="text-[12px] font-bold">{post.view_count || 0}</span>
                         </div> */}
-                        <div className="flex items-center gap-1.5 text-slate-400">
+                        <div className="flex items-center gap-1.5 text-slate-600">
                           <Clock size={10} />
-                          <span className="text-[10px] font-bold">{formatDate(post.created_at)}</span>
+                          <span className="text-[12px] font-bold">{formatDate(post.created_at)}</span>
                         </div>
                       </div>
                     </div>

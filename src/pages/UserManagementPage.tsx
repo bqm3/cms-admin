@@ -94,7 +94,7 @@ export function UserManagementPage() {
             formData.append('username', newUsername);
             formData.append('password', newPassword);
             formData.append('role', newRole);
-            formData.append('fullName', newFullName);
+            formData.append('full_name', newFullName);
             formData.append('email', newEmail);
             formData.append('phone', newPhone);
             formData.append('bio', newBio);
@@ -156,7 +156,7 @@ export function UserManagementPage() {
             const formData = new FormData();
             formData.append('username', editUsername);
             formData.append('role', editRole);
-            formData.append('fullName', editFullName);
+            formData.append('full_name', editFullName);
             formData.append('email', editEmail);
             formData.append('phone', editPhone);
             formData.append('bio', editBio);

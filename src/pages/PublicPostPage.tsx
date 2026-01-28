@@ -33,6 +33,11 @@ import { PresetHeader } from "@/components/Editor/Craft/presets/PresetHeader";
 import { PresetHero } from "@/components/Editor/Craft/presets/PresetHero";
 import { PresetOffersGrid } from "@/components/Editor/Craft/presets/PresetOffersGrid";
 import { MimicPCLandingFrame } from "@/components/Editor/MimicPCLandingFrame";
+import { InputComponent } from "@/components/Editor/Craft/Components/InputComponent";
+import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
+import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
+
+import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
 // nếu bạn có SpacingComponent / v.v... cũng add vào đây
 
 export function PublicPostPage() {
@@ -77,10 +82,8 @@ export function PublicPostPage() {
       }
     }
 
-    // ✅ nhiều backend lưu dạng { nodes: {...} }
     if (parsed?.nodes && typeof parsed.nodes === "object") return parsed.nodes;
 
-    // ✅ nếu đã là nodes object luôn
     return parsed;
   }, [content]);
 
@@ -99,7 +102,7 @@ export function PublicPostPage() {
     );
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen p-0 m-0">
       <Editor
         enabled={false}
         resolver={{
@@ -125,6 +128,9 @@ export function PublicPostPage() {
           AccordionComponent,
           SpacerComponent,
           SliderComponent,
+          InputComponent,
+          PopupModalComponent,
+          PopupOfferComponent,
           // Preset
           PresetHeader,
           PresetHero,
