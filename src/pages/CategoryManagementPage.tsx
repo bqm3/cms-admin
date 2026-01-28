@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
-import { Plus, Trash, Edit, Tag, Search, Calendar, Upload, Link as LinkIcon } from 'lucide-react';
-import api, { SERVER_URL } from '../services/api';
+import { Plus, Trash, Edit, Tag, Search, Calendar } from 'lucide-react';
+import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { formatDate } from "../utils/formatDate";
@@ -17,16 +17,8 @@ export function CategoryManagementPage() {
     const [endDate, setEndDate] = useState('');
 
     const [name, setName] = useState('');
-    const [image, setImage] = useState<File | null>(null);
-    const [imageLink, setImageLink] = useState('');
-    const [imageType, setImageType] = useState<'upload' | 'link'>('upload');
-
     const [editingCategory, setEditingCategory] = useState<any>(null);
     const [editName, setEditName] = useState('');
-    const [editImage, setEditImage] = useState<File | null>(null);
-    const [editImageLink, setEditImageLink] = useState('');
-    const [editImageType, setEditImageType] = useState<'upload' | 'link'>('upload');
-    const [currentImageUrl, setCurrentImageUrl] = useState('');
 
     const navigate = useNavigate();
 
@@ -80,21 +72,8 @@ export function CategoryManagementPage() {
     const handleCreate = async () => {
         if (!name.trim()) return;
         try {
-            const formData = new FormData();
-            formData.append('name', name);
-            if (imageType === 'upload' && image) {
-                formData.append('image', image);
-            } else if (imageType === 'link' && imageLink) {
-                formData.append('image', imageLink);
-            }
-
-            await api.post('/categories', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-
+            await api.post('/categories', { name });
             setName('');
-            setImage(null);
-            setImageLink('');
             createModal.onClose();
             alert('Thêm danh mục mới thành công! 🏷️');
             if (page === 1) fetchCategories(); else setPage(1);
@@ -117,28 +96,13 @@ export function CategoryManagementPage() {
     const startEdit = (cat: any) => {
         setEditingCategory(cat);
         setEditName(cat.name);
-        setEditImage(null);
-        setEditImageLink(cat.image && !cat.image.startsWith('/uploads/') ? cat.image : '');
-        setEditImageType(cat.image && !cat.image.startsWith('/uploads/') ? 'link' : 'upload');
-        setCurrentImageUrl(cat.image || '');
         editModal.onOpen();
     };
 
     const handleUpdate = async () => {
         if (!editingCategory) return;
         try {
-            const formData = new FormData();
-            formData.append('name', editName);
-            if (editImageType === 'upload' && editImage) {
-                formData.append('image', editImage);
-            } else if (editImageType === 'link') {
-                formData.append('image', editImageLink);
-            }
-
-            await api.put(`/categories/${editingCategory.id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-
+            await api.put(`/categories/${editingCategory.id}`, { name: editName });
             editModal.onClose();
             alert('Cập nhật danh mục thành công! ✨');
             fetchCategories();
@@ -239,24 +203,8 @@ export function CategoryManagementPage() {
                         header: 'Tên danh mục',
                         render: (cat) => (
                             <div className="flex items-center gap-4">
-                                <div className="w-11 h-11 rounded-lg bg-blue-50 flex items-center justify-center overflow-hidden border border-blue-100 relative group/thumb shadow-sm">
-                                    {cat.image ? (
-                                        <img
-                                            src={cat.image.startsWith('/uploads/') ? `${SERVER_URL}${cat.image}` : cat.image}
-                                            alt={cat.name}
-                                            className="w-full h-full object-cover transition-transform group-hover/thumb:scale-110"
-                                        />
-                                    ) : (
-                                        <Tag size={18} className="text-blue-500" />
-                                    )}
-                                    {cat.image && (
-                                        <div
-                                            className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
-                                            onClick={() => window.open(cat.image.startsWith('/uploads/') ? `${SERVER_URL}${cat.image}` : cat.image, '_blank')}
-                                        >
-                                            <Search size={14} className="text-white" />
-                                        </div>
-                                    )}
+                                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-100 shadow-sm">
+                                    <Tag size={16} className="text-blue-500" />
                                 </div>
                                 <div className="min-w-0">
                                     <p className="font-bold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">{cat.name}</p>
@@ -344,73 +292,6 @@ export function CategoryManagementPage() {
                                 onChange={(e) => setName(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
-
-                            <div className="space-y-3">
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Hình ảnh đại diện</p>
-                                <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-100">
-                                    <button
-                                        onClick={() => setImageType('upload')}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${imageType === 'upload' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
-                                    >
-                                        <Upload size={14} /> Tải ảnh lên
-                                    </button>
-                                    <button
-                                        onClick={() => setImageType('link')}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${imageType === 'link' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
-                                    >
-                                        <LinkIcon size={14} /> Gắn link
-                                    </button>
-                                </div>
-
-                                {imageType === 'upload' ? (
-                                    <div className="space-y-3">
-                                        <div className="relative group">
-                                            <input
-                                                type="file"
-                                                id="category-image-upload"
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={(e) => setImage(e.target.files?.[0] || null)}
-                                            />
-                                            <label
-                                                htmlFor="category-image-upload"
-                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-200 rounded-2xl bg-white cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all group lg:p-4"
-                                            >
-                                                {image ? (
-                                                    <div className="relative w-full h-full">
-                                                        <img
-                                                            src={URL.createObjectURL(image)}
-                                                            alt="Preview"
-                                                            className="w-full h-full object-cover rounded-xl"
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                                                            <Upload className="text-white" size={24} />
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        <div className="bg-blue-50 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform shadow-sm">
-                                                            <Upload className="text-blue-500" size={24} />
-                                                        </div>
-                                                        <p className="text-sm font-bold text-slate-500">Kéo thả hoặc click để chọn ảnh</p>
-                                                        <p className="text-xs text-slate-400 mt-1">PNG, JPG tối đa 5MB</p>
-                                                    </>
-                                                )}
-                                            </label>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <Input
-                                        label="URL Hình ảnh"
-                                        placeholder="https://example.com/image.jpg"
-                                        variant="flat"
-                                        value={imageLink}
-                                        onChange={(e) => setImageLink(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
-                                        startContent={<LinkIcon size={16} className="text-slate-400" />}
-                                    />
-                                )}
-                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
@@ -451,83 +332,6 @@ export function CategoryManagementPage() {
                                 onChange={(e) => setEditName(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
-
-                            <div className="space-y-3">
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Hình ảnh đại diện</p>
-                                <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-100">
-                                    <button
-                                        onClick={() => setEditImageType('upload')}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${editImageType === 'upload' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
-                                    >
-                                        <Upload size={14} /> Tải ảnh lên
-                                    </button>
-                                    <button
-                                        onClick={() => setEditImageType('link')}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${editImageType === 'link' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
-                                    >
-                                        <LinkIcon size={14} /> Gắn link
-                                    </button>
-                                </div>
-
-                                {editImageType === 'upload' ? (
-                                    <div className="space-y-3">
-                                        <div className="relative group">
-                                            <input
-                                                type="file"
-                                                id="edit-category-image-upload"
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={(e) => setEditImage(e.target.files?.[0] || null)}
-                                            />
-                                            <label
-                                                htmlFor="edit-category-image-upload"
-                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-200 rounded-2xl bg-white cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all group lg:p-4"
-                                            >
-                                                {editImage ? (
-                                                    <div className="relative w-full h-full">
-                                                        <img
-                                                            src={URL.createObjectURL(editImage)}
-                                                            alt="Preview"
-                                                            className="w-full h-full object-cover rounded-xl"
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                                                            <Upload className="text-white" size={24} />
-                                                        </div>
-                                                    </div>
-                                                ) : currentImageUrl && currentImageUrl.startsWith('/uploads/') ? (
-                                                    <div className="relative w-full h-full">
-                                                        <img
-                                                            src={`${SERVER_URL}${currentImageUrl}`}
-                                                            alt="Current"
-                                                            className="w-full h-full object-cover rounded-xl"
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                                                            <Upload className="text-white" size={24} />
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        <div className="bg-blue-50 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform shadow-sm">
-                                                            <Upload className="text-blue-500" size={24} />
-                                                        </div>
-                                                        <p className="text-sm font-bold text-slate-500">Click để thay đổi ảnh</p>
-                                                    </>
-                                                )}
-                                            </label>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <Input
-                                        label="URL Hình ảnh"
-                                        placeholder="https://example.com/image.jpg"
-                                        variant="flat"
-                                        value={editImageLink}
-                                        onChange={(e) => setEditImageLink(e.target.value)}
-                                        classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
-                                        startContent={<LinkIcon size={16} className="text-slate-400" />}
-                                    />
-                                )}
-                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
