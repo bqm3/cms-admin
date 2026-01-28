@@ -14,7 +14,8 @@ import {
     Globe,
     LayoutDashboard,
     Plus,
-    Calendar
+    Calendar,
+    Copy
 } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { AdminLayout } from '../layouts/AdminLayout';
@@ -100,6 +101,16 @@ export function DashboardPage() {
             fetchPosts();
         } catch (err) {
             alert('Xóa thất bại');
+        }
+    };
+
+    const handleCopy = async (id: number) => {
+        try {
+            await api.post(`/posts/${id}/copy`);
+            alert('Đã nhân bản bài viết thành công! 📄');
+            fetchPosts();
+        } catch (err) {
+            alert('Nhân bản thất bại');
         }
     };
 
@@ -308,6 +319,16 @@ export function DashboardPage() {
                                     title="Sửa nội dung"
                                 >
                                     <Edit size={16} />
+                                </Button>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="flat"
+                                    className="bg-purple-50 text-purple-600 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-purple-100"
+                                    onClick={() => handleCopy(post.id)}
+                                    title="Nhân bản bài viết"
+                                >
+                                    <Copy size={16} />
                                 </Button>
                                 <a href={`/site/${post.slug || post.id}`} target="_blank" rel="noopener noreferrer">
                                     <Button
