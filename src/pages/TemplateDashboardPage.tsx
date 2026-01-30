@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@heroui/button";
-import { Chip } from "@heroui/chip";
 import { Input } from "@heroui/input";
 import {
     Search,
     ExternalLink,
     Edit,
     Trash,
-    CheckCircle,
-    Clock,
     Eye,
-    Globe,
     LayoutTemplate,
     Plus,
     Calendar
@@ -89,15 +85,7 @@ export function TemplateDashboardPage() {
         fetchTemplates();
     }, [search, selectedCategory, selectedParentCategory, startDate, endDate, page, limit]);
 
-    const handleApprove = async (id: number) => {
-        try {
-            await api.patch(`/templates/${id}/approve`);
-            alert('Template đã được duyệt thành công! ✨');
-            fetchTemplates();
-        } catch (err) {
-            alert('Phê duyệt thất bại');
-        }
-    };
+
 
     const handleDelete = async (id: number) => {
         if (!confirm('Bạn có chắc muốn xóa template này?')) return;
@@ -167,20 +155,6 @@ export function TemplateDashboardPage() {
             )
         },
         {
-            header: 'Trạng thái',
-            render: (template: any) => (
-                <Chip
-                    startContent={template.is_approved ? <CheckCircle size={12} /> : <Clock size={12} />}
-                    variant="flat"
-                    color={template.is_approved ? "success" : "warning"}
-                    size="sm"
-                    className="rounded-lg font-bold text-xs uppercase px-2 h-6"
-                >
-                    {template.is_approved ? 'Đã duyệt' : 'Chờ duyệt'}
-                </Chip>
-            )
-        },
-        {
             header: 'Lượt xem',
             align: 'center' as const,
             render: (template: any) => (
@@ -194,16 +168,6 @@ export function TemplateDashboardPage() {
             align: 'right' as const,
             render: (template: any) => (
                 <div className="flex items-center justify-end gap-2">
-                    {user.role === 'admin' && !template.is_approved && (
-                        <Button
-                            size="sm"
-                            variant="flat"
-                            className="bg-emerald-50 text-emerald-600 font-bold text-xs h-8 px-4 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-emerald-100"
-                            onClick={() => handleApprove(template.id)}
-                        >
-                            Duyệt
-                        </Button>
-                    )}
                     <Button
                         as={Link}
                         to={`/template-editor/${template.id}`}

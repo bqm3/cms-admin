@@ -285,58 +285,6 @@ const ContentLoader = ({ content }: { content: string | null }) => {
   return null;
 };
 
-const TEMPLATES = [
-  {
-    id: "landing",
-    name: "Landing Page",
-    component: MimicPCLandingFrame,
-    description: "Trang đích mặc định với Header, Hero, Offers, FAQ và Footer.",
-    preview: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=300"
-  },
-  {
-    id: "portfolio",
-    name: "Portfolio",
-    component: PortfolioTemplate,
-    description: "Trình diễn các dự án sáng tạo với gallery ảnh và grid bài viết.",
-    preview: "https://images.unsplash.com/photo-1545235617-9465d2a55698?auto=format&fit=crop&q=80&w=400&h=300"
-  },
-  {
-    id: "blog",
-    name: "Blog",
-    component: BlogTemplate,
-    description: "Trang blog chuyên nghiệp với bài viết nổi bật và danh sách tin tức.",
-    preview: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=400&h=300"
-  },
-  {
-    id: "service",
-    name: "Dịch vụ",
-    component: ServiceTemplate,
-    description: "Giới thiệu các gói dịch vụ với bảng giá và FAQ.",
-    preview: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400&h=300"
-  },
-  {
-    id: "contact",
-    name: "Liên hệ",
-    component: ContactTemplate,
-    description: "Trang liên hệ với thông tin chi tiết và form gửi tin nhắn.",
-    preview: "https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&q=80&w=400&h=300"
-  },
-  {
-    id: "product",
-    name: "Sản phẩm",
-    component: ProductTemplate,
-    description: "Trang chi tiết sản phẩm với slider ảnh và thông số kỹ thuật.",
-    preview: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400&h=300"
-  },
-  {
-    id: "coupon-store",
-    name: "Coupon Store",
-    component: StoreCouponTemplate,
-    description: "Trang mã giảm giả cho cửa hàng với danh sách coupon và sidebar thông tin.",
-    preview: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=400&h=300"
-  },
-];
-
 // --- Main Page ---
 
 export function EditorPage() {
@@ -356,51 +304,69 @@ export function EditorPage() {
   const [parentCategories, setParentCategories] = useState<any[]>([]);
   const [loadedContent, setLoadedContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(!isNew);
-  const [selectedTemplate, setSelectedTemplate] = useState<any>(TEMPLATES[0]);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const { isOpen: isTmplOpen, onOpen: onTmplOpen, onClose: onTmplClose } = useDisclosure({ defaultOpen: isNew });
 
-  // Fetch Categories & Parent Categories
+  // Fetch Categories, Parent Categories & Templates
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [catRes, parentRes] = await Promise.all([
+        const [catRes, parentRes, templatesRes] = await Promise.all([
           api.get("/categories"),
-          api.get("/parent-categories")
+          api.get("/parent-categories"),
+          api.get("/templates/public")
         ]);
         setCategories(catRes.data || []);
         setParentCategories(parentRes.data.parentCategories || parentRes.data || []);
+
+        // Templates from DB with their saved content
+        const templatesFromDB = (templatesRes.data || []).map((tmpl: any) => ({
+          ...tmpl,
+          preview: tmpl.logo ? `${SERVER_URL}${tmpl.logo}` : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=300",
+          description: tmpl.content ? "Template từ database" : "Mẫu thiết kế tùy chỉnh"
+        }));
+
+        setTemplates(templatesFromDB);
+        if (templatesFromDB.length > 0 && !selectedTemplate) {
+          setSelectedTemplate(templatesFromDB[0]);
+        }
       } catch (err) {
-        console.error("Failed to fetch categories:", err);
+        console.error("Failed to fetch data:", err);
       }
     };
     fetchData();
   }, []);
 
-  // Fetch Post Data
+  // Fetch Post Data or Load Template Content
   useEffect(() => {
     if (!isNew && id) {
-      const loadPost = async () => {
+      // Editing existing post
+      const fetchPost = async () => {
         try {
-          const res = await api.get(`/posts/public/${id}`);
+          setLoading(true);
+          const res = await api.get(`/posts/${id}`);
+          const post = res.data;
           setPostInfo({
-            title: res.data.title,
-            category_id: res.data.category_id || "",
-            viewCount: res.data.view_count || 0,
+            title: post.title || "",
+            category_id: String(post.category_id || ""),
+            viewCount: post.view_count || 0,
             logoFile: null,
-            logoUrl: res.data.logo ? `${SERVER_URL}${res.data.logo}` : "",
+            logoUrl: post.logo || "",
           });
-          setLoadedContent(res.data.content);
+          setLoadedContent(post.content || null);
         } catch (err) {
-          console.error(err);
-          alert("Không thể tải bài viết. Chuyển về dashboard.");
-          navigate("/dashboard");
+          console.error("Failed to fetch post:", err);
         } finally {
           setLoading(false);
         }
       };
-      loadPost();
+      fetchPost();
+    } else if (isNew && selectedTemplate?.content) {
+      // New post with template content from DB
+      setLoadedContent(selectedTemplate.content);
     }
-  }, [id, isNew, navigate]);
+  }, [id, isNew, selectedTemplate]);
 
   if (loading)
     return (
@@ -632,20 +598,16 @@ export function EditorPage() {
               <div className="p-8">
                 <div className="flex justify-center">
                   <div className="w-full max-w-[1024px] shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
-                    <Frame key={isNew ? selectedTemplate?.id : 'existing'}>
-                      {isNew ? (
-                        <Element canvas is={selectedTemplate.component} />
-                      ) : (
-                        <Element
-                          canvas
-                          is={Container}
-                          padding={40}
-                          background="transparent"
-                          width="100%"
-                          height="100%"
-                          className="min-h-full"
-                        />
-                      )}
+                    <Frame key={loadedContent ? 'loaded' : 'empty'}>
+                      <Element
+                        canvas
+                        is={Container}
+                        padding={40}
+                        background="transparent"
+                        width="100%"
+                        height="100%"
+                        className="min-h-full"
+                      />
                     </Frame>
                   </div>
                 </div>
@@ -674,7 +636,7 @@ export function EditorPage() {
                 </ModalHeader>
                 <ModalBody>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {TEMPLATES.map((tmpl) => (
+                    {templates.map((tmpl: any) => (
                       <div
                         key={tmpl.id}
                         onClick={() => {
@@ -686,12 +648,12 @@ export function EditorPage() {
                         <div className="relative aspect-[4/3] overflow-hidden">
                           <img
                             src={tmpl.preview}
-                            alt={tmpl.name}
+                            alt={tmpl.title || tmpl.name}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent" />
                           <div className="absolute bottom-4 left-4">
-                            <h3 className="text-lg font-bold text-white">{tmpl.name}</h3>
+                            <h3 className="text-lg font-bold text-white">{tmpl.title || tmpl.name}</h3>
                           </div>
                         </div>
                         <div className="p-4 flex-1">
