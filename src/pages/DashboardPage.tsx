@@ -168,45 +168,7 @@ export function DashboardPage() {
                                 }}
                             />
                         </div>
-                        <div className="flex flex-col md:flex-row gap-3 items-center">
-                            <div className="flex items-center gap-3 bg-white px-4 h-11 border border-slate-200 rounded-xl shadow-sm flex-1 w-full">
-                                <Calendar size={18} className="text-slate-400" />
-                                <div className="flex items-center gap-2 flex-1">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Từ</span>
-                                    <input
-                                        type="date"
-                                        className="bg-transparent border-none outline-none text-sm font-semibold text-slate-600 w-full"
-                                        value={startDate}
-                                        onChange={(e) => {
-                                            setStartDate(e.target.value);
-                                            setPage(1);
-                                        }}
-                                    />
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Đến</span>
-                                    <input
-                                        type="date"
-                                        className="bg-transparent border-none outline-none text-sm font-semibold text-slate-600 w-full"
-                                        value={endDate}
-                                        onChange={(e) => {
-                                            setEndDate(e.target.value);
-                                            setPage(1);
-                                        }}
-                                    />
-                                </div>
-                                {(startDate || endDate) && (
-                                    <button
-                                        onClick={() => {
-                                            setStartDate('');
-                                            setEndDate('');
-                                            setPage(1);
-                                        }}
-                                        className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors px-2"
-                                    >
-                                        Xóa lọc
-                                    </button>
-                                )}
-                            </div>
-                        </div>
+                        
                         <div className="w-full md:w-48">
                             <select
                                 value={selectedParentCategory}
@@ -241,6 +203,48 @@ export function DashboardPage() {
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
                             </select>
+                        </div>
+                        <div className="flex flex-col md:flex-row gap-3 items-center">
+                            <div className="flex items-center gap-3 bg-white px-4 h-11 border border-slate-200 rounded-xl shadow-sm flex-1 w-full">
+                                <Calendar size={18} className="text-slate-400" />
+                                <div className="flex items-center gap-2 flex-1">
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Từ</span>
+                                    <input
+                                        type="date"
+                                        className="bg-transparent border-none outline-none text-sm font-semibold text-slate-600 w-full"
+                                        value={startDate}
+                                        onChange={(e) => {
+                                            setStartDate(e.target.value);
+                                            setPage(1);
+                                        }}
+                                    />
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Đến</span>
+                                    <input
+                                        type="date"
+                                        className="bg-transparent border-none outline-none text-sm font-semibold text-slate-600 w-full"
+                                        value={endDate}
+                                        onChange={(e) => {
+                                            setEndDate(e.target.value);
+                                            setPage(1);
+                                        }}
+                                    />
+                                </div>
+                                {(search || startDate || endDate || selectedCategory || selectedParentCategory) && (
+                                    <button
+                                        onClick={() => {
+                                            setSearch('');
+                                            setStartDate('');
+                                            setEndDate('');
+                                            setSelectedCategory('');
+                                            setSelectedParentCategory('');
+                                            setPage(1);
+                                        }}
+                                        className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors px-3 py-1 bg-rose-50 rounded-lg border border-rose-100 whitespace-nowrap"
+                                    >
+                                        Xóa tất cả lọc
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

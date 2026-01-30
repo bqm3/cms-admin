@@ -177,6 +177,19 @@ export function ParentCategoryManagementPage() {
                                 }}
                             />
                         </div>
+                        {(searchTerm || startDate || endDate) && (
+                            <button
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    setStartDate('');
+                                    setEndDate('');
+                                    setPage(1);
+                                }}
+                                className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors px-3 py-1 bg-rose-50 rounded-lg border border-rose-100 whitespace-nowrap"
+                            >
+                                Xóa tất cả lọc
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
