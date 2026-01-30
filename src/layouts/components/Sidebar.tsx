@@ -8,7 +8,8 @@ import {
     LogOut,
     Shield,
     X,
-    Image as ImageIcon
+    Image as ImageIcon,
+    LayoutTemplate
 } from 'lucide-react';
 import { Button } from '@heroui/button';
 import { useNavigate } from 'react-router-dom';
@@ -51,6 +52,16 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             icon: Plus,
             label: 'Tạo mới',
             path: '/editor/new',
+            activeBg: 'bg-blue-50',
+            activeBorder: 'border-blue-200',
+            activeText: 'text-blue-700',
+            iconBg: 'bg-blue-100',
+            iconText: 'text-blue-600'
+        },
+        {
+            icon: LayoutTemplate,
+            label: 'Quản lý Template',
+            path: '/template-dashboard',
             activeBg: 'bg-blue-50',
             activeBorder: 'border-blue-200',
             activeText: 'text-blue-700',

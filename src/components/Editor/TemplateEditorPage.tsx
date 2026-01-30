@@ -69,7 +69,7 @@ import { SliderComponent } from "./Craft/Components/SliderComponent";
 import { PopupOfferComponent } from "./Craft/Components/PopupOfferComponent";
 
 // --- Sub Components ---
-const SaveButton = ({ postInfo, isNew }: any) => {
+const SaveButton = ({ templateInfo, isNew }: any) => {
   const { query } = useEditor();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -193,27 +193,27 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       }
 
       console.log("Serialized JSON length:", json.length);
-      if (postInfo.category_id == "") {
+      if (templateInfo.category_id == "") {
         alert("Thiếu danh mục!");
         return;
       }
 
       const formData = new FormData();
-      formData.append("title", (postInfo.title || "").trim());
-      formData.append("category_id", String(postInfo.category_id ?? ""));
+      formData.append("title", (templateInfo.title || "").trim());
+      formData.append("category_id", String(templateInfo.category_id ?? ""));
       formData.append("content", json);
-      formData.append("view_count", String(postInfo.viewCount ?? 0));
-      if (postInfo.logoFile) formData.append("logo", postInfo.logoFile);
+      formData.append("view_count", String(templateInfo.viewCount ?? 0));
+      if (templateInfo.logoFile) formData.append("logo", templateInfo.logoFile);
 
       if (isNew) {
         if (isNew) {
-          const res = await api.post("/posts", formData);
+          const res = await api.post("/templates", formData);
 
           alert("🎉 Xuất bản thành công!");
-          navigate(`/editor/${res.data.id}`);
+          navigate(`/template-editor/${res.data.id}`);
         }
       } else {
-        const res = await api.put(`/posts/${id}`, formData);
+        const res = await api.put(`/templates/${id}`, formData);
         console.log("Post updated:", res.data);
 
         alert("✅ Cập nhật thành công!");
@@ -339,12 +339,12 @@ const TEMPLATES = [
 
 // --- Main Page ---
 
-export function EditorPage() {
+export function TemplateEditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isNew = id === "new" || !id;
 
-  const [postInfo, setPostInfo] = useState({
+  const [templateInfo, settemplateInfo] = useState({
     title: "",
     category_id: "",
     viewCount: 0,
@@ -379,10 +379,10 @@ export function EditorPage() {
   // Fetch Post Data
   useEffect(() => {
     if (!isNew && id) {
-      const loadPost = async () => {
+      const loadTemplate = async () => {
         try {
-          const res = await api.get(`/posts/public/${id}`);
-          setPostInfo({
+          const res = await api.get(`/templates/public/${id}`);
+          settemplateInfo({
             title: res.data.title,
             category_id: res.data.category_id || "",
             viewCount: res.data.view_count || 0,
@@ -392,13 +392,13 @@ export function EditorPage() {
           setLoadedContent(res.data.content);
         } catch (err) {
           console.error(err);
-          alert("Không thể tải bài viết. Chuyển về dashboard.");
-          navigate("/dashboard");
+          alert("Không thể tải template. Chuyển về dashboard.");
+          navigate("/template-dashboard");
         } finally {
           setLoading(false);
         }
       };
-      loadPost();
+      loadTemplate();
     }
   }, [id, isNew, navigate]);
 
@@ -468,7 +468,7 @@ export function EditorPage() {
               size="sm"
               className="min-w-8 w-8 h-8 p-0 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white"
               variant="light"
-              onPress={() => navigate("/dashboard")}
+              onPress={() => navigate("/template-dashboard")}
             >
               <ChevronLeft size={16} />
             </Button>
@@ -494,9 +494,9 @@ export function EditorPage() {
                       "text-white !text-white placeholder:!text-zinc-500 font-bold text-xs caret-blue-500",
                   }}
                   placeholder="Tiêu đề..."
-                  value={postInfo.title}
+                  value={templateInfo.title}
                   onChange={(e) =>
-                    setPostInfo({ ...postInfo, title: e.target.value })
+                    settemplateInfo({ ...templateInfo, title: e.target.value })
                   }
                 />
 
@@ -505,9 +505,9 @@ export function EditorPage() {
                   <Layout size={14} className="text-blue-500" />
                   <select
                     className="bg-transparent outline-none text-[11px] font-bold cursor-pointer"
-                    value={postInfo.category_id}
+                    value={templateInfo.category_id}
                     onChange={(e) =>
-                      setPostInfo({ ...postInfo, category_id: e.target.value })
+                      settemplateInfo({ ...templateInfo, category_id: e.target.value })
                     }
                   >
                     <option className="bg-zinc-900" value="">
@@ -546,9 +546,9 @@ export function EditorPage() {
             <div className="md:hidden">
               <select
                 className="h-8 px-2 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-zinc-200 outline-none"
-                value={postInfo.category_id}
+                value={templateInfo.category_id}
                 onChange={(e) =>
-                  setPostInfo({ ...postInfo, category_id: e.target.value })
+                  settemplateInfo({ ...templateInfo, category_id: e.target.value })
                 }
               >
                 <option className="bg-zinc-900" value="">
@@ -579,7 +579,7 @@ export function EditorPage() {
 
             <label className="group cursor-pointer h-8 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
               <span
-                className={`w-6 h-6 grid place-items-center rounded border ${postInfo.logoFile
+                className={`w-6 h-6 grid place-items-center rounded border ${templateInfo.logoFile
                   ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
                   : "bg-white/5 border-white/10 text-blue-300"
                   }`}
@@ -588,7 +588,7 @@ export function EditorPage() {
               </span>
 
               <span className="hidden sm:inline text-[11px] font-bold text-zinc-300 group-hover:text-white">
-                {postInfo.logoFile ? "Logo OK" : "Tải logo"}
+                {templateInfo.logoFile ? "Logo OK" : "Tải logo"}
               </span>
 
               <input
@@ -596,8 +596,8 @@ export function EditorPage() {
                 className="hidden"
                 type="file"
                 onChange={(e) =>
-                  setPostInfo({
-                    ...postInfo,
+                  settemplateInfo({
+                    ...templateInfo,
                     logoFile: e.target.files?.[0] || null,
                   })
                 }
@@ -606,7 +606,7 @@ export function EditorPage() {
 
             <div className="hidden md:block h-5 w-px bg-white/10 mx-1" />
 
-            <SaveButton isNew={isNew} postInfo={postInfo} />
+            <SaveButton isNew={isNew} templateInfo={templateInfo} />
           </div>
         </header>
 

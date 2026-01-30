@@ -11,6 +11,7 @@ import { BlogTemplate } from "../components/Editor/BlogTemplate";
 import { ServiceTemplate } from "../components/Editor/ServiceTemplate";
 import { ContactTemplate } from "../components/Editor/ContactTemplate";
 import { ProductTemplate } from "../components/Editor/ProductTemplate";
+import { StoreCouponTemplate } from "../components/Editor/StoreCouponTemplate";
 
 // Craft components
 import { TextComponent } from "../components/Editor/Craft/Components/TextComponent";
@@ -119,6 +120,7 @@ export function PublicPostPage() {
           ServiceTemplate,
           ContactTemplate,
           ProductTemplate,
+          StoreCouponTemplate,
           // Component
           TextComponent,
           Container,

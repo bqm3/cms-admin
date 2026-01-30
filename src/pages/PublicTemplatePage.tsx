@@ -1,0 +1,153 @@
+import { useEffect, useState, useRef, useMemo } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+import { Editor, Frame } from "@craftjs/core";
+import api from "../services/api";
+
+// ✅ Import tất cả component mà editor có thể sinh ra trong content
+import { DefaultNewPostFrame } from "../components/Editor/DefaultNewPostFrame";
+import { MimicPCLandingFrame } from "../components/Editor/MimicPCLandingFrame";
+import { PortfolioTemplate } from "../components/Editor/PortfolioTemplate";
+import { BlogTemplate } from "../components/Editor/BlogTemplate";
+import { ServiceTemplate } from "../components/Editor/ServiceTemplate";
+import { ContactTemplate } from "../components/Editor/ContactTemplate";
+import { ProductTemplate } from "../components/Editor/ProductTemplate";
+import { StoreCouponTemplate } from "../components/Editor/StoreCouponTemplate";
+
+// Craft components
+import { TextComponent } from "../components/Editor/Craft/Components/TextComponent";
+import { Container } from "../components/Editor/Craft/Components/Container";
+import { ButtonComponent } from "../components/Editor/Craft/Components/ButtonComponent";
+import { ImageComponent } from "../components/Editor/Craft/Components/ImageComponent";
+import { HeadingComponent } from "../components/Editor/Craft/Components/HeadingComponent";
+import { CardComponent } from "../components/Editor/Craft/Components/CardComponent";
+import { VideoComponent } from "../components/Editor/Craft/Components/VideoComponent";
+import { TableComponent } from "../components/Editor/Craft/Components/TableComponent";
+import { ShapeComponent } from "../components/Editor/Craft/Components/ShapeComponent";
+import { RowComponent } from "../components/Editor/Craft/Components/RowComponent";
+import { ColumnComponent } from "../components/Editor/Craft/Components/ColumnComponent";
+import { NavbarComponent } from "../components/Editor/Craft/Components/NavbarComponent";
+import { SectionComponent } from "../components/Editor/Craft/Components/SectionComponent";
+import { GridComponent } from "../components/Editor/Craft/Components/GridComponent";
+import { BadgeComponent } from "../components/Editor/Craft/Components/BadgeComponent";
+import { AccordionComponent } from "../components/Editor/Craft/Components/AccordionComponent";
+import { SpacerComponent } from "../components/Editor/Craft/Components/SpacerComponent";
+import { SliderComponent } from "@/components/Editor/Craft/Components/SliderComponent";
+import { PresetFAQ } from "@/components/Editor/Craft/presets/PresetFAQ";
+import { PresetFooter } from "@/components/Editor/Craft/presets/PresetFooter";
+import { PresetHeader } from "@/components/Editor/Craft/presets/PresetHeader";
+import { PresetHero } from "@/components/Editor/Craft/presets/PresetHero";
+import { PresetOffersGrid } from "@/components/Editor/Craft/presets/PresetOffersGrid";
+import { InputComponent } from "@/components/Editor/Craft/Components/InputComponent";
+import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
+import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
+
+export function PublicTemplatePage() {
+    const { slug } = useParams();
+    const [searchParams] = useSearchParams();
+    const [content, setContent] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+    const hasFetched = useRef(false);
+
+    useEffect(() => {
+        const fetchTemplate = async () => {
+            if (hasFetched.current) return;
+            hasFetched.current = true;
+
+            try {
+                const response = await api.get(`/templates/public/${slug}`, {
+                    params: { preview: searchParams.get("preview") },
+                });
+
+                setContent(response.data.content);
+                document.title = response.data.title ?? "Template";
+            } catch (err) {
+                console.error(err);
+                hasFetched.current = false;
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTemplate();
+    }, [slug, searchParams]);
+
+    const frameData = useMemo(() => {
+        if (!content) return null;
+
+        let parsed: any = content;
+        if (typeof content === "string") {
+            try {
+                parsed = JSON.parse(content);
+            } catch {
+                return null;
+            }
+        }
+
+        if (parsed?.nodes && typeof parsed.nodes === "object") return parsed.nodes;
+
+        return parsed;
+    }, [content]);
+
+    if (loading)
+        return (
+            <div className=" text-zinc-500 h-screen flex items-center justify-center">
+                Loading template...
+            </div>
+        );
+
+    if (!frameData)
+        return (
+            <div className=" text-zinc-500 h-screen flex items-center justify-center">
+                Template not found or not approved.
+            </div>
+        );
+
+    return (
+        <div className="min-h-screen p-0 m-0">
+            <Editor
+                enabled={false}
+                resolver={{
+                    // Default frame
+                    MimicPCLandingFrame,
+                    DefaultNewPostFrame,
+                    PortfolioTemplate,
+                    BlogTemplate,
+                    ServiceTemplate,
+                    ContactTemplate,
+                    ProductTemplate,
+                    StoreCouponTemplate,
+                    // Component
+                    TextComponent,
+                    Container,
+                    ButtonComponent,
+                    ImageComponent,
+                    HeadingComponent,
+                    CardComponent,
+                    VideoComponent,
+                    TableComponent,
+                    ShapeComponent,
+                    RowComponent,
+                    ColumnComponent,
+                    NavbarComponent,
+                    SectionComponent,
+                    GridComponent,
+                    BadgeComponent,
+                    AccordionComponent,
+                    SpacerComponent,
+                    SliderComponent,
+                    InputComponent,
+                    PopupModalComponent,
+                    PopupOfferComponent,
+                    // Preset
+                    PresetHeader,
+                    PresetHero,
+                    PresetOffersGrid,
+                    PresetFAQ,
+                    PresetFooter,
+                }}
+            >
+                <Frame data={frameData} />
+            </Editor>
+        </div>
+    );
+}

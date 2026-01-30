@@ -9,6 +9,9 @@ import { ParentCategoryManagementPage } from "./pages/ParentCategoryManagementPa
 import { UserManagementPage } from "./pages/UserManagementPage";
 import { MediaManagementPage } from "./pages/MediaManagementPage";
 import { NewPage } from "./pages/NewPage";
+import { TemplateDashboardPage } from "./pages/TemplateDashboardPage";
+import { TemplateEditorPage } from "./components/Editor/TemplateEditorPage";
+import { PublicTemplatePage } from "./pages/PublicTemplatePage";
 
 function App() {
   return (
@@ -24,6 +27,10 @@ function App() {
       <Route element={<ParentCategoryManagementPage />} path="/parent-categories" />
       <Route element={<UserManagementPage />} path="/users" />
       <Route element={<MediaManagementPage />} path="/media" />
+      <Route element={<TemplateDashboardPage />} path="/template-dashboard" />
+      <Route element={<TemplateEditorPage />} path="/template-editor/new" />
+      <Route element={<TemplateEditorPage />} path="/template-editor/:id" />
+      <Route element={<PublicTemplatePage />} path="/template/:slug" />
       <Route element={<Navigate replace to="/" />} path="*" />
     </Routes>
   );
