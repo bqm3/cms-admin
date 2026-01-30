@@ -661,6 +661,7 @@ export function EditorPage() {
                 <ModalHeader className="flex flex-col gap-1">
                   <h2 className="text-2xl font-bold text-white tracking-tight">Chọn mẫu thiết kế</h2>
                   <p className="text-sm font-medium text-zinc-400">Bắt đầu nhanh với các mẫu được thiết kế sẵn cho từng mục đích</p>
+                  <p className="text-sm font-medium text-zinc-400">Bạn có thể bỏ qua bước này</p>
                 </ModalHeader>
                 <ModalBody>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
