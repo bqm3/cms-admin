@@ -44,6 +44,19 @@ import { InputComponent } from "./Craft/Components/InputComponent";
 // --- Frame Default ---
 import { DefaultNewPostFrame } from "./DefaultNewPostFrame";
 import { MimicPCLandingFrame } from "./MimicPCLandingFrame";
+import { PortfolioTemplate } from "./PortfolioTemplate";
+import { BlogTemplate } from "./BlogTemplate";
+import { ServiceTemplate } from "./ServiceTemplate";
+import { ContactTemplate } from "./ContactTemplate";
+import { ProductTemplate } from "./ProductTemplate";
+
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  useDisclosure
+} from "@heroui/modal";
 
 // Presets
 import { PresetHeader } from "./Craft/presets/PresetHeader";
@@ -271,6 +284,51 @@ const ContentLoader = ({ content }: { content: string | null }) => {
   return null;
 };
 
+const TEMPLATES = [
+  {
+    id: "landing",
+    name: "Landing Page",
+    component: MimicPCLandingFrame,
+    description: "Trang đích mặc định với Header, Hero, Offers, FAQ và Footer.",
+    preview: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=300"
+  },
+  {
+    id: "portfolio",
+    name: "Portfolio",
+    component: PortfolioTemplate,
+    description: "Trình diễn các dự án sáng tạo với gallery ảnh và grid bài viết.",
+    preview: "https://images.unsplash.com/photo-1545235617-9465d2a55698?auto=format&fit=crop&q=80&w=400&h=300"
+  },
+  {
+    id: "blog",
+    name: "Blog",
+    component: BlogTemplate,
+    description: "Trang blog chuyên nghiệp với bài viết nổi bật và danh sách tin tức.",
+    preview: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=400&h=300"
+  },
+  {
+    id: "service",
+    name: "Dịch vụ",
+    component: ServiceTemplate,
+    description: "Giới thiệu các gói dịch vụ với bảng giá và FAQ.",
+    preview: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400&h=300"
+  },
+  {
+    id: "contact",
+    name: "Liên hệ",
+    component: ContactTemplate,
+    description: "Trang liên hệ với thông tin chi tiết và form gửi tin nhắn.",
+    preview: "https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&q=80&w=400&h=300"
+  },
+  {
+    id: "product",
+    name: "Sản phẩm",
+    component: ProductTemplate,
+    description: "Trang chi tiết sản phẩm với slider ảnh và thông số kỹ thuật.",
+    preview: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400&h=300"
+  },
+];
+
 // --- Main Page ---
 
 export function EditorPage() {
@@ -290,6 +348,8 @@ export function EditorPage() {
   const [parentCategories, setParentCategories] = useState<any[]>([]);
   const [loadedContent, setLoadedContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(!isNew);
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(TEMPLATES[0]);
+  const { isOpen: isTmplOpen, onOpen: onTmplOpen, onClose: onTmplClose } = useDisclosure({ defaultOpen: isNew });
 
   // Fetch Categories & Parent Categories
   useEffect(() => {
@@ -352,6 +412,11 @@ export function EditorPage() {
           // Default frame
           MimicPCLandingFrame,
           DefaultNewPostFrame,
+          PortfolioTemplate,
+          BlogTemplate,
+          ServiceTemplate,
+          ContactTemplate,
+          ProductTemplate,
           // Component
           TextComponent,
           Container,
@@ -558,9 +623,9 @@ export function EditorPage() {
               <div className="p-8">
                 <div className="flex justify-center">
                   <div className="w-full max-w-[1024px] shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
-                    <Frame>
+                    <Frame key={isNew ? selectedTemplate?.id : 'existing'}>
                       {isNew ? (
-                        <Element canvas is={MimicPCLandingFrame} />
+                        <Element canvas is={selectedTemplate.component} />
                       ) : (
                         <Element
                           canvas
@@ -577,6 +642,59 @@ export function EditorPage() {
                 </div>
               </div>
             </div>
+
+            {/* Template Selector Modal */}
+            <Modal
+              isOpen={isTmplOpen}
+              onClose={onTmplClose}
+              size="5xl"
+              backdrop="blur"
+              scrollBehavior="inside"
+              hideCloseButton
+              classNames={{
+                base: "bg-zinc-950 border border-white/10 rounded-3xl",
+                header: "border-b border-white/5 p-6",
+                body: "p-6 custom-scrollbar",
+              }}
+            >
+              <ModalContent>
+                <ModalHeader className="flex flex-col gap-1">
+                  <h2 className="text-2xl font-bold text-white tracking-tight">Chọn mẫu thiết kế</h2>
+                  <p className="text-sm font-medium text-zinc-400">Bắt đầu nhanh với các mẫu được thiết kế sẵn cho từng mục đích</p>
+                </ModalHeader>
+                <ModalBody>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {TEMPLATES.map((tmpl) => (
+                      <div
+                        key={tmpl.id}
+                        onClick={() => {
+                          setSelectedTemplate(tmpl);
+                          onTmplClose();
+                        }}
+                        className="group cursor-pointer flex flex-col bg-zinc-900/50 border border-white/5 rounded-2xl overflow-hidden hover:border-blue-500/50 hover:bg-zinc-900 transition-all duration-300"
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden">
+                          <img
+                            src={tmpl.preview}
+                            alt={tmpl.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent" />
+                          <div className="absolute bottom-4 left-4">
+                            <h3 className="text-lg font-bold text-white">{tmpl.name}</h3>
+                          </div>
+                        </div>
+                        <div className="p-4 flex-1">
+                          <p className="text-xs text-zinc-400 leading-relaxed font-medium">
+                            {tmpl.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
 
             {/* Footer cố định theo cột center */}
             {/* <div className="shrink-0 h-8 bg-white/5 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">

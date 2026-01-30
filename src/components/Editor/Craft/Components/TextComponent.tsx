@@ -6,11 +6,11 @@ import { Input } from "@heroui/input";
 import { useEditorData } from "../../../../context/EditorDataContext";
 
 export const TextComponent = ({
-  text,
-  fontSize,
-  fontWeight,
-  textAlign,
-  color,
+  text = "Type here...",
+  fontSize = 16,
+  fontWeight = "400",
+  textAlign = "left",
+  color = "#e4e4e7",
   lineHeight = "1.5",
   letterSpacing = "normal",
 
@@ -20,11 +20,11 @@ export const TextComponent = ({
   paddingBottom = 0,
   paddingLeft = 0,
 }: {
-  text: string;
-  fontSize: number;
-  fontWeight: string;
-  textAlign: string;
-  color: string;
+  text?: string;
+  fontSize?: number;
+  fontWeight?: string;
+  textAlign?: string;
+  color?: string;
   lineHeight?: string;
   letterSpacing?: string;
 
@@ -80,11 +80,10 @@ export const TextComponent = ({
       ref={(ref) => {
         if (ref) connect(drag(ref));
       }}
-      className={`${
-        selected
+      className={`${selected
           ? "border-1 border-blue-500 border-dashed"
           : "border border-transparent"
-      } min-w-[50px]`}
+        } min-w-[50px]`}
       // ✅ dời p-1 ra, thay bằng padding custom
       style={{
         paddingTop,
