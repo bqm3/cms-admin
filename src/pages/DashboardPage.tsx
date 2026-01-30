@@ -11,6 +11,7 @@ import {
     CheckCircle,
     Clock,
     Eye,
+    EyeOff,
     Globe,
     LayoutDashboard,
     Plus,
@@ -121,6 +122,18 @@ export function DashboardPage() {
         }
     };
 
+    const handleToggleHidden = async (id: number, currentHidden: boolean) => {
+        try {
+            const formData = new FormData();
+            formData.append('is_hidden', String(!currentHidden));
+            await api.put(`/posts/${id}`, formData);
+            alert(currentHidden ? '✅ Bài viết đã được hiển thị!' : '🔒 Bài viết đã được ẩn!');
+            fetchPosts();
+        } catch (err) {
+            alert('Thao tác thất bại');
+        }
+    };
+
     return (
         <AdminLayout>
             {/* Page Header */}
@@ -168,7 +181,7 @@ export function DashboardPage() {
                                 }}
                             />
                         </div>
-                        
+
                         <div className="w-full md:w-48">
                             <select
                                 value={selectedParentCategory}
@@ -269,9 +282,17 @@ export function DashboardPage() {
                                     )}
                                 </div>
                                 <div className="min-w-0 max-w-[320px]">
-                                    <h4 className="font-bold text-slate-800 text-sm leading-tight truncate group-hover:text-blue-600 transition-colors" title={post.title}>
-                                        {post.title}
-                                    </h4>
+                                    <div className="flex items-center gap-2">
+                                        <h4 className="font-bold text-slate-800 text-sm leading-tight truncate group-hover:text-blue-600 transition-colors" title={post.title}>
+                                            {post.title}
+                                        </h4>
+                                        {post.is_hidden && (
+                                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded text-[10px] font-bold text-amber-600 whitespace-nowrap">
+                                                <EyeOff size={10} />
+                                                Ẩn
+                                            </span>
+                                        )}
+                                    </div>
                                     <p className="text-xs font-medium text-slate-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis font-mono">
                                         /{post.slug || post.id}
                                     </p>
@@ -360,6 +381,21 @@ export function DashboardPage() {
                                 >
                                     <Copy size={16} />
                                 </Button>
+                                {user.role === 'admin' && (
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        variant="flat"
+                                        className={`rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all ${post.is_hidden
+                                            ? "bg-amber-50 text-amber-600 hover:bg-amber-100"
+                                            : "bg-green-50 text-green-600 hover:bg-green-100"
+                                            }`}
+                                        onClick={() => handleToggleHidden(post.id, post.is_hidden)}
+                                        title={post.is_hidden ? "Hiển thị bài viết" : "Ẩn bài viết"}
+                                    >
+                                        {post.is_hidden ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </Button>
+                                )}
                                 <a href={`/site/${post.slug || post.id}`} target="_blank" rel="noopener noreferrer">
                                     <Button
                                         isIconOnly
