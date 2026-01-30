@@ -203,6 +203,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       formData.append("category_id", String(postInfo.category_id ?? ""));
       formData.append("content", json);
       formData.append("view_count", String(postInfo.viewCount ?? 0));
+      formData.append("is_hidden", String(postInfo.isHidden));
       if (postInfo.logoFile) formData.append("logo", postInfo.logoFile);
 
       if (isNew) {
@@ -298,6 +299,7 @@ export function EditorPage() {
     viewCount: 0,
     logoFile: null as File | null,
     logoUrl: "",
+    isHidden: false,
   });
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -338,14 +340,13 @@ export function EditorPage() {
     fetchData();
   }, []);
 
-  // Fetch Post Data or Load Template Content
+  // Fetch Post Data when editing
   useEffect(() => {
     if (!isNew && id) {
-      // Editing existing post
       const fetchPost = async () => {
         try {
           setLoading(true);
-          const res = await api.get(`/posts/${id}`);
+          const res = await api.get(`/posts/public/${id}`);
           const post = res.data;
           setPostInfo({
             title: post.title || "",
@@ -353,6 +354,7 @@ export function EditorPage() {
             viewCount: post.view_count || 0,
             logoFile: null,
             logoUrl: post.logo || "",
+            isHidden: post.is_hidden || false,
           });
           setLoadedContent(post.content || null);
         } catch (err) {
@@ -362,11 +364,15 @@ export function EditorPage() {
         }
       };
       fetchPost();
-    } else if (isNew && selectedTemplate?.content) {
-      // New post with template content from DB
+    }
+  }, [id, isNew]);
+
+  // Load Template Content for new post
+  useEffect(() => {
+    if (isNew && selectedTemplate?.content) {
       setLoadedContent(selectedTemplate.content);
     }
-  }, [id, isNew, selectedTemplate]);
+  }, [isNew, selectedTemplate]);
 
   if (loading)
     return (
@@ -569,6 +575,20 @@ export function EditorPage() {
                 }
               />
             </label>
+
+            <button
+              onClick={() => setPostInfo({ ...postInfo, isHidden: !postInfo.isHidden })}
+              className={`h-8 px-2.5 rounded-lg border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.isHidden
+                ? "bg-amber-500/15 border-amber-500/30 text-amber-300 hover:bg-amber-500/20"
+                : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
+                }`}
+              title={postInfo.isHidden ? "Bài viết đang ẩn" : "Bài viết công khai"}
+            >
+              <Eye size={14} className={postInfo.isHidden ? "opacity-50" : ""} />
+              <span className="hidden sm:inline">
+                {postInfo.isHidden ? "Đang ẩn" : "Công khai"}
+              </span>
+            </button>
 
             <div className="hidden md:block h-5 w-px bg-white/10 mx-1" />
 
