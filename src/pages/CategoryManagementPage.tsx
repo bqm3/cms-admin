@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
-import { Plus, Trash, Edit, Tag, Search, Calendar } from 'lucide-react';
+import { Plus, Trash, Edit, Tag, Search, Calendar, Layers } from 'lucide-react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
@@ -19,6 +19,9 @@ export function CategoryManagementPage() {
     const [name, setName] = useState('');
     const [editingCategory, setEditingCategory] = useState<any>(null);
     const [editName, setEditName] = useState('');
+    const [parentId, setParentId] = useState<string>('');
+    const [editParentId, setEditParentId] = useState<string>('');
+    const [parentCategories, setParentCategories] = useState<any[]>([]);
 
     const navigate = useNavigate();
 
@@ -31,6 +34,15 @@ export function CategoryManagementPage() {
     // Modal disclosures
     const createModal = useDisclosure();
     const editModal = useDisclosure();
+
+    const fetchParentCategories = async () => {
+        try {
+            const response = await api.get('/parent-categories');
+            setParentCategories(response.data.parentCategories || response.data || []);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const fetchCategories = async () => {
         setLoading(true);
@@ -67,13 +79,15 @@ export function CategoryManagementPage() {
             return;
         }
         fetchCategories();
+        fetchParentCategories();
     }, [page, limit, searchTerm, startDate, endDate]);
 
     const handleCreate = async () => {
         if (!name.trim()) return;
         try {
-            await api.post('/categories', { name });
+            await api.post('/categories', { name, parent_id: parentId || null });
             setName('');
+            setParentId('');
             createModal.onClose();
             alert('Thêm danh mục mới thành công! 🏷️');
             if (page === 1) fetchCategories(); else setPage(1);
@@ -96,13 +110,14 @@ export function CategoryManagementPage() {
     const startEdit = (cat: any) => {
         setEditingCategory(cat);
         setEditName(cat.name);
+        setEditParentId(cat.parent_id ? String(cat.parent_id) : '');
         editModal.onOpen();
     };
 
     const handleUpdate = async () => {
         if (!editingCategory) return;
         try {
-            await api.put(`/categories/${editingCategory.id}`, { name: editName });
+            await api.put(`/categories/${editingCategory.id}`, { name: editName, parent_id: editParentId || null });
             editModal.onClose();
             alert('Cập nhật danh mục thành công! ✨');
             fetchCategories();
@@ -208,9 +223,14 @@ export function CategoryManagementPage() {
                                 </div>
                                 <div className="min-w-0">
                                     <p className="font-bold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">{cat.name}</p>
-                                    {cat.slug && (
-                                        <p className="text-xs font-medium text-slate-400 mt-0.5 font-mono">{cat.slug}</p>
-                                    )}
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        {cat.parent && (
+                                            <span className="px-1.5 py-0.5 bg-purple-50 text-purple-600 border border-purple-100 rounded text-[9px] font-bold uppercase tracking-wider">
+                                                {cat.parent.name}
+                                            </span>
+                                        )}
+                                        <p className="text-xs font-medium text-slate-400 font-mono">{cat.slug}</p>
+                                    </div>
                                 </div>
                             </div>
                         )
@@ -295,6 +315,19 @@ export function CategoryManagementPage() {
                                 onChange={(e) => setName(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-500 ml-1">Danh mục cha</label>
+                                <select
+                                    className="w-full h-12 px-4 bg-white border-none shadow-sm rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500/20 outline-none"
+                                    value={parentId}
+                                    onChange={(e) => setParentId(e.target.value)}
+                                >
+                                    <option value="">Không có danh mục cha</option>
+                                    {parentCategories.map(pc => (
+                                        <option key={pc.id} value={pc.id}>{pc.name}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
@@ -338,6 +371,19 @@ export function CategoryManagementPage() {
                                 onChange={(e) => setEditName(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-500 ml-1">Danh mục cha</label>
+                                <select
+                                    className="w-full h-12 px-4 bg-white border-none shadow-sm rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500/20 outline-none"
+                                    value={editParentId}
+                                    onChange={(e) => setEditParentId(e.target.value)}
+                                >
+                                    <option value="">Không có danh mục cha</option>
+                                    {parentCategories.map(pc => (
+                                        <option key={pc.id} value={pc.id}>{pc.name}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>

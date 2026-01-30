@@ -5,6 +5,7 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { PublicPostPage } from "./pages/PublicPostPage";
 import { ClientHomePage } from "./pages/ClientHomePage";
 import { CategoryManagementPage } from "./pages/CategoryManagementPage";
+import { ParentCategoryManagementPage } from "./pages/ParentCategoryManagementPage";
 import { UserManagementPage } from "./pages/UserManagementPage";
 import { MediaManagementPage } from "./pages/MediaManagementPage";
 import { NewPage } from "./pages/NewPage";
@@ -20,6 +21,7 @@ function App() {
       <Route element={<NewPage />} path="/new-page-test" />
       <Route element={<PublicPostPage />} path="/site/:slug" />
       <Route element={<CategoryManagementPage />} path="/categories" />
+      <Route element={<ParentCategoryManagementPage />} path="/parent-categories" />
       <Route element={<UserManagementPage />} path="/users" />
       <Route element={<MediaManagementPage />} path="/media" />
       <Route element={<Navigate replace to="/" />} path="*" />

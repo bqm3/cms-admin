@@ -287,20 +287,25 @@ export function EditorPage() {
   });
 
   const [categories, setCategories] = useState<any[]>([]);
+  const [parentCategories, setParentCategories] = useState<any[]>([]);
   const [loadedContent, setLoadedContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(!isNew);
 
-  // Fetch Categories
+  // Fetch Categories & Parent Categories
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/categories");
-        setCategories(res.data || []);
+        const [catRes, parentRes] = await Promise.all([
+          api.get("/categories"),
+          api.get("/parent-categories")
+        ]);
+        setCategories(catRes.data || []);
+        setParentCategories(parentRes.data.parentCategories || parentRes.data || []);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
       }
     };
-    fetchCategories();
+    fetchData();
   }, []);
 
   // Fetch Post Data
@@ -434,15 +439,28 @@ export function EditorPage() {
                     <option className="bg-zinc-900" value="">
                       Chọn danh mục
                     </option>
-                    {categories.map((cat) => (
-                      <option
-                        key={cat.id}
-                        className="bg-zinc-900"
-                        value={cat.id}
-                      >
-                        {cat.name}
-                      </option>
+                    {/* Group categories by parent */}
+                    {parentCategories.map((parent) => (
+                      <optgroup key={parent.id} label={parent.name} className="bg-zinc-900 text-zinc-500 italic">
+                        {categories
+                          .filter((cat) => cat.parent_id === parent.id)
+                          .map((cat) => (
+                            <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
+                              {cat.name}
+                            </option>
+                          ))}
+                      </optgroup>
                     ))}
+                    {/* Categories without parent */}
+                    <optgroup label="Khác" className="bg-zinc-900 text-zinc-500 italic">
+                      {categories
+                        .filter((cat) => !cat.parent_id)
+                        .map((cat) => (
+                          <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                    </optgroup>
                   </select>
                 </div>
               </div>
@@ -462,21 +480,35 @@ export function EditorPage() {
                 <option className="bg-zinc-900" value="">
                   Danh mục
                 </option>
-                {categories.map((cat) => (
-                  <option key={cat.id} className="bg-zinc-900" value={cat.id}>
-                    {cat.name}
-                  </option>
+                {parentCategories.map((parent) => (
+                  <optgroup key={parent.id} label={parent.name} className="bg-zinc-900 text-zinc-500 italic">
+                    {categories
+                      .filter((cat) => cat.parent_id === parent.id)
+                      .map((cat) => (
+                        <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                  </optgroup>
                 ))}
+                <optgroup label="Khác" className="bg-zinc-900 text-zinc-500 italic">
+                  {categories
+                    .filter((cat) => !cat.parent_id)
+                    .map((cat) => (
+                      <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                </optgroup>
               </select>
             </div>
 
             <label className="group cursor-pointer h-8 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
               <span
-                className={`w-6 h-6 grid place-items-center rounded border ${
-                  postInfo.logoFile
-                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
-                    : "bg-white/5 border-white/10 text-blue-300"
-                }`}
+                className={`w-6 h-6 grid place-items-center rounded border ${postInfo.logoFile
+                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                  : "bg-white/5 border-white/10 text-blue-300"
+                  }`}
               >
                 <ImageIcon size={14} />
               </span>

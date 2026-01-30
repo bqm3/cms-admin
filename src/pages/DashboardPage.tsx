@@ -26,6 +26,8 @@ export function DashboardPage() {
     const [categories, setCategories] = useState<any[]>([]);
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [parentCategories, setParentCategories] = useState<any[]>([]);
+    const [selectedParentCategory, setSelectedParentCategory] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [loading, setLoading] = useState(true);
@@ -41,8 +43,12 @@ export function DashboardPage() {
 
     const fetchCategories = async () => {
         try {
-            const response = await api.get('/categories');
-            setCategories(response.data);
+            const [catRes, parentRes] = await Promise.all([
+                api.get('/categories'),
+                api.get('/parent-categories')
+            ]);
+            setCategories(catRes.data.categories || catRes.data || []);
+            setParentCategories(parentRes.data.parentCategories || parentRes.data || []);
         } catch (err) {
             console.error(err);
         }
@@ -55,6 +61,7 @@ export function DashboardPage() {
                 params: {
                     search,
                     category: selectedCategory,
+                    parentCategory: selectedParentCategory,
                     startDate,
                     endDate,
                     page,
@@ -81,7 +88,7 @@ export function DashboardPage() {
 
     useEffect(() => {
         fetchPosts();
-    }, [search, selectedCategory, startDate, endDate, page, limit]);
+    }, [search, selectedCategory, selectedParentCategory, startDate, endDate, page, limit]);
 
     const handleApprove = async (id: number) => {
         try {
@@ -200,7 +207,24 @@ export function DashboardPage() {
                                 )}
                             </div>
                         </div>
-                        <div className="w-full md:w-64">
+                        <div className="w-full md:w-48">
+                            <select
+                                value={selectedParentCategory}
+                                onChange={(e) => {
+                                    setSelectedParentCategory(e.target.value);
+                                    setSelectedCategory(''); // Reset child category when parent changes
+                                    setPage(1);
+                                }}
+                                className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
+                                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
+                            >
+                                <option value="">Tất cả danh mục cha</option>
+                                {parentCategories.map((pc) => (
+                                    <option key={pc.id} value={pc.id}>{pc.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="w-full md:w-48">
                             <select
                                 value={selectedCategory}
                                 onChange={(e) => {
@@ -210,10 +234,12 @@ export function DashboardPage() {
                                 className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
                                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                             >
-                                <option value="">Tất cả danh mục</option>
-                                {categories.map((cat) => (
-                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                ))}
+                                <option value="">Tất cả danh mục con</option>
+                                {categories
+                                    .filter(cat => !selectedParentCategory || cat.parent_id === Number(selectedParentCategory))
+                                    .map((cat) => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
                             </select>
                         </div>
                     </div>
