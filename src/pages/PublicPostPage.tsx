@@ -5,6 +5,12 @@ import api from "../services/api";
 
 // ✅ Import tất cả component mà editor có thể sinh ra trong content
 import { DefaultNewPostFrame } from "../components/Editor/DefaultNewPostFrame";
+import { MimicPCLandingFrame } from "../components/Editor/MimicPCLandingFrame";
+import { PortfolioTemplate } from "../components/Editor/PortfolioTemplate";
+import { BlogTemplate } from "../components/Editor/BlogTemplate";
+import { ServiceTemplate } from "../components/Editor/ServiceTemplate";
+import { ContactTemplate } from "../components/Editor/ContactTemplate";
+import { ProductTemplate } from "../components/Editor/ProductTemplate";
 
 // Craft components
 import { TextComponent } from "../components/Editor/Craft/Components/TextComponent";
@@ -32,7 +38,6 @@ import { PresetFooter } from "@/components/Editor/Craft/presets/PresetFooter";
 import { PresetHeader } from "@/components/Editor/Craft/presets/PresetHeader";
 import { PresetHero } from "@/components/Editor/Craft/presets/PresetHero";
 import { PresetOffersGrid } from "@/components/Editor/Craft/presets/PresetOffersGrid";
-import { MimicPCLandingFrame } from "@/components/Editor/MimicPCLandingFrame";
 import { InputComponent } from "@/components/Editor/Craft/Components/InputComponent";
 import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
 import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
@@ -109,6 +114,11 @@ export function PublicPostPage() {
           // Default frame
           MimicPCLandingFrame,
           DefaultNewPostFrame,
+          PortfolioTemplate,
+          BlogTemplate,
+          ServiceTemplate,
+          ContactTemplate,
+          ProductTemplate,
           // Component
           TextComponent,
           Container,
