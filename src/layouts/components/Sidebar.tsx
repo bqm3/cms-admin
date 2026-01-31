@@ -40,7 +40,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     const menuItems = [
         {
             icon: LayoutDashboard,
-            label: 'Trang chủ',
+            label: 'Quản lý bài viết',
             path: '/dashboard',
             activeBg: 'bg-blue-50',
             activeBorder: 'border-blue-200',
@@ -48,16 +48,16 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             iconBg: 'bg-blue-100',
             iconText: 'text-blue-600'
         },
-        {
-            icon: Plus,
-            label: 'Tạo mới',
-            path: '/editor/new',
-            activeBg: 'bg-blue-50',
-            activeBorder: 'border-blue-200',
-            activeText: 'text-blue-700',
-            iconBg: 'bg-blue-100',
-            iconText: 'text-blue-600'
-        },
+        // {
+        //     icon: Plus,
+        //     label: 'Tạo mới',
+        //     path: '/editor/new',
+        //     activeBg: 'bg-blue-50',
+        //     activeBorder: 'border-blue-200',
+        //     activeText: 'text-blue-700',
+        //     iconBg: 'bg-blue-100',
+        //     iconText: 'text-blue-600'
+        // },
         {
             icon: LayoutTemplate,
             label: 'Quản lý Template',

@@ -21,7 +21,7 @@ export function ClientHomePage() {
   // Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(5);
   const [totalItems, setTotalItems] = useState(0);
 
   const fetchCategories = async () => {

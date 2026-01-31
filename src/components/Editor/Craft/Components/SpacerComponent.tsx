@@ -77,7 +77,7 @@ const SpacerSettings = () => {
 
       {/* Quick presets */}
       <div className="flex gap-2 pt-1">
-        {[8, 16, 24, 32, 48, 64].map((v) => (
+        {[8, 16, 24, 32, 48].map((v) => (
           <button
             key={v}
             className="text-xs px-2 py-1 rounded bg-white/10 border border-white/10"

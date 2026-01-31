@@ -49,7 +49,7 @@ export function BlogTemplate() {
                 borderRadius={0}
             >
                 <Element id="b-hero-card" is={Container} canvas background="#FFFFFF" padding={40} borderRadius={24}>
-                    <Element id="b-hero-badge" is={BadgeComponent} text="Featured Article" color="primary" variant="soft" />
+                    <Element id="b-hero-badge" is={BadgeComponent} text="Featured Article" color="primary" variant="soft" radius={"sm"} size={"sm"} />
                     <Element
                         id="b-hero-title"
                         is={HeadingComponent}

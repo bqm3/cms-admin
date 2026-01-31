@@ -100,8 +100,10 @@ export const Container = ({
   return (
     <div
       ref={(ref) => {
-        if (ref) connect(drag(ref));
-      }}
+  if (!ref) return;
+  if (enabled) connect(drag(ref));
+  else connect(ref);
+}}
       className={[
         "relative min-h-[50px]",
         showOutline ? "outline outline-1 outline-dashed outline-zinc-500/70" : "",
@@ -452,5 +454,6 @@ Container.craft = {
   },
   rules: {
     canMoveIn: () => true,
+    canDelete: () => true,
   },
 };

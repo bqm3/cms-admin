@@ -161,6 +161,11 @@ export const Toolbox = () => {
         <PopupOfferComponent delayMs={5000} teaserText="GET DISCOUNT!" />
       ),
     },
+     {
+      name: "Khoảng cách",
+      icon: "︽",
+      component: <SpacerComponent size={20} direction={"vertical"} />,
+    },
   ];
 
   const shapeTools = [

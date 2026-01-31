@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/jsx-sort-props */
 /* eslint-disable padding-line-between-statements */
 /* eslint-disable no-console */
 /* eslint-disable prettier/prettier */
@@ -314,13 +316,13 @@ const TEMPLATES = [
     description: "Giới thiệu các gói dịch vụ với bảng giá và FAQ.",
     preview: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400&h=300"
   },
-  {
-    id: "contact",
-    name: "Liên hệ",
-    component: ContactTemplate,
-    description: "Trang liên hệ với thông tin chi tiết và form gửi tin nhắn.",
-    preview: "https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&q=80&w=400&h=300"
-  },
+  // {
+  //   id: "contact",
+  //   name: "Liên hệ",
+  //   component: ContactTemplate,
+  //   description: "Trang liên hệ với thông tin chi tiết và form gửi tin nhắn.",
+  //   preview: "https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&q=80&w=400&h=300"
+  // },
   {
     id: "product",
     name: "Sản phẩm",
