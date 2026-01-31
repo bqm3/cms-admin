@@ -90,7 +90,7 @@ export function PortfolioTemplate() {
                 />
                 <Element id="p-grid" is={GridComponent} columns={3} gap={20} canvas minItemWidth={200} align="start">
                     {[1, 2, 3, 4, 5, 6].map((i) => (
-                        <Element key={i} id={`p-work-${i}`} is={CardComponent} canvas padding={0} background="#161922" radius="12px" shadow="sm">
+                        <Element key={i} id={`p-work-${i}`} is={CardComponent} canvas padding={0} background="#161922" radius="md" shadow="sm">
                             <Element
                                 id={`p-work-img-${i}`}
                                 is={Container}

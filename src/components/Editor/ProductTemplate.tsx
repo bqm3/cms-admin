@@ -93,7 +93,15 @@ export function ProductTemplate() {
                 <Element id="pr-feat-grid" is={GridComponent} columns={4} gap={24} canvas minItemWidth={200} align="center">
                     {["Noise Cancellation", "40h Battery", "Bluetooth 5.2", "Quick Charge"].map((feat, i) => (
                         <Element key={i} id={`pr-feat-${i}`} is={Container} canvas background="transparent" padding={0}>
-                            <Element id={`pr-feat-icon-${i}`} is={Container} background="#EEF2FF" width="60px" height="60px" borderRadius={30} margin="0 auto 16px auto" />
+                            <Element
+                                background="#EEF2FF"
+                                borderRadius={30}
+                                height="60px"
+                                id={`pr-feat-icon-${i}`}
+                                is={Container}
+                                margin={0}
+                                width="60px"
+                            />
                             <Element id={`pr-feat-title-${i}`} is={HeadingComponent} text={feat} level="h2" color="#0F172A" align="center" />
                         </Element>
                     ))}

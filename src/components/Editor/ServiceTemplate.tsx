@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-sort-props */
 /* eslint-disable prettier/prettier */
 import React from "react";
 import { Element } from "@craftjs/core";
@@ -96,7 +97,7 @@ export function ServiceTemplate() {
                 <Element id="s-grid" is={GridComponent} columns={3} gap={30} canvas minItemWidth={250} align="start">
                     {["Strategy", "Design", "Development", "Marketing", "Cloud", "Support"].map((name, i) => (
                         <Element key={i} id={`s-card-${i}`} is={Container} canvas background="#FFFFFF" padding={30} borderRadius={16}>
-                            <Element id={`s-card-icon-${i}`} is={Container} background="#DBEAFE" width="50px" height="50px" borderRadius={12} margin="0 0 20px 0" />
+                            <Element id={`s-card-icon-${i}`} is={Container} background="#DBEAFE" width="50px" height="50px" borderRadius={12} margin={0} />
                             <Element id={`s-card-title-${i}`} is={HeadingComponent} text={name} level="h4" color="#0F172A" align="left" />
                             <Element id={`s-card-desc-${i}`} is={TextComponent} text="Comprehensive solutions tailored to your unique business needs and goals." color="#64748B" fontSize={15} fontWeight="400" textAlign="left" paddingTop={12} />
                         </Element>
