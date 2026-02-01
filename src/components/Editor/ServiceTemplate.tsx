@@ -94,7 +94,7 @@ export function ServiceTemplate() {
                     color="#0F172A"
                     align="center"
                 />
-                <Element id="s-grid" is={GridComponent} columns={3} gap={30} canvas minItemWidth={250} align="start">
+                <Element id="s-grid" is={GridComponent} columns={3} columnsMd={2} columnsSm={1} gap={30} canvas minItemWidth={250} align="start">
                     {["Strategy", "Design", "Development", "Marketing", "Cloud", "Support"].map((name, i) => (
                         <Element key={i} id={`s-card-${i}`} is={Container} canvas background="#FFFFFF" padding={30} borderRadius={16}>
                             <Element id={`s-card-icon-${i}`} is={Container} background="#DBEAFE" width="50px" height="50px" borderRadius={12} margin={0} />

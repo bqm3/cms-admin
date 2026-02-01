@@ -80,7 +80,7 @@ export function BlogTemplate() {
                 overlay={{ enabled: false, color: "" }}
                 borderRadius={0}
             >
-                <Element id="b-grid" is={GridComponent} columns={2} gap={30} canvas minItemWidth={300} align="start">
+                <Element id="b-grid" is={GridComponent} columns={2} columnsMd={1} columnsSm={1} gap={30} canvas minItemWidth={300} align="start">
                     {[1, 2, 3, 4].map((i) => (
                         <Element key={i} id={`b-post-${i}`} is={Container} canvas background="transparent" padding={0}>
                             <Element id={`b-post-img-${i}`} is={Container} background="#E2E8F0" height="240px" borderRadius={16} />

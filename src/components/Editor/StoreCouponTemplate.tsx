@@ -53,7 +53,7 @@ export function StoreCouponTemplate() {
         paddingX={20}
         paddingY={40}
       >
-        <Element canvas align="start" columns={3} gap={30} id="s-grid" is={GridComponent} minItemWidth={300}>
+        <Element canvas align="start" columns={3} columnsMd={1} columnsSm={1} gap={30} id="s-grid" is={GridComponent} minItemWidth={300}>
           {/* Sidebar (1 column) */}
           <Element canvas background="transparent" className="col-span-1" id="s-sidebar" is={Container} padding={0}>
             <Element canvas background="#FFFFFF" id="s-store-card" is={CardComponent} padding={24} radius="lg" shadow="sm">

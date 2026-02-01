@@ -49,7 +49,7 @@ export function ContactTemplate() {
                 overlay={{ enabled: false, color: "" }}
                 borderRadius={0}
             >
-                <Element id="c-grid" is={GridComponent} columns={2} gap={60} canvas minItemWidth={300} align="start">
+                <Element id="c-grid" is={GridComponent} columns={2} columnsMd={1} columnsSm={1} gap={60} canvas minItemWidth={300} align="start">
                     {/* Left Column: Info */}
                     <Element id="c-info" is={Container} canvas background="transparent" padding={0}>
                         <Element

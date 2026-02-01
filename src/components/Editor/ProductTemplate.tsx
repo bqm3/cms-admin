@@ -50,7 +50,7 @@ export function ProductTemplate() {
                 overlay={{ enabled: false, color: "" }}
                 borderRadius={0}
             >
-                <Element id="pr-grid" is={GridComponent} columns={2} gap={50} canvas minItemWidth={350} align="start">
+                <Element id="pr-grid" is={GridComponent} columns={2} columnsMd={1} columnsSm={1} gap={50} canvas minItemWidth={350} align="start">
                     <Element id="pr-images" is={Container} canvas background="transparent" padding={0}>
                         <Element
                             id="pr-slider"
@@ -90,7 +90,7 @@ export function ProductTemplate() {
                 overlay={{ enabled: false, color: "" }}
                 borderRadius={0}
             >
-                <Element id="pr-feat-grid" is={GridComponent} columns={4} gap={24} canvas minItemWidth={200} align="center">
+                <Element id="pr-feat-grid" is={GridComponent} columns={4} columnsMd={2} columnsSm={1} gap={24} canvas minItemWidth={200} align="center">
                     {["Noise Cancellation", "40h Battery", "Bluetooth 5.2", "Quick Charge"].map((feat, i) => (
                         <Element key={i} id={`pr-feat-${i}`} is={Container} canvas background="transparent" padding={0}>
                             <Element
