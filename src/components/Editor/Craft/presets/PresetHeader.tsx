@@ -129,6 +129,7 @@ export const PresetHeader = () => {
                     id={`navbar-link-${i}`}
                     is={TextComponent}
                     text={t.label}
+                    href={t.href}
                     fontSize={13}
                     fontWeight="500"
                     textAlign="left"
@@ -137,6 +138,7 @@ export const PresetHeader = () => {
                     paddingRight={0}
                     paddingBottom={0}
                     paddingLeft={0}
+                    className="hover:opacity-70 transition-opacity"
                   />
                 ))}
               </Element>
@@ -222,10 +224,12 @@ export const PresetHeader = () => {
                   id={`mobile-link-${i}`}
                   is={TextComponent}
                   text={t.label}
+                  href={t.href}
                   fontSize={14}
                   fontWeight="500"
                   textAlign="left"
                   color={TEXT_DIM}
+                  className="hover:opacity-70 transition-opacity"
                 />
               </Element>
             ))}

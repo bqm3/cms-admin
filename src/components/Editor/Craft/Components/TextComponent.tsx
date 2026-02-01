@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import ContentEditable from "react-contenteditable";
 import { Input } from "@heroui/input";
 import { useEditorData } from "../../../../context/EditorDataContext";
+import { useEditorMode } from "../utils/useEditorMode";
 
 export const TextComponent = ({
   text = "Type here...",
@@ -19,6 +20,11 @@ export const TextComponent = ({
   paddingRight = 0,
   paddingBottom = 0,
   paddingLeft = 0,
+
+  // ✅ Links
+  href = "",
+  openInNewTab = false,
+  className = "",
 }: {
   text?: string;
   fontSize?: number;
@@ -33,6 +39,9 @@ export const TextComponent = ({
   paddingRight?: number;
   paddingBottom?: number;
   paddingLeft?: number;
+  href?: string;
+  openInNewTab?: boolean;
+  className?: string;
 }) => {
   const {
     connectors: { connect, drag },
@@ -44,6 +53,7 @@ export const TextComponent = ({
 
   const [editable, setEditable] = useState(false);
   const { data } = useEditorData();
+  const enabled = useEditorMode();
 
   const resolveToken = (path: string, src: any) => {
     try {
@@ -70,21 +80,52 @@ export const TextComponent = ({
     });
   }, [text, data]);
 
+  const resolvedHref = useMemo(() => {
+    if (!href || typeof href !== "string") return href;
+    return href.replace(/\{\{([^}]+)\}\}/g, (match, token) => {
+      const value = resolveToken(token.trim(), data);
+      return value === undefined || value === null ? match : String(value);
+    });
+  }, [href, data]);
+
   useEffect(() => {
     if (selected) return;
     setEditable(false);
   }, [selected]);
 
+  const isLink = !!href;
+
+  const content = (
+    <ContentEditable
+      disabled={!editable}
+      html={editable ? text : resolvedText}
+      style={{
+        fontSize: `${fontSize}px`,
+        fontWeight: fontWeight as any,
+        textAlign: textAlign as any,
+        color,
+        lineHeight: lineHeight || "1.5",
+        letterSpacing: letterSpacing || "normal",
+        margin: 0,
+      }}
+      tagName="p"
+      onChange={(e) => {
+        setProp((props: any) => (props.text = e.target.value));
+      }}
+    />
+  );
+
   return (
     <div
       ref={(ref) => {
-        if (ref) connect(drag(ref));
+        if (!ref) return;
+        if (enabled) connect(drag(ref));
+        else connect(ref);
       }}
       className={`${selected
-          ? "border-1 border-blue-500 border-dashed"
-          : "border border-transparent"
-        } min-w-[50px]`}
-      // ✅ dời p-1 ra, thay bằng padding custom
+        ? "border-1 border-blue-500 border-dashed"
+        : "border border-transparent"
+        } min-w-[50px] ${className} ${isLink ? "cursor-pointer" : ""}`}
       style={{
         paddingTop,
         paddingRight,
@@ -92,25 +133,22 @@ export const TextComponent = ({
         paddingLeft,
         boxSizing: "border-box",
       }}
-      onClick={() => selected && setEditable(true)}
+      onClick={() => {
+        if (enabled && selected) setEditable(true);
+      }}
     >
-      <ContentEditable
-        disabled={!editable}
-        html={editable ? text : resolvedText}
-        style={{
-          fontSize: `${fontSize}px`,
-          fontWeight: fontWeight as any,
-          textAlign: textAlign as any,
-          color,
-          lineHeight: lineHeight || "1.5",
-          letterSpacing: letterSpacing || "normal",
-          margin: 0, // ✅ tránh p tag có margin mặc định
-        }}
-        tagName="p"
-        onChange={(e) => {
-          setProp((props: any) => (props.text = e.target.value));
-        }}
-      />
+      {isLink && !enabled ? (
+        <a
+          href={resolvedHref}
+          target={openInNewTab ? "_blank" : undefined}
+          rel="noopener noreferrer"
+          style={{ color: "inherit", textDecoration: "none" }}
+        >
+          {content}
+        </a>
+      ) : (
+        content
+      )}
     </div>
   );
 };
@@ -127,6 +165,8 @@ export const TextSettings = () => {
     paddingRight,
     paddingBottom,
     paddingLeft,
+    href,
+    openInNewTab,
     actions: { setProp },
   } = useNode((node) => ({
     fontSize: node.data.props.fontSize,
@@ -140,6 +180,9 @@ export const TextSettings = () => {
     paddingRight: node.data.props.paddingRight,
     paddingBottom: node.data.props.paddingBottom,
     paddingLeft: node.data.props.paddingLeft,
+
+    href: node.data.props.href,
+    openInNewTab: node.data.props.openInNewTab,
   }));
 
   return (
@@ -311,6 +354,30 @@ export const TextSettings = () => {
           </button>
         </div>
       </div>
+
+      {/* Link Settings */}
+      <div className="border-t border-white/10 pt-4">
+        <label className="text-xs text-zinc-500 block mb-2">Link</label>
+        <div className="space-y-2">
+          <Input
+            label="URL (href)"
+            size="sm"
+            variant="bordered"
+            value={href || ""}
+            onChange={(e) => setProp((p: any) => (p.href = e.target.value))}
+            placeholder="e.g. #docs or https://..."
+          />
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="openInNewTab"
+              checked={openInNewTab || false}
+              onChange={(e) => setProp((p: any) => (p.openInNewTab = e.target.checked))}
+            />
+            <label htmlFor="openInNewTab" className="text-[10px] text-zinc-500">Open in new tab</label>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -333,6 +400,9 @@ TextComponent.craft = {
     paddingRight: 4,
     paddingBottom: 4,
     paddingLeft: 4,
+    href: "",
+    openInNewTab: false,
+    className: "",
   },
   related: {
     settings: TextSettings,
