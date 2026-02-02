@@ -12,11 +12,13 @@ import { NewPage } from "./pages/NewPage";
 import { TemplateDashboardPage } from "./pages/TemplateDashboardPage";
 import { TemplateEditorPage } from "./components/Editor/TemplateEditorPage";
 import { PublicTemplatePage } from "./pages/PublicTemplatePage";
+import { ClientCategoryPage } from "./pages/ClientCategoryPage";
 
 function App() {
   return (
     <Routes>
       <Route element={<ClientHomePage />} path="/" />
+      <Route element={<ClientCategoryPage />} path="/category" />
       <Route element={<LoginPage />} path="/login" />
       <Route element={<DashboardPage />} path="/dashboard" />
       <Route element={<EditorPage />} path="/editor/new" />

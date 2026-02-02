@@ -1,299 +1,143 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Card, CardBody } from "@heroui/card";
+/* eslint-disable prettier/prettier */
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
-import { Pagination } from "@heroui/pagination";
-import { Eye, Clock, ArrowUpDown, Layout, Search, X } from "lucide-react";
-import api, { SERVER_URL } from "../services/api";
-import { formatDate } from "../utils/formatDate";
+import { ChevronRight, Sparkles } from "lucide-react";
+import api from "../services/api";
+import { usePublicData } from "../hooks/usePublicData";
+import { PostCard } from "../components/Public/PostCard";
+import { PublicHeader } from "../components/Public/PublicHeader";
+import { PublicFooter } from "../components/Public/PublicFooter";
 
 export function ClientHomePage() {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [parentCategories, setParentCategories] = useState<any[]>([]);
-  const [sort, setSort] = useState("sequence_number:ASC");
-  const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedParentCategory, setSelectedParentCategory] = useState("");
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { categories, parentCategories, loading: dataLoading } = usePublicData();
 
-  // Pagination
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [limit, setLimit] = useState(5);
-  const [totalItems, setTotalItems] = useState(0);
+  const [groupedPosts, setGroupedPosts] = useState<Record<number, any[]>>({});
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchCategories = async () => {
+  const fetchGroupedPosts = useCallback(async (parents: any[]) => {
     try {
-      const [catRes, parentRes] = await Promise.all([
-        api.get("/categories"),
-        api.get("/parent-categories"),
-      ]);
-      setCategories(catRes.data.categories || catRes.data || []);
-      setParentCategories(parentRes.data.parentCategories || parentRes.data || []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const fetchPosts = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get("/posts/public", {
-        params: {
-          sort,
-          search,
-          category: selectedCategory,
-          parentCategory: selectedParentCategory,
-          page,
-          limit,
-        },
+      setPostsLoading(true);
+      const results = await Promise.all(
+        parents.map(pc =>
+          api.get("/posts/public", { params: { parentCategory: pc.id, limit: 4, sort: "sequence_number:ASC" } })
+        )
+      );
+      const mapping: Record<number, any[]> = {};
+      parents.forEach((pc, idx) => {
+        mapping[pc.id] = results[idx].data.posts || [];
       });
-
-      // Handle both paginated and non-paginated responses
-      if (response.data.posts) {
-        setPosts(response.data.posts);
-        setTotalPages(response.data.pagination?.totalPages || 1);
-        setTotalItems(response.data.pagination?.total || 0);
-      } else {
-        setPosts(response.data);
-        setTotalPages(1);
-        setTotalItems(response.data.length || 0);
-      }
+      setGroupedPosts(mapping);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching grouped posts:", err);
     } finally {
-      setLoading(false);
+      setPostsLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchCategories();
   }, []);
 
   useEffect(() => {
-    fetchPosts();
-  }, [sort, search, selectedCategory, selectedParentCategory, page, limit]);
+    if (parentCategories.length > 0) {
+      fetchGroupedPosts(parentCategories.filter(p => !p.is_deleted));
+    }
+  }, [parentCategories, fetchGroupedPosts]);
 
-  const toggleSort = () => {
-    setSort((prev) =>
-      prev === "view_count:DESC" ? "sequence_number:ASC" : "view_count:DESC",
-    );
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/category?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
   };
 
-  const handleReset = () => {
-    setSearch("");
-    setSelectedCategory("");
-    setSelectedParentCategory("");
-    setPage(1);
+  const navigateToCategory = (parentId: string, categoryId: string) => {
+    let url = `/category?parentCategory=${parentId}`;
+    if (categoryId) url += `&category=${categoryId}`;
+    navigate(url);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const hasActiveFilters = search || selectedCategory || selectedParentCategory;
+  const isLoading = dataLoading || (parentCategories.length > 0 && postsLoading && Object.keys(groupedPosts).length === 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <header className="mb-6 bg-white px-5 py-4 rounded-xl shadow-sm border border-slate-200/60">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-600 p-2.5 rounded-lg shadow-blue-100 shadow-md">
-                <Layout className="text-white" size={20} />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-                  Danh sách dự án
-                </h1>
-                <p className="text-slate-500 text-[12px] font-bold uppercase tracking-wider">
-                  {totalItems > 0 ? `${totalItems} dự án` : 'Khám phá các trang web cao cấp'}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-600 whitespace-nowrap">Hiển thị:</span>
-              <select
-                value={limit}
-                onChange={(e) => {
-                  setLimit(Number(e.target.value));
-                  setPage(1);
-                }}
-                className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors"
-              >
-                <option value={4}>4</option>
-                <option value={8}>8</option>
-                <option value={12}>12</option>
-                <option value={16}>16</option>
-                <option value={20}>20</option>
-              </select>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-20 font-sans selection:bg-blue-100 selection:text-blue-900">
+      <PublicHeader
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSearchSubmit={handleSearch}
+        parentCategories={parentCategories}
+        categories={categories}
+      />
 
-          {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-3">
-            <Input
-              placeholder="Tìm kiếm dự án..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              startContent={<Search size={16} className="text-slate-400" />}
-              classNames={{
-                base: "flex-1",
-                inputWrapper: "bg-slate-50 border-slate-200 h-10",
-              }}
-            />
-
-            <select
-              value={selectedParentCategory}
-              onChange={(e) => {
-                setSelectedParentCategory(e.target.value);
-                setSelectedCategory("");
-                setPage(1);
-              }}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 outline-none focus:border-blue-500 transition-colors"
-            >
-              <option value="">Tất cả nhóm</option>
-              {parentCategories.map((parent) => (
-                <option key={parent.id} value={parent.id}>
-                  {parent.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={selectedCategory}
-              onChange={(e) => {
-                setSelectedCategory(e.target.value);
-                setPage(1);
-              }}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 outline-none focus:border-blue-500 transition-colors"
-            >
-              <option value="">Tất cả danh mục</option>
-              {categories
-                .filter((cat) =>
-                  selectedParentCategory
-                    ? cat.parent_id === Number(selectedParentCategory)
-                    : true
-                )
-                .map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-            </select>
-
-            {hasActiveFilters && (
-              <Button
-                size="sm"
-                variant="flat"
-                onClick={handleReset}
-                startContent={<X size={14} />}
-                className="bg-rose-50 text-rose-600 font-bold border border-rose-200 hover:bg-rose-100"
-              >
-                Xóa lọc
-              </Button>
-            )}
-          </div>
-        </header>
-
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="w-8 h-8 border-3 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
-            <p className="text-slate-600 text-xs font-bold uppercase tracking-widest">
-              Đang tải danh sách...
-            </p>
-          </div>
-        ) : posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="text-slate-300">
-              <Layout size={48} />
-            </div>
-            <p className="text-slate-600 text-sm font-bold">
-              Không tìm thấy dự án nào
-            </p>
-            {hasActiveFilters && (
-              <Button
-                size="sm"
-                variant="flat"
-                onClick={handleReset}
-                className="bg-blue-50 text-blue-600 font-bold"
-              >
-                Xóa bộ lọc
-              </Button>
-            )}
+      <main className="max-w-7xl mx-auto px-4 md:px-6 mt-12">
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-40 gap-6">
+            <div className="w-12 h-12 border-4 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
+            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">Đang thiết lập trải nghiệm...</p>
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-              {posts.map((post) => (
-                <a
-                  href={`/site/${post.slug || post.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key={post.id}
-                  className="block group"
+          <div className="space-y-32">
+            {/* <div className="relative overflow-hidden rounded-[3rem] bg-slate-900 p-10 md:p-20 text-white shadow-3xl shadow-slate-200 border border-white/5">
+              <div className="relative z-10 max-w-2xl">
+                <div className="inline-flex items-center gap-3 bg-blue-600/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-10 shadow-lg shadow-blue-500/20">
+                  <Sparkles size={14} className="text-yellow-300 fill-yellow-300" /> Landing Page Showcase
+                </div>
+                <h1 className="text-4xl md:text-7xl font-black mb-8 leading-[1.1] tracking-tight">Sáng tạo không <br /> giới hạn.</h1>
+                <p className="text-slate-400 text-base md:text-lg font-bold leading-relaxed max-w-lg mb-12 opacity-80 uppercase tracking-wide">
+                  Khám phá kho thư viện giao diện kéo thả mẫu được xây dựng trên nền tảng Craft JS hiện đại nhất.
+                </p>
+                <Button
+                  onClick={() => navigate('/category')}
+                  className="bg-white text-slate-900 font-black h-14 px-10 rounded-2xl shadow-xl hover:bg-blue-600 hover:text-white transition-all transform hover:-translate-y-1 active:scale-95"
                 >
-                  <Card className="bg-white border-transparent hover:border-blue-500/20 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md rounded-xl">
-                    <CardBody className="p-0">
-                      <div className="aspect-[16/10] bg-slate-100 overflow-hidden relative">
-                        {post.logo ? (
-                          <img
-                            src={`${SERVER_URL}${post.logo}`}
-                            alt={post.title}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-blue-50/50 text-blue-200 font-black text-2xl uppercase italic">
-                            {post.title.substring(0, 2)}
-                          </div>
-                        )}
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[9px] font-black text-blue-600 shadow-sm border border-blue-100 uppercase">
-                            Xem trang
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-3.5">
-                        <h3 className="text-sm font-bold text-slate-800 mb-0.5 group-hover:text-blue-600 transition-colors line-clamp-1">
-                          {post.title}
-                        </h3>
-                        <div className="flex items-center justify-between">
-                          <p className="text-slate-600 text-[12px] font-medium">
-                            @{post.creator?.username || "user"}
-                          </p>
-                          <div className="flex items-center gap-1.5 text-slate-600">
-                            <Clock size={10} />
-                            <span className="text-[12px] font-bold">{formatDate(post.created_at)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-                </a>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center mt-8">
-                <Pagination
-                  total={totalPages}
-                  page={page}
-                  onChange={setPage}
-                  showControls
-                  classNames={{
-                    wrapper: "gap-2",
-                    item: "w-8 h-8 text-sm font-bold bg-white border border-slate-200 rounded-lg",
-                    cursor: "bg-blue-600 text-white font-bold shadow-sm",
-                  }}
-                />
+                  XEM TẤT CẢ DỰ ÁN
+                </Button>
               </div>
-            )}
-          </>
+              <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px] animate-pulse" />
+              <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px]" />
+            </div> */}
+
+            {/* Grouped Categories */}
+            {parentCategories.filter(pc => !pc.is_deleted).map((pc) => {
+              const pcPosts = groupedPosts[pc.id] || [];
+              if (pcPosts.length === 0) return null;
+
+              return (
+                <section key={pc.id} className="relative group/section">
+                  <div className="flex justify-between items-end mb-12">
+                    <div className="flex items-center gap-6">
+                      <div className="w-2 h-12 bg-blue-600 rounded-full shadow-2xl shadow-blue-600/40 group-hover/section:scale-y-110 transition-transform duration-500"></div>
+                      <div>
+                        <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">{pc.name}</h2>
+                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mt-3 opacity-60">Creative Portfolio & Landing Solutions</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="light"
+                      className="font-black text-[10px] uppercase tracking-[0.2em] text-blue-600 hover:bg-blue-50 px-6 h-12 rounded-2xl group/btn"
+                      onClick={() => navigateToCategory(String(pc.id), "")}
+                    >
+                      Xem tất cả <ChevronRight size={14} className="ml-1 group-hover/btn:translate-x-1 transition-transform" />
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {pcPosts.map((post) => (
+                      <PostCard key={post.id} post={post} />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
         )}
-      </div>
+      </main>
+
+      <PublicFooter
+        parentCategories={parentCategories}
+        categories={categories}
+        onCategoryClick={navigateToCategory}
+      />
     </div>
   );
 }

@@ -1,7 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState, useRef, useMemo } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Editor, Frame } from "@craftjs/core";
 import api from "../services/api";
+import { usePublicData } from "../hooks/usePublicData";
+import { PublicFooter } from "../components/Public/PublicFooter";
 
 // ✅ Import tất cả component mà editor có thể sinh ra trong content
 import { DefaultNewPostFrame } from "../components/Editor/DefaultNewPostFrame";
@@ -43,12 +46,12 @@ import { InputComponent } from "@/components/Editor/Craft/Components/InputCompon
 import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
 import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
 
-import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
-// nếu bạn có SpacingComponent / v.v... cũng add vào đây
-
 export function PublicPostPage() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { categories, parentCategories } = usePublicData();
+
   const [content, setContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
@@ -84,7 +87,7 @@ export function PublicPostPage() {
       try {
         parsed = JSON.parse(content);
       } catch {
-        return null; // content không phải JSON -> không render craft
+        return null;
       }
     }
 
@@ -93,22 +96,31 @@ export function PublicPostPage() {
     return parsed;
   }, [content]);
 
+  const navigateToCategory = (parentId: string, categoryId: string) => {
+    let url = `/category?parentCategory=${parentId}`;
+    if (categoryId) url += `&category=${categoryId}`;
+    navigate(url);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (loading)
     return (
-      <div className=" text-zinc-500 h-screen flex items-center justify-center">
-        Loading website...
+      <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
+        <div className="w-10 h-10 border-4 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
+        <p className="text-[10px] font-black uppercase tracking-widest">Đang tải nội dung...</p>
       </div>
     );
 
   if (!frameData)
     return (
-      <div className=" text-zinc-500 h-screen flex items-center justify-center">
-        Website not found or not approved.
+      <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
+        <p className="text-xl font-black text-slate-800 uppercase tracking-tight">Dự án không tồn tại</p>
+        <button onClick={() => navigate('/')} className="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold">Quay lại trang chủ</button>
       </div>
     );
 
   return (
-    <div className="min-h-screen p-0 m-0">
+    <div className="min-h-screen p-0 m-0 bg-white">
       <Editor
         enabled={false}
         resolver={{
@@ -153,6 +165,12 @@ export function PublicPostPage() {
       >
         <Frame data={frameData} />
       </Editor>
+
+      <PublicFooter
+        parentCategories={parentCategories}
+        categories={categories}
+        onCategoryClick={navigateToCategory}
+      />
     </div>
   );
 }
