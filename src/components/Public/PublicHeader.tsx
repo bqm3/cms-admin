@@ -45,7 +45,7 @@ export function PublicHeader({
                             <LayoutGrid className="text-white" size={22} />
                         </div>
                         <div>
-                            <h1 className="text-xl font-black text-slate-900 leading-none tracking-tight uppercase">CMS Showcase</h1>
+                            <h1 className="text-xl font-black text-slate-900 leading-none tracking-tight uppercase">GLOBAL PROMOTION</h1>
                             <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mt-1.5 opacity-80">Premium Web Solutions</p>
                         </div>
                     </Link>

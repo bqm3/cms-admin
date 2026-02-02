@@ -60,7 +60,7 @@ export function ClientHomePage() {
   const isLoading = dataLoading || (parentCategories.length > 0 && postsLoading && Object.keys(groupedPosts).length === 0);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-20 font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900  font-sans selection:bg-blue-100 selection:text-blue-900">
       <PublicHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}

@@ -87,7 +87,7 @@ export function ClientCategoryPage() {
     const isLoading = dataLoading || (postsLoading && posts.length === 0);
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-20 font-sans selection:bg-blue-100 selection:text-blue-900">
+        <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
             <PublicHeader
                 searchQuery={search}
                 onSearchChange={handleSearchChange}
