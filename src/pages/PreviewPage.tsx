@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useEffect, useState, useMemo } from "react";
 import { Editor, Frame } from "@craftjs/core";
 import { Link, useNavigate } from "react-router-dom";

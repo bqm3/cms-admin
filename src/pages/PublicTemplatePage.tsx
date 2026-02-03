@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { Editor, Frame } from "@craftjs/core";
+import { Helmet } from "react-helmet-async";
 import api from "../services/api";
 
-// ✅ Import tất cả component mà editor có thể sinh ra trong content
 import { DefaultNewPostFrame } from "../components/Editor/DefaultNewPostFrame";
 import { MimicPCLandingFrame } from "../components/Editor/MimicPCLandingFrame";
 import { PortfolioTemplate } from "../components/Editor/PortfolioTemplate";
@@ -41,113 +41,192 @@ import { InputComponent } from "@/components/Editor/Craft/Components/InputCompon
 import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
 import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
 
+function stripHtmlToText(html: string) {
+  if (!html) return "";
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").replace(/\s+/g, " ").trim();
+}
+function truncate(s: string, max = 160) {
+  const x = (s || "").trim();
+  if (x.length <= max) return x;
+  return x.slice(0, max - 1).trimEnd() + "…";
+}
+
 export function PublicTemplatePage() {
-    const { slug } = useParams();
-    const [searchParams] = useSearchParams();
-    const [content, setContent] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-    const hasFetched = useRef(false);
+  const { slug } = useParams();
+  const [searchParams] = useSearchParams();
+  const [content, setContent] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const hasFetched = useRef(false);
 
-    useEffect(() => {
-        const fetchTemplate = async () => {
-            if (hasFetched.current) return;
-            hasFetched.current = true;
+  const [seo, setSeo] = useState<{
+    title: string;
+    description: string;
+    canonical: string;
+    ogImage?: string;
+    robots: string;
+  }>({
+    title: "Template",
+    description: "Template",
+    canonical: typeof window !== "undefined" ? window.location.href : "",
+    robots: "index,follow",
+  });
 
-            try {
-                const response = await api.get(`/templates/public/${slug}`, {
-                    params: { preview: searchParams.get("preview") },
-                });
+  useEffect(() => {
+    const fetchTemplate = async () => {
+      if (hasFetched.current) return;
+      hasFetched.current = true;
 
-                setContent(response.data.content);
-                document.title = response.data.title ?? "Template";
-            } catch (err) {
-                console.error(err);
-                hasFetched.current = false;
-            } finally {
-                setLoading(false);
-            }
-        };
+      try {
+        const preview = searchParams.get("preview");
 
-        fetchTemplate();
-    }, [slug, searchParams]);
+        const response = await api.get(`/templates/public/${slug}`, {
+          params: { preview },
+        });
 
-    const frameData = useMemo(() => {
-        if (!content) return null;
+        const title = response.data.title ?? "Template";
 
-        let parsed: any = content;
-        if (typeof content === "string") {
-            try {
-                parsed = JSON.parse(content);
-            } catch {
-                return null;
-            }
-        }
+        const rawDesc =
+          (response.data.description && String(response.data.description).trim()) || "";
 
-        if (parsed?.nodes && typeof parsed.nodes === "object") return parsed.nodes;
+        const rawContent = response.data.content ?? "";
+        const contentText =
+          typeof rawContent === "string" ? stripHtmlToText(rawContent) : "";
 
-        return parsed;
-    }, [content]);
+        const description = truncate(rawDesc || contentText || title, 160);
 
-    if (loading)
-        return (
-            <div className=" text-zinc-500 h-screen flex items-center justify-center">
-                Loading template...
-            </div>
-        );
+        const ogImageRaw = response.data.cover_image || response.data.og_image || "";
+        const ogImage = ogImageRaw
+          ? ogImageRaw.startsWith("http")
+            ? ogImageRaw
+            : `${window.location.origin}${ogImageRaw}`
+          : undefined;
 
-    if (!frameData)
-        return (
-            <div className=" text-zinc-500 h-screen flex items-center justify-center">
-                Template not found or not approved.
-            </div>
-        );
+        const canonical = window.location.origin + window.location.pathname;
+        const robots = preview ? "noindex,nofollow" : "index,follow";
 
+        setContent(rawContent);
+        document.title = title; 
+
+        setSeo({
+          title,
+          description,
+          canonical,
+          ogImage,
+          robots,
+        });
+      } catch (err) {
+        console.error(err);
+        hasFetched.current = false;
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTemplate();
+  }, [slug, searchParams]);
+
+  const frameData = useMemo(() => {
+    if (!content) return null;
+
+    let parsed: any = content;
+    if (typeof content === "string") {
+      try {
+        parsed = JSON.parse(content);
+      } catch {
+        return null;
+      }
+    }
+
+    if (parsed?.nodes && typeof parsed.nodes === "object") return parsed.nodes;
+
+    return parsed;
+  }, [content]);
+
+  if (loading)
     return (
-        <div className="min-h-screen p-0 m-0">
-            <Editor
-                enabled={false}
-                resolver={{
-                    // Default frame
-                    MimicPCLandingFrame,
-                    DefaultNewPostFrame,
-                    PortfolioTemplate,
-                    BlogTemplate,
-                    ServiceTemplate,
-                    ContactTemplate,
-                    ProductTemplate,
-                    StoreCouponTemplate,
-                    // Component
-                    TextComponent,
-                    Container,
-                    ButtonComponent,
-                    ImageComponent,
-                    HeadingComponent,
-                    CardComponent,
-                    VideoComponent,
-                    TableComponent,
-                    ShapeComponent,
-                    RowComponent,
-                    ColumnComponent,
-                    NavbarComponent,
-                    SectionComponent,
-                    GridComponent,
-                    BadgeComponent,
-                    AccordionComponent,
-                    SpacerComponent,
-                    SliderComponent,
-                    InputComponent,
-                    PopupModalComponent,
-                    PopupOfferComponent,
-                    // Preset
-                    PresetHeader,
-                    PresetHero,
-                    PresetOffersGrid,
-                    PresetFAQ,
-                    PresetFooter,
-                }}
-            >
-                <Frame data={frameData} />
-            </Editor>
-        </div>
+      <div className=" text-zinc-500 h-screen flex items-center justify-center">
+        Loading template...
+      </div>
     );
+
+  if (!frameData)
+    return (
+      <div className=" text-zinc-500 h-screen flex items-center justify-center">
+        Template not found or not approved.
+      </div>
+    );
+
+  return (
+    <div className="min-h-screen p-0 m-0">
+      <Helmet>
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
+        <link rel="canonical" href={seo.canonical} />
+        <meta name="robots" content={seo.robots} />
+
+        {/* OpenGraph */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta property="og:url" content={seo.canonical} />
+        {seo.ogImage ? <meta property="og:image" content={seo.ogImage} /> : null}
+
+        {/* Twitter */}
+        <meta
+          name="twitter:card"
+          content={seo.ogImage ? "summary_large_image" : "summary"}
+        />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        {seo.ogImage ? <meta name="twitter:image" content={seo.ogImage} /> : null}
+      </Helmet>
+
+      <Editor
+        enabled={false}
+        resolver={{
+          // Default frame
+          MimicPCLandingFrame,
+          DefaultNewPostFrame,
+          PortfolioTemplate,
+          BlogTemplate,
+          ServiceTemplate,
+          ContactTemplate,
+          ProductTemplate,
+          StoreCouponTemplate,
+          // Component
+          TextComponent,
+          Container,
+          ButtonComponent,
+          ImageComponent,
+          HeadingComponent,
+          CardComponent,
+          VideoComponent,
+          TableComponent,
+          ShapeComponent,
+          RowComponent,
+          ColumnComponent,
+          NavbarComponent,
+          SectionComponent,
+          GridComponent,
+          BadgeComponent,
+          AccordionComponent,
+          SpacerComponent,
+          SliderComponent,
+          InputComponent,
+          PopupModalComponent,
+          PopupOfferComponent,
+          // Preset
+          PresetHeader,
+          PresetHero,
+          PresetOffersGrid,
+          PresetFAQ,
+          PresetFooter,
+        }}
+      >
+        <Frame data={frameData} />
+      </Editor>
+    </div>
+  );
 }

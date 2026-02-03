@@ -27,7 +27,7 @@ export function StoreCouponTemplate() {
       width="100%"
     >
       {/* Header */}
-      <Element
+      {/* <Element
         canvas
         background="transparent"
         borderRadius={0}
@@ -39,7 +39,7 @@ export function StoreCouponTemplate() {
         paddingY={0}
       >
         <PresetHeader />
-      </Element>
+      </Element> */}
 
       {/* Main Content */}
       <Element
@@ -56,7 +56,7 @@ export function StoreCouponTemplate() {
         <Element canvas align="start" columns={3} columnsMd={1} columnsSm={1} gap={30} id="s-grid" is={GridComponent} minItemWidth={300}>
           {/* Sidebar (1 column) */}
           <Element canvas background="transparent" className="col-span-1" id="s-sidebar" is={Container} padding={0}>
-            <Element canvas background="#FFFFFF" id="s-store-card" is={CardComponent} padding={24} radius="lg" shadow="sm">
+            <Element canvas background="#FFFFFF" id="s-store-card" is={CardComponent} fullWidth padding={24} radius="lg" shadow="sm">
               <Element
                 background="#F9FAFB"
                 borderRadius={12}
@@ -86,10 +86,9 @@ export function StoreCouponTemplate() {
               <Element color="primary" fullWidth={true} id="s-visit-btn" is={ButtonComponent} radius="lg" text="Visit Official Store" />
             </Element>
 
-            <Element canvas background="#FFFFFF" id="s-info-card" is={CardComponent} padding={20} radius="lg" shadow="sm">
+            <Element canvas background="#FFFFFF" id="s-info-card" is={CardComponent} fullWidth padding={20} radius="lg" shadow="sm">
               <Element align="left" color="#111827" id="s-info-title" is={HeadingComponent} level="h4" text="Store Information" />
 
-              {/* ❌ bỏ div mt-4 space-y-3 -> ✅ dùng Container gap */}
               <Element
                 id="s-info-list"
                 canvas
@@ -122,10 +121,9 @@ export function StoreCouponTemplate() {
               { val: "15% OFF", title: "15% Off Your Entire Order", code: "SAVE15", type: "Code" },
               { val: "FREE SHIP", title: "Free Shipping on Orders Over $50", code: "", type: "Deal" },
               { val: "20% OFF", title: "20% Off Select Pet Supplements", code: "HEALTHY20", type: "Code" },
-              { val: "BUY 1 GET 1", title: "BOGO Free on All Treats", code: "", type: "Deal" }
             ].map((cp, i) => (
               <Element key={i} canvas background="#FFFFFF" id={`s-coupon-${i}`} is={CardComponent} padding={24} radius="lg" shadow="sm" fullWidth>
-                {/* ❌ bỏ div flex... -> ✅ Container row */}
+               
                 <Element
                   id={`s-cp-row-${i}`}
                   canvas
@@ -242,7 +240,7 @@ export function StoreCouponTemplate() {
       <Element canvas background="transparent" borderRadius={0} id="s-faq-sec" is={SectionComponent} maxWidth="xl" overlay={{ enabled: false, color: "" }} paddingX={20} paddingY={60} > <PresetFAQ /> </Element>
 
       {/* Footer */}
-      <Element
+      {/* <Element
         canvas
         background="transparent"
         borderRadius={0}
@@ -254,7 +252,7 @@ export function StoreCouponTemplate() {
         paddingY={0}
       >
         <PresetFooter />
-      </Element>
+      </Element> */}
     </Element>
   );
 }
