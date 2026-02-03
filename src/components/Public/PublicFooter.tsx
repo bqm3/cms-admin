@@ -7,9 +7,10 @@ interface PublicFooterProps {
   parentCategories: any[];
   categories: any[];
   onCategoryClick: (parentId: string, categoryId: string) => void;
+  isPreview?: boolean;
 }
 
-export function PublicFooter({ parentCategories, categories, onCategoryClick }: PublicFooterProps) {
+export function PublicFooter({ parentCategories, categories, onCategoryClick, isPreview = false }: PublicFooterProps) {
   const [moreOpen, setMoreOpen] = useState(false);
   const moreWrapRef = useRef<HTMLDivElement | null>(null);
 
@@ -24,6 +25,11 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick }: 
 
   const childrenOf = (parentId: any) =>
     (categories || []).filter((c) => c?.parent_id === parentId && !c?.is_deleted);
+
+  const handleLinkClick = (parentId: string, categoryId: string) => {
+    if (isPreview) return;
+    onCategoryClick(parentId, categoryId);
+  };
 
   // đóng dropdown khi click ra ngoài
   useEffect(() => {
@@ -52,15 +58,15 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick }: 
               </span>
             </div>
 
-            <p className="text-sm text-slate-700 font-semibold leading-relaxed mb-6">
+            <p className="text-sm text-slate-600 font-medium leading-relaxed mb-8">
               Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS.
             </p>
 
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 hover:border-slate-300 transition"
+                  className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200/60 hover:border-blue-300 hover:bg-blue-50/30 transition-all cursor-pointer"
                 />
               ))}
             </div>
@@ -70,19 +76,19 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick }: 
           {visibleParents.map((pc) => (
             <div key={pc.id} className="min-w-0">
               <button
-                onClick={() => onCategoryClick(String(pc.id), "")}
-                className="text-xs font-extrabold text-slate-900 uppercase tracking-[0.18em] mb-5 hover:text-blue-600 transition-colors text-left block"
+                onClick={() => handleLinkClick(String(pc.id), "")}
+                className={`text-[11px] font-bold text-slate-800 uppercase tracking-widest mb-6 transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-blue-600'}`}
                 title={pc.name}
               >
                 <span className="inline-block truncate max-w-full">{pc.name}</span>
               </button>
 
-              <ul className="space-y-3">
+              <ul className="space-y-3.5">
                 {childrenOf(pc.id).map((cat) => (
                   <li key={cat.id} className="min-w-0">
                     <button
-                      onClick={() => onCategoryClick(String(pc.id), String(cat.id))}
-                      className="text-sm font-semibold text-slate-700 hover:text-slate-950 transition-colors text-left block w-full"
+                      onClick={() => handleLinkClick(String(pc.id), String(cat.id))}
+                      className={`text-[13px] font-medium text-slate-500 transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-slate-900'}`}
                       title={cat.name}
                     >
                       <span className="inline-block truncate max-w-full">{cat.name}</span>
@@ -101,24 +107,14 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick }: 
                 <button
                   type="button"
                   onClick={() => {
-                    onCategoryClick("", ""); // home / all
+                    handleLinkClick("", ""); // home / all
                     setMoreOpen(false);
                   }}
-                  className="text-xs font-extrabold text-slate-900 uppercase tracking-[0.18em] hover:text-blue-600 transition-colors text-left inline-flex items-center"
+                  className={`text-xs font-extrabold text-slate-900 uppercase tracking-[0.18em] transition-colors text-left inline-flex items-center ${isPreview ? 'cursor-default' : 'hover:text-blue-600'}`}
                   title="Về trang chủ"
                 >
                   Xem toàn bộ
                 </button>
-
-                {/* icon riêng để mở dropdown */}
-                {/* <button
-                  type="button"
-                  onClick={() => setMoreOpen((v) => !v)}
-                  className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition"
-                  aria-label="Mở danh mục"
-                >
-                  <ChevronDown size={16} className={`transition ${moreOpen ? "rotate-180" : ""}`} />
-                </button> */}
               </div>
 
               <div className="relative">
@@ -135,10 +131,10 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick }: 
                       <div key={pc.id} className="py-2">
                         <button
                           onClick={() => {
-                            onCategoryClick(String(pc.id), "");
+                            handleLinkClick(String(pc.id), "");
                             setMoreOpen(false);
                           }}
-                          className="w-full text-left text-sm font-extrabold text-slate-900 hover:text-blue-600 transition-colors"
+                          className={`w-full text-left text-sm font-extrabold text-slate-900 transition-colors ${isPreview ? 'cursor-default' : 'hover:text-blue-600'}`}
                           title={pc.name}
                         >
                           <span className="inline-block truncate max-w-full">{pc.name}</span>
@@ -149,10 +145,10 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick }: 
                             <li key={cat.id} className="min-w-0">
                               <button
                                 onClick={() => {
-                                  onCategoryClick(String(pc.id), String(cat.id));
+                                  handleLinkClick(String(pc.id), String(cat.id));
                                   setMoreOpen(false);
                                 }}
-                                className="text-sm font-semibold text-slate-700 hover:text-slate-950 transition-colors text-left block w-full"
+                                className={`text-sm font-semibold text-slate-700 transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-slate-950'}`}
                                 title={cat.name}
                               >
                                 <span className="inline-block truncate max-w-full">{cat.name}</span>
@@ -164,10 +160,10 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick }: 
                             <li>
                               <button
                                 onClick={() => {
-                                  onCategoryClick(String(pc.id), "");
+                                  handleLinkClick(String(pc.id), "");
                                   setMoreOpen(false);
                                 }}
-                                className="text-xs font-bold text-blue-600 hover:text-blue-700 transition"
+                                className={`text-xs font-bold text-blue-600 transition ${isPreview ? 'cursor-default' : 'hover:text-blue-700'}`}
                               >
                                 Xem tất cả →
                               </button>
@@ -183,17 +179,18 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick }: 
           )}
         </div>
 
-        <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs font-bold text-slate-700 uppercase tracking-[0.22em] text-center md:text-left">
+        <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center md:text-left">
             © {new Date().getFullYear()} GLOBAL PROMOTION. TẤT CẢ QUYỀN ĐƯỢC BẢO LƯU.
           </p>
 
-          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-3">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-3">
             {["Về chúng tôi", "Điều khoản", "Bảo mật", "Liên hệ"].map((item) => (
               <a
                 key={item}
                 href="#"
-                className="text-xs font-bold text-slate-700 hover:text-slate-950 uppercase tracking-[0.18em] transition-colors"
+                onClick={(e) => isPreview && e.preventDefault()}
+                className={`text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors ${isPreview ? 'cursor-default' : 'hover:text-slate-900'}`}
               >
                 {item}
               </a>

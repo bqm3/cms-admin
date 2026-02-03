@@ -13,6 +13,7 @@ import { TemplateDashboardPage } from "./pages/TemplateDashboardPage";
 import { TemplateEditorPage } from "./components/Editor/TemplateEditorPage";
 import { PublicTemplatePage } from "./pages/PublicTemplatePage";
 import { ClientCategoryPage } from "./pages/ClientCategoryPage";
+import { PreviewPage } from "./pages/PreviewPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route element={<DashboardPage />} path="/dashboard" />
       <Route element={<EditorPage />} path="/editor/new" />
       <Route element={<EditorPage />} path="/editor/:id" />
+      <Route element={<PreviewPage />} path="/preview" />
       <Route element={<NewPage />} path="/new-page-test" />
       <Route element={<PublicPostPage />} path="/site/:slug" />
       <Route element={<CategoryManagementPage />} path="/categories" />

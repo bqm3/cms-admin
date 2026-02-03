@@ -46,22 +46,36 @@ export function PostCard({ post }: PostCardProps) {
 
                     {/* Content area */}
                     <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-base font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
+                        <h3 className="text-[17px] font-extrabold text-slate-800 mb-2.5 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight tracking-tight">
                             {post.title}
                         </h3>
 
-                        <div className="mt-auto pt-4 border-t border-slate-100/60 flex items-center justify-between">
+                        {/* Category Badges Below Title */}
+                        <div className="flex flex-wrap gap-2 mb-5">
+                            {post.category?.parent?.name && (
+                                <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-blue-100/30">
+                                    {post.category.parent.name}
+                                </span>
+                            )}
+                            {post.category?.name && (
+                                <span className="bg-slate-50 text-slate-500 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-slate-200/50">
+                                    {post.category.name}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-6 h-6 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-[10px] font-black text-blue-500 uppercase">
+                                <div className="w-7 h-7 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-[11px] font-bold text-blue-500 uppercase">
                                     {post.creator?.username?.[0] || 'U'}
                                 </div>
-                                <span className="text-slate-400 text-[11px] font-bold tracking-tight truncate max-w-[100px]">
+                                <span className="text-slate-500 text-xs font-semibold tracking-tight truncate max-w-[120px]">
                                     @{post.creator?.username || "user"}
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-1.5 text-slate-300 group-hover:text-blue-400 transition-colors">
-                                <Clock size={12} />
+                            <div className="flex items-center gap-1.5 text-slate-400 group-hover:text-blue-500 transition-colors">
+                                <Clock size={13} />
                                 <span className="text-[11px] font-bold uppercase tracking-wider">
                                     {formatDate(post.created_at)}
                                 </span>

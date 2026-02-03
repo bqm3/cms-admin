@@ -254,6 +254,27 @@ const SaveButton = ({ postInfo, isNew }: any) => {
   );
 };
 
+const PreviewButton = () => {
+  const { query } = useEditor();
+  const handlePreview = () => {
+    const json = query.serialize();
+    localStorage.setItem("craft_preview_content", json);
+    window.open("/preview", "_blank");
+  };
+
+  return (
+    <Button
+       variant="flat"
+       size="sm"
+       className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold px-4"
+       onPress={handlePreview}
+       startContent={<Eye size={16} />}
+    >
+      Xem nhanh
+    </Button>
+  );
+};
+
 const ContentLoader = ({ content }: { content: string | null }) => {
   const { actions } = useEditor();
 
@@ -593,7 +614,8 @@ export function EditorPage() {
             </button>
 
             <div className="hidden md:block h-5 w-px bg-white/10 mx-1" />
-
+            
+            <PreviewButton />
             <SaveButton isNew={isNew} postInfo={postInfo} />
           </div>
         </header>

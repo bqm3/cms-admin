@@ -1,13 +1,12 @@
-/* eslint-disable prettier/prettier */
-import { useEffect, useState, useRef, useMemo } from "react";
-import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
 import { Editor, Frame } from "@craftjs/core";
-import api from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { LayoutGrid } from "lucide-react";
 import { usePublicData } from "../hooks/usePublicData";
-import { PublicFooter } from "../components/Public/PublicFooter";
 import { PublicHeader } from "../components/Public/PublicHeader";
+import { PublicFooter } from "../components/Public/PublicFooter";
 
-// ✅ Import tất cả component mà editor có thể sinh ra trong content
+// Components for resolver
 import { DefaultNewPostFrame } from "../components/Editor/DefaultNewPostFrame";
 import { MimicPCLandingFrame } from "../components/Editor/MimicPCLandingFrame";
 import { PortfolioTemplate } from "../components/Editor/PortfolioTemplate";
@@ -17,7 +16,6 @@ import { ContactTemplate } from "../components/Editor/ContactTemplate";
 import { ProductTemplate } from "../components/Editor/ProductTemplate";
 import { StoreCouponTemplate } from "../components/Editor/StoreCouponTemplate";
 
-// Craft components
 import { TextComponent } from "../components/Editor/Craft/Components/TextComponent";
 import { Container } from "../components/Editor/Craft/Components/Container";
 import { ButtonComponent } from "../components/Editor/Craft/Components/ButtonComponent";
@@ -29,118 +27,86 @@ import { TableComponent } from "../components/Editor/Craft/Components/TableCompo
 import { ShapeComponent } from "../components/Editor/Craft/Components/ShapeComponent";
 import { RowComponent } from "../components/Editor/Craft/Components/RowComponent";
 import { ColumnComponent } from "../components/Editor/Craft/Components/ColumnComponent";
-
-// ✅ Các component bạn từng dùng trong EditorPage
 import { NavbarComponent } from "../components/Editor/Craft/Components/NavbarComponent";
 import { SectionComponent } from "../components/Editor/Craft/Components/SectionComponent";
 import { GridComponent } from "../components/Editor/Craft/Components/GridComponent";
 import { BadgeComponent } from "../components/Editor/Craft/Components/BadgeComponent";
 import { AccordionComponent } from "../components/Editor/Craft/Components/AccordionComponent";
 import { SpacerComponent } from "../components/Editor/Craft/Components/SpacerComponent";
-import { SliderComponent } from "@/components/Editor/Craft/Components/SliderComponent";
-import { PresetFAQ } from "@/components/Editor/Craft/presets/PresetFAQ";
-import { PresetFooter } from "@/components/Editor/Craft/presets/PresetFooter";
-import { PresetHeader } from "@/components/Editor/Craft/presets/PresetHeader";
-import { PresetHero } from "@/components/Editor/Craft/presets/PresetHero";
-import { PresetOffersGrid } from "@/components/Editor/Craft/presets/PresetOffersGrid";
-import { InputComponent } from "@/components/Editor/Craft/Components/InputComponent";
-import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
-import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
+import { SliderComponent } from "../components/Editor/Craft/Components/SliderComponent";
+import { PresetFAQ } from "../components/Editor/Craft/presets/PresetFAQ";
+import { PresetFooter } from "../components/Editor/Craft/presets/PresetFooter";
+import { PresetHeader } from "../components/Editor/Craft/presets/PresetHeader";
+import { PresetHero } from "../components/Editor/Craft/presets/PresetHero";
+import { PresetOffersGrid } from "../components/Editor/Craft/presets/PresetOffersGrid";
+import { InputComponent } from "../components/Editor/Craft/Components/InputComponent";
+import { PopupModalComponent } from "../components/Editor/Craft/Components/PopupModalComponent";
+import { PopupOfferComponent } from "../components/Editor/Craft/Components/PopupOfferComponent";
 
-export function PublicPostPage() {
-  const { slug } = useParams();
+export function PreviewPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { categories, parentCategories } = usePublicData();
-
   const [content, setContent] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const hasFetched = useRef(false);
 
   useEffect(() => {
-    const fetchPost = async () => {
-      if (hasFetched.current) return;
-      hasFetched.current = true;
-
-      try {
-        const response = await api.get(`/posts/public/${slug}`, {
-          params: { preview: searchParams.get("preview") },
-        });
-
-        setContent(response.data.content);
-        document.title = response.data.title ?? "Website";
-      } catch (err) {
-        console.error(err);
-        hasFetched.current = false;
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPost();
-  }, [slug, searchParams]);
+    const data = localStorage.getItem("craft_preview_content");
+    if (data) {
+      setContent(data);
+    }
+  }, []);
 
   const frameData = useMemo(() => {
     if (!content) return null;
-
-    let parsed: any = content;
-    if (typeof content === "string") {
-      try {
-        parsed = JSON.parse(content);
-      } catch {
-        return null;
-      }
+    try {
+      const parsed = JSON.parse(content);
+    return parsed?.nodes || parsed;
+    } catch (e) {
+      console.error("Preview data error:", e);
+      return null;
     }
-
-    if (parsed?.nodes && typeof parsed.nodes === "object") return parsed.nodes;
-
-    return parsed;
   }, [content]);
 
-  const navigateToCategory = (parentId: string, categoryId: string) => {
-    let url = `/category?parentCategory=${parentId}`;
-    if (categoryId) url += `&category=${categoryId}`;
-    navigate(url);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const navigateToCategory = () => {
+    // Disable navigation in preview mode
+    console.log("Navigation disabled in preview mode");
   };
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/category?search=${encodeURIComponent(searchQuery.trim())}`);
-    }
+    // Disable search in preview mode
+    console.log("Search disabled in preview mode");
   };
 
-  if (loading)
+  if (!content) {
     return (
-      <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-        <div className="w-10 h-10 border-4 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
-        <p className="text-[10px] font-black uppercase tracking-widest">Đang tải nội dung...</p>
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-50 text-slate-400 font-sans">
+        <LayoutGrid size={48} className="mb-4 opacity-20" />
+        <h2 className="text-xl font-bold text-slate-600 mb-2">Không có nội dung xem trước</h2>
+        <p className="text-sm">Vui lòng quay lại editor và nhấn "Xem nhanh".</p>
+        <Link to="/dashboard" className="mt-6 text-blue-600 font-bold hover:underline select-none">Quay lại Dashboard</Link>
       </div>
     );
-
-  if (!frameData)
-    return (
-      <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-        <p className="text-xl font-black text-slate-800 uppercase tracking-tight">Dự án không tồn tại</p>
-        <button onClick={() => navigate('/')} className="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold">Quay lại trang chủ</button>
-      </div>
-    );
+  }
 
   return (
-    <div className="min-h-screen p-0 m-0 bg-white">
+    <div className="min-h-screen bg-white">
       <PublicHeader 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onSearchSubmit={handleSearch}
         parentCategories={parentCategories}
         categories={categories}
+        isPreview={true}
       />
+      <div className="fixed top-24 right-4 z-[9999] pointer-events-none">
+        <div className="bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-black shadow-2xl shadow-blue-500/50 uppercase tracking-widest border border-white/20 backdrop-blur-md">
+          Chế độ xem trước
+        </div>
+      </div>
       <Editor
         enabled={false}
         resolver={{
-          // Default frame
           MimicPCLandingFrame,
           DefaultNewPostFrame,
           PortfolioTemplate,
@@ -149,7 +115,6 @@ export function PublicPostPage() {
           ContactTemplate,
           ProductTemplate,
           StoreCouponTemplate,
-          // Component
           TextComponent,
           Container,
           ButtonComponent,
@@ -171,7 +136,6 @@ export function PublicPostPage() {
           InputComponent,
           PopupModalComponent,
           PopupOfferComponent,
-          // Preset
           PresetHeader,
           PresetHero,
           PresetOffersGrid,
@@ -182,10 +146,11 @@ export function PublicPostPage() {
         <Frame data={frameData} />
       </Editor>
 
-      <PublicFooter
+      <PublicFooter 
         parentCategories={parentCategories}
         categories={categories}
         onCategoryClick={navigateToCategory}
+        isPreview={true}
       />
     </div>
   );
