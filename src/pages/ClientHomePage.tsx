@@ -120,7 +120,7 @@ export function ClientHomePage() {
                     </div>
                     <Button
                       variant="light"
-                      className="font-semibold text-[14px] text-[#0067ff] hover:bg-[#f5f5f5] px-6 h-10 rounded-lg group/btn transition-all"
+                      className="font-semibold text-[14px] text-black hover:bg-[#f5f5f5] px-6 h-10 rounded-lg group/btn transition-all"
                       onClick={() => navigateToCategory(String(pc.id), "")}
                     >
                       Xem tất cả <ChevronRight size={16} className="ml-1 group-hover/btn:translate-x-1 transition-transform" />

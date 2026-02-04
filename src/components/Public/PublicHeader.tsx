@@ -80,7 +80,7 @@ export function PublicHeader({
             />
             <button 
               type="submit"
-              className="absolute right-1 w-9 h-9 bg-[#0067ff] rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors shadow-sm"
+              className="absolute right-1 w-9 h-9 bg-black rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors shadow-sm"
             >
               <Search size={16} strokeWidth={3} />
             </button>
