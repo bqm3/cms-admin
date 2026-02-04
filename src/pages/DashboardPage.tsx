@@ -140,7 +140,7 @@ export function DashboardPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-3 rounded-xl shadow-blue-100 shadow-lg">
+                        <div className="bg-blue-600 p-3 rounded-lg shadow-blue-100 shadow-lg">
                             <LayoutDashboard className="text-white" size={24} />
                         </div>
                         <div>
@@ -155,7 +155,7 @@ export function DashboardPage() {
                     <Button
                         as={Link}
                         to="/editor/new"
-                        className="bg-blue-600 text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-blue-100"
+                        className="bg-blue-600 text-white font-bold h-11 px-6 rounded-lg shadow-lg shadow-blue-100"
                         startContent={<Plus size={18} />}
                     >
                         Viết bài mới
@@ -176,7 +176,7 @@ export function DashboardPage() {
                                     setPage(1);
                                 }}
                                 classNames={{
-                                    inputWrapper: "bg-white border border-slate-200 shadow-sm h-11 rounded-xl px-4 hover:shadow-md transition-shadow",
+                                    inputWrapper: "bg-white border border-slate-200 shadow-sm h-11 rounded-lg px-4 hover:shadow-md transition-shadow",
                                     input: "placeholder:text-slate-400 text-sm font-medium",
                                 }}
                             />
@@ -190,7 +190,7 @@ export function DashboardPage() {
                                     setSelectedCategory(''); // Reset child category when parent changes
                                     setPage(1);
                                 }}
-                                className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
+                                className="w-full h-11 px-4 rounded-lg bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
                                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                             >
                                 <option value="">Tất cả danh mục cha</option>
@@ -206,7 +206,7 @@ export function DashboardPage() {
                                     setSelectedCategory(e.target.value);
                                     setPage(1);
                                 }}
-                                className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
+                                className="w-full h-11 px-4 rounded-lg bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
                                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                             >
                                 <option value="">Tất cả danh mục con</option>
@@ -218,7 +218,7 @@ export function DashboardPage() {
                             </select>
                         </div>
                         <div className="flex flex-col md:flex-row gap-3 items-center">
-                            <div className="flex items-center gap-3 bg-white px-4 h-11 border border-slate-200 rounded-xl shadow-sm flex-1 w-full">
+                            <div className="flex items-center gap-3 bg-white px-4 h-11 border border-slate-200 rounded-lg shadow-sm flex-1 w-full">
                                 <Calendar size={18} className="text-slate-400" />
                                 <div className="flex items-center gap-2 flex-1">
                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Từ</span>
@@ -340,7 +340,7 @@ export function DashboardPage() {
                         header: 'Lượt xem',
                         align: 'center',
                         render: (post) => (
-                            <div className="inline-flex items-center gap-1.5 text-blue-600 font-bold text-xs bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full">
+                            <div className="inline-flex items-center gap-1.5 text-blue-600 font-bold text-xs bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-md">
                                 <Eye size={12} /> {post.view_count || 0}
                             </div>
                         )

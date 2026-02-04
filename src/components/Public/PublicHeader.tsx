@@ -39,7 +39,7 @@ export function PublicHeader({
 
   const LogoContent = (
     <div className="flex items-center gap-3 group shrink-0 select-none">
-      <div className="bg-blue-600 p-2.5 rounded-2xl shadow-lg shadow-blue-500/30 group-hover:rotate-6 transition-transform duration-300">
+      <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/30 group-hover:rotate-6 transition-transform duration-300">
         <LayoutGrid className="text-white" size={22} />
       </div>
       <div>
@@ -79,7 +79,7 @@ export function PublicHeader({
                   isClearable
                   onClear={() => onSearchChange("")}
                   classNames={{
-                    inputWrapper: "bg-slate-50 border-slate-200/60 h-12 shadow-sm rounded-2xl group-hover:bg-white group-hover:border-blue-200 transition-all",
+                    inputWrapper: "bg-slate-50 border-slate-200/60 h-12 shadow-sm rounded-xl group-hover:bg-white group-hover:border-blue-200 transition-all",
                     input: "text-sm font-semibold text-slate-700 placeholder:text-slate-400"
                   }}
                 />
@@ -87,7 +87,7 @@ export function PublicHeader({
             
             <Button 
               type="submit"
-              className="bg-slate-900 text-white font-black h-12 px-8 rounded-2xl shadow-xl shadow-slate-200 transition-all hover:bg-blue-600 hover:shadow-blue-500/20 active:scale-95 hidden sm:flex items-center"
+              className="bg-slate-900 text-white font-black h-12 px-8 rounded-xl shadow-xl shadow-slate-200 transition-all hover:bg-blue-600 hover:shadow-blue-500/20 active:scale-95 hidden sm:flex items-center"
             >
               TÌM KIẾM
             </Button>
@@ -127,12 +127,12 @@ export function PublicHeader({
                   {/* Dropdown Menu */}
                   {subCats.length > 0 && (
                     <div className="absolute top-full left-0 pt-2 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[60]">
-                      <div className="bg-white border border-slate-200/60 shadow-2xl rounded-2xl overflow-hidden min-w-[240px] p-2 backdrop-blur-xl bg-white/95">
+                      <div className="bg-white border border-slate-200/60 shadow-2xl rounded-xl overflow-hidden min-w-[240px] p-2 backdrop-blur-xl bg-white/95">
                         {subCats.map((cat) => (
                           <button
                             key={cat.id}
                             onClick={() => handleCategoryClick(String(pc.id), String(cat.id))}
-                            className="w-full text-left px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all"
+                            className="w-full text-left px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-lg transition-all"
                           >
                             {cat.name}
                           </button>

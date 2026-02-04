@@ -106,7 +106,7 @@ export function ClientHomePage() {
                 <section key={pc.id} className="relative group/section">
                   <div className="flex justify-between items-end mb-12">
                     <div className="flex items-center gap-6">
-                      <div className="w-1.5 h-10 bg-blue-600 rounded-full shadow-lg shadow-blue-500/20 group-hover/section:scale-y-110 transition-transform duration-500"></div>
+                      <div className="w-1.5 h-10 bg-blue-600 rounded-md shadow-lg shadow-blue-500/20 group-hover/section:scale-y-110 transition-transform duration-500"></div>
                       <div>
                         <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight uppercase">{pc.name}</h2>
                         <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-3 opacity-70">Creative Portfolio & Landing Solutions</p>
@@ -114,7 +114,7 @@ export function ClientHomePage() {
                     </div>
                     <Button
                       variant="light"
-                      className="font-bold text-[11px] uppercase tracking-widest text-blue-600 hover:bg-blue-50 px-8 h-12 rounded-2xl group/btn"
+                      className="font-bold text-[11px] uppercase tracking-widest text-blue-600 hover:bg-blue-50 px-8 h-12 rounded-xl group/btn"
                       onClick={() => navigateToCategory(String(pc.id), "")}
                     >
                       Xem tất cả <ChevronRight size={16} className="ml-1.5 group-hover/btn:translate-x-1 transition-transform" />

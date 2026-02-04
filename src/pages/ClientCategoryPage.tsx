@@ -105,7 +105,7 @@ export function ClientCategoryPage() {
                         <div className="flex items-center gap-6">
                             <button
                                 onClick={() => navigate(-1)}
-                                className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 hover:border-blue-500/40 hover:text-blue-600 rounded-2xl transition-all shadow-sm hover:shadow-md group"
+                                className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 hover:border-blue-500/40 hover:text-blue-600 rounded-xl transition-all shadow-sm hover:shadow-md group"
                                 title="Quay lại"
                             >
                                 <ChevronRight size={20} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
@@ -125,12 +125,12 @@ export function ClientCategoryPage() {
                         <div className="flex flex-wrap items-center gap-4">
                             {/* Sub-category Filter (only if parent category is active) */}
                             {selectedParentCategory && (
-                                <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+                                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-3">Lọc theo:</span>
                                     <select
                                         value={selectedCategory}
                                         onChange={(e) => updateParams({ category: e.target.value, page: "1" })}
-                                        className="bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-700 py-2.5 px-4 outline-none focus:ring-0 transition-all cursor-pointer min-w-[160px] hover:bg-slate-100"
+                                        className="bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-700 py-2.5 px-4 outline-none focus:ring-0 transition-all cursor-pointer min-w-[160px] hover:bg-slate-100"
                                     >
                                         <option value="">Tất cả danh mục</option>
                                         {categories
@@ -146,7 +146,7 @@ export function ClientCategoryPage() {
                             {(search || selectedParentCategory || selectedCategory) && (
                                 <button
                                     onClick={() => navigate('/category')}
-                                    className="h-12 px-6 rounded-2xl border border-rose-100 bg-rose-50/30 text-rose-500 text-[10px] font-black uppercase tracking-widest hover:bg-rose-50 transition-colors flex items-center gap-2"
+                                    className="h-12 px-6 rounded-xl border border-rose-100 bg-rose-50/30 text-rose-500 text-[10px] font-black uppercase tracking-widest hover:bg-rose-50 transition-colors flex items-center gap-2"
                                 >
                                     <X size={14} /> Xóa tất cả lọc
                                 </button>
@@ -162,7 +162,7 @@ export function ClientCategoryPage() {
                         </div>
                     ) : posts.length === 0 ? (
                         <div className="py-32 text-center flex flex-col items-center gap-8">
-                            <div className="w-24 h-24 bg-slate-50 rounded-[3rem] flex items-center justify-center text-slate-200 border border-slate-100">
+                            <div className="w-24 h-24 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200 border border-slate-100">
                                 <Search size={40} strokeWidth={1.5} />
                             </div>
                             <div className="max-w-md">
@@ -171,7 +171,7 @@ export function ClientCategoryPage() {
                             </div>
                             <button
                                 onClick={() => navigate('/category')}
-                                className="bg-blue-600 text-white font-black h-14 px-10 rounded-2xl shadow-xl shadow-blue-500/20 hover:scale-105 transition-transform"
+                                className="bg-blue-600 text-white font-black h-14 px-10 rounded-xl shadow-xl shadow-blue-500/20 hover:scale-105 transition-transform"
                             >
                                 QUAY LẠI TẤT CẢ DỰ ÁN
                             </button>
@@ -193,10 +193,10 @@ export function ClientCategoryPage() {
                                         onChange={(p) => updateParams({ page: String(p) })}
                                         showControls
                                         classNames={{
-                                            item: "w-12 h-12 text-[11px] font-black rounded-2xl border-transparent hover:bg-slate-100 transition-colors",
+                                            item: "w-12 h-12 text-[11px] font-black rounded-xl border-transparent hover:bg-slate-100 transition-colors",
                                             cursor: "bg-blue-600 text-white font-black shadow-2xl shadow-blue-500/40",
-                                            prev: "bg-white border border-slate-200 rounded-2xl w-12 h-12",
-                                            next: "bg-white border border-slate-200 rounded-2xl w-12 h-12"
+                                            prev: "bg-white border border-slate-200 rounded-xl w-12 h-12",
+                                            next: "bg-white border border-slate-200 rounded-xl w-12 h-12"
                                         }}
                                     />
                                 </div>

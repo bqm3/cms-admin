@@ -328,7 +328,7 @@ const DescriptionModalContent = ({ initialDescription, onSave }: { initialDescri
               Nội dung mô tả
             </label>
             <textarea
-              className="w-full h-40 bg-zinc-900/50 border border-white/10 rounded-2xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-blue-500/50 transition-all resize-none custom-scrollbar"
+              className="w-full h-40 bg-zinc-900/50 border border-white/10 rounded-xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-blue-500/50 transition-all resize-none custom-scrollbar"
               placeholder="Nhập mô tả cho bài viết này..."
               value={localDesc}
               onChange={(e) => setLocalDesc(e.target.value)}
@@ -510,7 +510,7 @@ export function EditorPage() {
             <Button
               isIconOnly
               size="sm"
-              className="min-w-8 w-8 h-8 p-0 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white"
+              className="min-w-8 w-8 h-8 p-0 rounded-md bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white"
               variant="light"
               onPress={() => navigate("/dashboard")}
             >
@@ -533,7 +533,7 @@ export function EditorPage() {
                   classNames={{
                     base: "w-[280px] max-w-[50vw]",
                     inputWrapper:
-                      "h-8 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-blue-500 focus-within:bg-white/10 transition-all duration-200 shadow-sm data-[hover=true]:bg-white/10",
+                      "h-8 rounded-md bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-blue-500 focus-within:bg-white/10 transition-all duration-200 shadow-sm data-[hover=true]:bg-white/10",
                     input:
                       "text-white !text-white placeholder:!text-zinc-500 font-bold text-xs caret-blue-500",
                   }}
@@ -545,7 +545,7 @@ export function EditorPage() {
                 />
 
                 {/* Category pill */}
-                <div className="hidden lg:flex items-center gap-2 px-2.5 h-8 rounded-lg bg-white/5 border border-white/10 text-zinc-300">
+                <div className="hidden lg:flex items-center gap-2 px-2.5 h-8 rounded-md bg-white/5 border border-white/10 text-zinc-300">
                   <Layout size={14} className="text-blue-500" />
                   <select
                     className="bg-transparent outline-none text-[11px] font-bold cursor-pointer"
@@ -589,7 +589,7 @@ export function EditorPage() {
           <div className="flex items-center gap-2 md:gap-3">
             <div className="md:hidden">
               <select
-                className="h-8 px-2 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-zinc-200 outline-none"
+                className="h-8 px-2 rounded-md bg-white/5 border border-white/10 text-[11px] font-bold text-zinc-200 outline-none"
                 value={postInfo.category_id}
                 onChange={(e) =>
                   setPostInfo({ ...postInfo, category_id: e.target.value })
@@ -621,7 +621,7 @@ export function EditorPage() {
               </select>
             </div>
 
-            <label className="group cursor-pointer h-8 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
+            <label className="group cursor-pointer h-8 px-2.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
               <span
                 className={`w-6 h-6 grid place-items-center rounded border ${postInfo.logoFile
                   ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
@@ -650,7 +650,7 @@ export function EditorPage() {
 
             <button
               onClick={onDescOpen}
-              className={`h-8 px-2.5 rounded-lg border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.description
+              className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.description
                 ? "bg-blue-500/15 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
                 : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
                 }`}
@@ -664,7 +664,7 @@ export function EditorPage() {
 
             <button
               onClick={() => setPostInfo({ ...postInfo, isHidden: !postInfo.isHidden })}
-              className={`h-8 px-2.5 rounded-lg border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.isHidden
+              className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.isHidden
                 ? "bg-amber-500/15 border-amber-500/30 text-amber-300 hover:bg-amber-500/20"
                 : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
                 }`}
@@ -730,7 +730,7 @@ export function EditorPage() {
               scrollBehavior="inside"
               hideCloseButton
               classNames={{
-                base: "bg-zinc-950 border border-white/10 rounded-3xl",
+                base: "bg-zinc-950 border border-white/10 rounded-xl",
                 header: "border-b border-white/5 p-6",
                 body: "p-6 custom-scrollbar",
               }}
@@ -750,7 +750,7 @@ export function EditorPage() {
                           setSelectedTemplate(tmpl);
                           onTmplClose();
                         }}
-                        className="group cursor-pointer flex flex-col bg-zinc-900/50 border border-white/5 rounded-2xl overflow-hidden hover:border-blue-500/50 hover:bg-zinc-900 transition-all duration-300"
+                        className="group cursor-pointer flex flex-col bg-zinc-900/50 border border-white/5 rounded-xl overflow-hidden hover:border-blue-500/50 hover:bg-zinc-900 transition-all duration-300"
                       >
                         <div className="relative aspect-[4/3] overflow-hidden">
                           <img
@@ -782,7 +782,7 @@ export function EditorPage() {
               size="2xl"
               backdrop="blur"
               classNames={{
-                base: "bg-zinc-950 border border-white/10 rounded-3xl",
+                base: "bg-zinc-950 border border-white/10 rounded-xl",
                 header: "border-b border-white/5 p-6",
                 body: "p-6",
               }}

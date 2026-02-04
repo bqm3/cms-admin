@@ -50,7 +50,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
           {/* BRAND */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="bg-blue-600 p-2 rounded-xl shadow-blue-500/20 shadow-lg">
+              <div className="bg-blue-600 p-2 rounded-lg shadow-blue-500/20 shadow-lg">
                 <LayoutGrid className="text-white" size={20} />
               </div>
               <span className="text-lg font-black text-slate-900 uppercase tracking-tighter">
@@ -66,7 +66,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200/60 hover:border-blue-300 hover:bg-blue-50/30 transition-all cursor-pointer"
+                  className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200/60 hover:border-blue-300 hover:bg-blue-50/30 transition-all cursor-pointer"
                 />
               ))}
             </div>
@@ -121,7 +121,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                 <div
                   className={[
                     "absolute left-0 right-0 z-20",
-                    "rounded-xl border border-slate-200 bg-white shadow-lg",
+                    "rounded-lg border border-slate-200 bg-white shadow-lg",
                     "p-3",
                     moreOpen ? "block" : "hidden",
                   ].join(" ")}

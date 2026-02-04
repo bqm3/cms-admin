@@ -129,7 +129,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {/* Logo Section */}
                 <div className="p-5 border-b border-slate-200/80">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-100 flex-shrink-0">
+                        <div className="bg-blue-600 p-2.5 rounded-lg shadow-lg shadow-blue-100 flex-shrink-0">
                             <Shield className="text-white" size={20} />
                         </div>
                         {isOpen && (
@@ -155,13 +155,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group ${active
+                                className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${active
                                     ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
                                     : 'hover:bg-slate-50'
                                     }`}
                             >
                                 <div
-                                    className={`p-2 rounded-lg flex-shrink-0 transition-all ${active
+                                    className={`p-2 rounded-md flex-shrink-0 transition-all ${active
                                         ? `${item.iconBg} ${item.iconText}`
                                         : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600'
                                         }`}
@@ -186,9 +186,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {/* User Info & Logout */}
                 {isOpen && (
                     <div className="p-4 border-t border-slate-200/80">
-                        <div className="bg-slate-50 p-3 rounded-xl mb-3 border border-slate-100 shadow-sm">
+                        <div className="bg-slate-50 p-3 rounded-lg mb-3 border border-slate-100 shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100 flex-shrink-0">
+                                <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100 flex-shrink-0">
                                     {user.username?.substring(0, 1).toUpperCase() || 'A'}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -204,7 +204,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                         <Button
                             onClick={handleLogout}
                             size="sm"
-                            className="w-full bg-white border border-slate-200 text-slate-700 font-bold rounded-xl h-10 hover:bg-slate-50 transition-colors shadow-sm"
+                            className="w-full bg-white border border-slate-200 text-slate-700 font-bold rounded-lg h-10 hover:bg-slate-50 transition-colors shadow-sm"
                             startContent={<LogOut size={18} />}
                         >
                             Đăng xuất
@@ -221,7 +221,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {/* Mobile Header */}
                 <div className="p-5 border-b border-slate-200 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-100">
+                        <div className="bg-blue-600 p-2.5 rounded-lg shadow-lg shadow-blue-100">
                             <Shield className="text-white" size={20} />
                         </div>
                         <div>
@@ -238,7 +238,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                         variant="flat"
                         size="sm"
                         onClick={onClose}
-                        className="bg-slate-100 text-slate-600 rounded-lg"
+                        className="bg-slate-100 text-slate-600 rounded-md"
                     >
                         <X size={18} />
                     </Button>
@@ -255,13 +255,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 key={item.path}
                                 to={item.path}
                                 onClick={onClose}
-                                className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ${active
+                                className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 ${active
                                     ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
                                     : 'hover:bg-slate-50'
                                     }`}
                             >
                                 <div
-                                    className={`p-2 rounded-lg flex-shrink-0 ${active
+                                    className={`p-2 rounded-md flex-shrink-0 ${active
                                         ? `${item.iconBg} ${item.iconText}`
                                         : 'bg-slate-100 text-slate-400'
                                         }`}
@@ -281,9 +281,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
                 {/* Mobile User Info & Logout */}
                 <div className="p-4 border-t border-slate-200">
-                    <div className="bg-slate-50 p-3 rounded-xl mb-3 border border-slate-100">
+                    <div className="bg-slate-50 p-3 rounded-lg mb-3 border border-slate-100">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100">
+                            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100">
                                 {user.username?.substring(0, 1).toUpperCase() || 'A'}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -299,7 +299,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <Button
                         onClick={handleLogout}
                         size="sm"
-                        className="w-full bg-white border border-slate-200 text-slate-700 font-bold rounded-xl h-11 hover:bg-slate-50 transition-all shadow-sm"
+                        className="w-full bg-white border border-slate-200 text-slate-700 font-bold rounded-lg h-11 hover:bg-slate-50 transition-all shadow-sm"
                         startContent={<LogOut size={18} />}
                     >
                         Đăng xuất

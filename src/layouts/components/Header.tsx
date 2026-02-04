@@ -21,7 +21,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                             variant="flat"
                             size="md"
                             onClick={onMenuClick}
-                            className="bg-slate-50 text-slate-600 rounded-xl lg:hidden border border-slate-200"
+                            className="bg-slate-50 text-slate-600 rounded-lg lg:hidden border border-slate-200"
                         >
                             <Menu size={20} />
                         </Button>
@@ -33,7 +33,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                                 size="md"
                                 startContent={<Search className="text-slate-400" size={18} />}
                                 classNames={{
-                                    inputWrapper: "bg-slate-50 border border-slate-200 shadow-none h-11 rounded-xl px-4",
+                                    inputWrapper: "bg-slate-50 border border-slate-200 shadow-none h-11 rounded-lg px-4",
                                     input: "text-sm font-semibold text-slate-700 placeholder:text-slate-400"
                                 }}
                             />
@@ -47,7 +47,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                             isIconOnly
                             variant="flat"
                             size="md"
-                            className="bg-slate-50 text-slate-600 rounded-xl hidden sm:flex border border-slate-200 h-11 w-11 hover:bg-slate-100 transition-colors"
+                            className="bg-slate-50 text-slate-600 rounded-lg hidden sm:flex border border-slate-200 h-11 w-11 hover:bg-slate-100 transition-colors"
                         >
                             <Bell size={18} />
                         </Button>
@@ -57,7 +57,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                             isIconOnly
                             variant="flat"
                             size="md"
-                            className="bg-slate-50 text-slate-600 rounded-xl hidden sm:flex border border-slate-200 h-11 w-11 hover:bg-slate-100 transition-colors"
+                            className="bg-slate-50 text-slate-600 rounded-lg hidden sm:flex border border-slate-200 h-11 w-11 hover:bg-slate-100 transition-colors"
                             as={Link}
                             to="/dashboard"
                         >
@@ -74,7 +74,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                                     {user.role || 'user'}
                                 </p>
                             </div>
-                            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100 border border-blue-700">
+                            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100 border border-blue-700">
                                 {user.username?.substring(0, 1).toUpperCase() || 'A'}
                             </div>
                         </div>
