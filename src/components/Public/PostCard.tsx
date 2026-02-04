@@ -16,7 +16,7 @@ export function PostCard({ post }: PostCardProps) {
             rel="noopener noreferrer"
             className="font-sans block group h-full focus:outline-none"
         >
-            <Card className="bg-white border border-slate-200/50 hover:border-blue-500/30 transition-all duration-500 overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 rounded-xl h-full flex flex-col">
+            <Card className="bg-white border border-[#e6e6e6] hover:border-[#cccccc] transition-all duration-300 overflow-hidden shadow-sm hover:shadow-lg rounded-xl h-full flex flex-col">
                 <CardBody className="p-0 flex-1 flex flex-col">
                     {/* Image Container */}
                     <div className="aspect-[16/10] bg-slate-50 overflow-hidden relative">
@@ -24,7 +24,7 @@ export function PostCard({ post }: PostCardProps) {
                             <img
                                 src={`${SERVER_URL}${post.logo}`}
                                 alt={post.title}
-                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 loading="lazy"
                             />
                         ) : (
@@ -34,7 +34,7 @@ export function PostCard({ post }: PostCardProps) {
                         )}
 
                         {/* Overlay Gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                         {/* Hover Action Badge */}
                         <div className="absolute top-4 right-4 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
@@ -64,7 +64,7 @@ export function PostCard({ post }: PostCardProps) {
                             )}
                         </div>
 
-                        <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div className="mt-auto pt-4 border-t border-[#e6e6e6] flex items-center justify-between">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[11px] font-bold text-blue-500 uppercase">
                                     {post.creator?.username?.[0] || 'U'}

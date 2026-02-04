@@ -52,7 +52,7 @@ export function PublicHeader({
   return (
     <header className={`font-sans ${isSticky ? 'sticky top-0 z-50 transition-all duration-300' : 'relative'}`}>
       {/* Main Header: Logo, Search, Auth */}
-      <div className="w-full border-b border-slate-100 bg-white">
+      <div className="w-full border-b border-[#e6e6e6] bg-white">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-4 md:gap-8">
           {/* Logo */}
           {isPreview ? LogoContent : <Link to="/" className="cursor-pointer">{LogoContent}</Link>}
@@ -115,7 +115,7 @@ export function PublicHeader({
       </div>
 
       {/* Mobile Search Bar (Only visible on small/medium screens) */}
-      <div className="lg:hidden px-4 py-3 bg-white border-b border-slate-100">
+      <div className="lg:hidden px-4 py-3 bg-white border-b border-[#e6e6e6]">
          <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -138,7 +138,7 @@ export function PublicHeader({
       </div>
 
       {/* Navigation Bar: Categories */}
-      <div className="font-sans bg-white border-b border-slate-100/50">
+      <div className="font-sans bg-white border-b border-[#e6e6e6]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-12 overflow-x-auto md:overflow-visible custom-scrollbar">
           <nav className="flex items-center h-full min-w-max md:min-w-0 md:justify-around gap-4 px-2">
             {parentCategories.filter(pc => !pc.is_deleted).map((pc) => {

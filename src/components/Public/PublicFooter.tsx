@@ -44,9 +44,9 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
   }, [moreOpen]);
 
   return (
-    <footer className="font-sans bg-white border-t border-slate-200 mt-32 pt-20 pb-10">
+    <footer className="font-sans bg-white border-t border-[#e6e6e6] mt-20 pt-16 pb-10">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-10 gap-y-12 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-10 mb-12">
           {/* BRAND */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
@@ -179,7 +179,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
           )}
         </div>
 
-        <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="pt-6 border-t border-[#e6e6e6] flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[11px] font-medium text-[#999999] uppercase tracking-wide text-center md:text-left">
             © {new Date().getFullYear()} GLOBAL PROMOTION. TẤT CẢ QUYỀN ĐƯỢC BẢO LƯU.
           </p>

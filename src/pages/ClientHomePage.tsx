@@ -60,7 +60,7 @@ export function ClientHomePage() {
   const isLoading = dataLoading || (parentCategories.length > 0 && postsLoading && Object.keys(groupedPosts).length === 0);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900  font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <PublicHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -72,11 +72,11 @@ export function ClientHomePage() {
       <main className="max-w-7xl mx-auto px-4 md:px-6 mt-12">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
-            <div className="w-12 h-12 border-4 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">Đang thiết lập trải nghiệm...</p>
+            <div className="w-12 h-12 border-4 border-[#0067ff]/20 border-t-[#0067ff] rounded-full animate-spin"></div>
+            <p className="text-[#999999] text-[11px] font-semibold uppercase tracking-wide animate-pulse">Đang tải nội dung...</p>
           </div>
         ) : (
-          <div className="space-y-32">
+          <div className="space-y-20">
             {/* <div className="relative overflow-hidden rounded-[3rem] bg-slate-900 p-10 md:p-20 text-white shadow-3xl shadow-slate-200 border border-white/5">
               <div className="relative z-10 max-w-2xl">
                 <div className="inline-flex items-center gap-3 bg-blue-600/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-10 shadow-lg shadow-blue-500/20">
@@ -103,25 +103,21 @@ export function ClientHomePage() {
               if (pcPosts.length === 0) return null;
 
               return (
-                <section key={pc.id} className="relative group/section">
-                  <div className="flex justify-between items-end mb-12">
-                    <div className="flex items-center gap-6">
-                      <div className="w-1.5 h-10 bg-blue-600 rounded-md shadow-lg shadow-blue-500/20 group-hover/section:scale-y-110 transition-transform duration-500"></div>
-                      <div>
-                        <h2 className="text-3xl font-bold text-slate-800 tracking-tight uppercase">{pc.name}</h2>
-                        {/* <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-3 opacity-70">Creative Portfolio & Landing Solutions</p> */}
-                      </div>
+                <section key={pc.id} className="relative">
+                  <div className="flex justify-between items-center mb-8">
+                    <div className="flex items-center gap-4">
+                      <h2 className="text-[28px] font-bold text-[#1a1a1a] tracking-tight">{pc.name}</h2>
                     </div>
                     <Button
                       variant="light"
-                      className="font-bold text-[11px] uppercase tracking-widest text-blue-600 hover:bg-blue-50 px-8 h-12 rounded-xl group/btn"
+                      className="font-semibold text-[14px] text-[#0067ff] hover:bg-[#f5f5f5] px-6 h-10 rounded-lg group/btn transition-all"
                       onClick={() => navigateToCategory(String(pc.id), "")}
                     >
-                      Xem tất cả <ChevronRight size={16} className="ml-1.5 group-hover/btn:translate-x-1 transition-transform" />
+                      Xem tất cả <ChevronRight size={16} className="ml-1 group-hover/btn:translate-x-1 transition-transform" />
                     </Button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {pcPosts.map((post) => (
                       <PostCard key={post.id} post={post} />
                     ))}
