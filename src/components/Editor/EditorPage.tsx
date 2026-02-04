@@ -16,6 +16,7 @@ import {
   MonitorPlay,
   Layers,
   Eye,
+  FileText,
 } from "lucide-react";
 
 import api, { SERVER_URL } from "../../services/api";
@@ -206,6 +207,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       formData.append("content", json);
       formData.append("view_count", String(postInfo.viewCount ?? 0));
       formData.append("is_hidden", String(postInfo.isHidden));
+      formData.append("description", postInfo.description || "");
       if (postInfo.logoFile) formData.append("logo", postInfo.logoFile);
 
       if (isNew) {
@@ -323,6 +325,7 @@ export function EditorPage() {
     logoFile: null as File | null,
     logoUrl: "",
     isHidden: false,
+    description: "",
   });
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -332,6 +335,7 @@ export function EditorPage() {
   const [templates, setTemplates] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const { isOpen: isTmplOpen, onOpen: onTmplOpen, onClose: onTmplClose } = useDisclosure({ defaultOpen: isNew });
+  const { isOpen: isDescOpen, onOpen: onDescOpen, onClose: onDescClose } = useDisclosure();
 
   // Fetch Categories, Parent Categories & Templates
   useEffect(() => {
@@ -378,6 +382,7 @@ export function EditorPage() {
             logoFile: null,
             logoUrl: post.logo || "",
             isHidden: post.is_hidden || false,
+            description: post.description || "",
           });
           setLoadedContent(post.content || null);
         } catch (err) {
@@ -600,6 +605,20 @@ export function EditorPage() {
             </label>
 
             <button
+              onClick={onDescOpen}
+              className={`h-8 px-2.5 rounded-lg border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.description
+                ? "bg-blue-500/15 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
+                : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
+                }`}
+              title="Nhập mô tả bài viết (SEO)"
+            >
+              <FileText size={14} className={postInfo.description ? "text-blue-400" : ""} />
+              <span className="hidden sm:inline">
+                Mô tả
+              </span>
+            </button>
+
+            <button
               onClick={() => setPostInfo({ ...postInfo, isHidden: !postInfo.isHidden })}
               className={`h-8 px-2.5 rounded-lg border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.isHidden
                 ? "bg-amber-500/15 border-amber-500/30 text-amber-300 hover:bg-amber-500/20"
@@ -707,6 +726,55 @@ export function EditorPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+
+            {/* Description Editor Modal */}
+            <Modal
+              isOpen={isDescOpen}
+              onClose={onDescClose}
+              size="2xl"
+              backdrop="blur"
+              classNames={{
+                base: "bg-zinc-950 border border-white/10 rounded-3xl",
+                header: "border-b border-white/5 p-6",
+                body: "p-6",
+              }}
+            >
+              <ModalContent>
+                <ModalHeader className="flex flex-col gap-1">
+                  <h2 className="text-xl font-bold text-white tracking-tight">Mô tả bài viết (SEO)</h2>
+                  <p className="text-sm font-medium text-zinc-400">Đoạn mô tả ngắn hiển thị trên kết quả tìm kiếm và khi chia sẻ liên kết.</p>
+                </ModalHeader>
+                <ModalBody>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+                        Nội dung mô tả
+                      </label>
+                      <textarea
+                        className="w-full h-40 bg-zinc-900/50 border border-white/10 rounded-2xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-blue-500/50 transition-all resize-none custom-scrollbar"
+                        placeholder="Nhập mô tả cho bài viết này..."
+                        value={postInfo.description}
+                        onChange={(e) => setPostInfo({ ...postInfo, description: e.target.value })}
+                      />
+                      <div className="flex justify-between px-1">
+                        <span className="text-[10px] text-zinc-500 font-bold">
+                          Gợi ý: 150 - 160 ký tự
+                        </span>
+                        <span className={`text-[10px] font-bold ${postInfo.description.length > 160 ? 'text-amber-500' : 'text-zinc-500'}`}>
+                          {postInfo.description.length} ký tự
+                        </span>
+                      </div>
+                    </div>
+                    <Button
+                      onPress={onDescClose}
+                      className="bg-blue-600 font-bold h-12 rounded-xl text-white shadow-lg shadow-blue-500/20"
+                    >
+                      LƯU MÔ TẢ
+                    </Button>
                   </div>
                 </ModalBody>
               </ModalContent>

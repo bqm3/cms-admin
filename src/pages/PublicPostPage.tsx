@@ -2,7 +2,8 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Editor, Frame } from "@craftjs/core";
-import api from "../services/api";
+import { Helmet } from "react-helmet-async";
+import api, { SERVER_URL } from "../services/api";
 import { usePublicData } from "../hooks/usePublicData";
 import { PublicFooter } from "../components/Public/PublicFooter";
 import { PublicHeader } from "../components/Public/PublicHeader";
@@ -47,6 +48,19 @@ import { InputComponent } from "@/components/Editor/Craft/Components/InputCompon
 import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
 import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
 
+function stripHtmlToText(html: string) {
+  if (!html) return "";
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").replace(/\s+/g, " ").trim();
+}
+
+function truncate(s: string, max = 160) {
+  const x = (s || "").trim();
+  if (x.length <= max) return x;
+  return x.slice(0, max - 1).trimEnd() + "…";
+}
+
 export function PublicPostPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -58,18 +72,60 @@ export function PublicPostPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const hasFetched = useRef(false);
 
+  const [seo, setSeo] = useState<{
+    title: string;
+    description: string;
+    canonical: string;
+    ogImage?: string;
+    robots: string;
+  }>({
+    title: "Website",
+    description: "Website",
+    canonical: typeof window !== "undefined" ? window.location.href : "",
+    robots: "index,follow",
+  });
+
   useEffect(() => {
     const fetchPost = async () => {
       if (hasFetched.current) return;
       hasFetched.current = true;
 
       try {
+        const preview = searchParams.get("preview");
         const response = await api.get(`/posts/public/${slug}`, {
-          params: { preview: searchParams.get("preview") },
+          params: { preview },
         });
 
-        setContent(response.data.content);
-        document.title = response.data.title ?? "Website";
+        const post = response.data;
+        const title = post.title ?? "Website";
+        
+        // SEO Description logic
+        const rawDesc = (post.description && String(post.description).trim()) || "";
+        const rawContent = post.content ?? "";
+        const contentText = typeof rawContent === "string" ? stripHtmlToText(rawContent) : "";
+        const description = truncate(rawDesc || contentText || title, 160);
+
+        // OG Image
+        const ogImageRaw = post.logo || "";
+        const ogImage = ogImageRaw
+          ? ogImageRaw.startsWith("http")
+            ? ogImageRaw
+            : `${SERVER_URL}${ogImageRaw}`
+          : undefined;
+
+        const canonical = window.location.origin + window.location.pathname;
+        const robots = preview ? "noindex,nofollow" : "index,follow";
+
+        setContent(post.content);
+        document.title = title;
+
+        setSeo({
+          title,
+          description,
+          canonical,
+          ogImage,
+          robots,
+        });
       } catch (err) {
         console.error(err);
         hasFetched.current = false;
@@ -130,6 +186,29 @@ export function PublicPostPage() {
 
   return (
     <div className="min-h-screen p-0 m-0 bg-white">
+      <Helmet>
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
+        <link rel="canonical" href={seo.canonical} />
+        <meta name="robots" content={seo.robots} />
+
+        {/* OpenGraph */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta property="og:url" content={seo.canonical} />
+        {seo.ogImage ? <meta property="og:image" content={seo.ogImage} /> : null}
+
+        {/* Twitter */}
+        <meta
+          name="twitter:card"
+          content={seo.ogImage ? "summary_large_image" : "summary"}
+        />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        {seo.ogImage ? <meta name="twitter:image" content={seo.ogImage} /> : null}
+      </Helmet>
+
       <PublicHeader 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
