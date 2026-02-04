@@ -1,5 +1,7 @@
 /* eslint-disable react/jsx-sort-props */
 /* eslint-disable prettier/prettier */
+import React from "react";
+import { Link } from "react-router-dom";
 import { useMemo, useState, useRef, useEffect } from "react";
 import { LayoutGrid, ChevronDown } from "lucide-react";
 
@@ -14,17 +16,13 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
   const [moreOpen, setMoreOpen] = useState(false);
   const moreWrapRef = useRef<HTMLDivElement | null>(null);
 
-  const parents = useMemo(
-    () => (parentCategories || []).filter((pc) => !pc?.is_deleted),
-    [parentCategories]
-  );
+  const parents = useMemo(() => (parentCategories || []).filter((pc) => !pc?.is_deleted), [parentCategories]);
 
   const MAX_PARENT_COLUMNS = 4;
   const visibleParents = parents.slice(0, MAX_PARENT_COLUMNS);
   const overflowParents = parents.slice(MAX_PARENT_COLUMNS);
 
-  const childrenOf = (parentId: any) =>
-    (categories || []).filter((c) => c?.parent_id === parentId && !c?.is_deleted);
+  const childrenOf = (parentId: any) => (categories || []).filter((c) => c?.parent_id === parentId && !c?.is_deleted);
 
   const handleLinkClick = (parentId: string, categoryId: string) => {
     if (isPreview) return;
@@ -43,20 +41,38 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
     return () => document.removeEventListener("mousedown", onDocDown);
   }, [moreOpen]);
 
+  const LogoContent = (
+    <div className="flex items-center gap-3 mb-6">
+      <div className="bg-blue-600 p-2 rounded-lg shadow-blue-500/20 shadow-lg">
+        <LayoutGrid className="text-white" size={20} />
+      </div>
+      <span className="text-xl font-extrabold text-[#0067ff] uppercase tracking-tight">
+        GLOBAL <span className="text-red-500">PROMOTION</span>
+      </span>
+    </div>
+  );
+
   return (
     <footer className="font-sans bg-white border-t border-[#e6e6e6] mt-20 pt-16 pb-10">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-10 mb-12">
           {/* BRAND */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-3 mb-6">
+            {/* <div className="flex items-center gap-3 mb-6">
               <div className="bg-blue-600 p-2 rounded-lg shadow-blue-500/20 shadow-lg">
                 <LayoutGrid className="text-white" size={20} />
               </div>
               <span className="text-xl font-extrabold text-[#0067ff] uppercase tracking-tight">
                 GLOBAL <span className="text-red-500">PROMOTION</span>
               </span>
-            </div>
+            </div> */}
+            {isPreview ? (
+              LogoContent
+            ) : (
+              <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="cursor-pointer">
+                {LogoContent}
+              </Link>
+            )}
 
             <p className="text-[15px] text-[#666666] font-normal leading-relaxed mb-8">
               Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS.
@@ -77,7 +93,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
             <div key={pc.id} className="min-w-0">
               <button
                 onClick={() => handleLinkClick(String(pc.id), "")}
-                className={`text-[12px] font-bold text-[#1a1a1a] uppercase tracking-wide mb-6 transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
+                className={`text-[12px] font-bold text-[#1a1a1a] uppercase tracking-wide mb-6 transition-colors text-left block w-full ${isPreview ? "cursor-default" : "hover:text-[#0067ff]"}`}
                 title={pc.name}
               >
                 <span className="inline-block truncate max-w-full">{pc.name}</span>
@@ -88,7 +104,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                   <li key={cat.id} className="min-w-0">
                     <button
                       onClick={() => handleLinkClick(String(pc.id), String(cat.id))}
-                      className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
+                      className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${isPreview ? "cursor-default" : "hover:text-[#0067ff]"}`}
                       title={cat.name}
                     >
                       <span className="inline-block truncate max-w-full">{cat.name}</span>
@@ -110,7 +126,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                     handleLinkClick("", ""); // home / all
                     setMoreOpen(false);
                   }}
-                  className={`text-[13px] font-bold text-[#1a1a1a] uppercase tracking-wide transition-colors text-left inline-flex items-center ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
+                  className={`text-[13px] font-bold text-[#1a1a1a] uppercase tracking-wide transition-colors text-left inline-flex items-center ${isPreview ? "cursor-default" : "hover:text-[#0067ff]"}`}
                   title="Về trang chủ"
                 >
                   Dự án khác
@@ -134,27 +150,29 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                             handleLinkClick(String(pc.id), "");
                             setMoreOpen(false);
                           }}
-                          className={`w-full text-left text-[15px] font-semibold text-[#1a1a1a] transition-colors ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
+                          className={`w-full text-left text-[15px] font-semibold text-[#1a1a1a] transition-colors ${isPreview ? "cursor-default" : "hover:text-[#0067ff]"}`}
                           title={pc.name}
                         >
                           <span className="inline-block truncate max-w-full">{pc.name}</span>
                         </button>
 
                         <ul className="mt-2 space-y-2 pl-3 border-l border-slate-200">
-                          {childrenOf(pc.id).slice(0, 8).map((cat) => (
-                            <li key={cat.id} className="min-w-0">
-                              <button
-                                onClick={() => {
-                                  handleLinkClick(String(pc.id), String(cat.id));
-                                  setMoreOpen(false);
-                                }}
-                                className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
-                                title={cat.name}
-                              >
-                                <span className="inline-block truncate max-w-full">{cat.name}</span>
-                              </button>
-                            </li>
-                          ))}
+                          {childrenOf(pc.id)
+                            .slice(0, 8)
+                            .map((cat) => (
+                              <li key={cat.id} className="min-w-0">
+                                <button
+                                  onClick={() => {
+                                    handleLinkClick(String(pc.id), String(cat.id));
+                                    setMoreOpen(false);
+                                  }}
+                                  className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${isPreview ? "cursor-default" : "hover:text-[#0067ff]"}`}
+                                  title={cat.name}
+                                >
+                                  <span className="inline-block truncate max-w-full">{cat.name}</span>
+                                </button>
+                              </li>
+                            ))}
 
                           {childrenOf(pc.id).length > 8 && (
                             <li>
@@ -163,7 +181,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                                   handleLinkClick(String(pc.id), "");
                                   setMoreOpen(false);
                                 }}
-                                className={`text-xs font-bold text-blue-600 transition ${isPreview ? 'cursor-default' : 'hover:text-blue-700'}`}
+                                className={`text-xs font-bold text-blue-600 transition ${isPreview ? "cursor-default" : "hover:text-blue-700"}`}
                               >
                                 Xem tất cả →
                               </button>
@@ -190,7 +208,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                 key={item}
                 href="#"
                 onClick={(e) => isPreview && e.preventDefault()}
-                className={`text-[11px] font-medium text-[#999999] uppercase tracking-wide transition-colors ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
+                className={`text-[11px] font-medium text-[#999999] uppercase tracking-wide transition-colors ${isPreview ? "cursor-default" : "hover:text-[#0067ff]"}`}
               >
                 {item}
               </a>

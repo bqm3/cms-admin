@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Editor, Frame } from "@craftjs/core";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { LayoutGrid } from "lucide-react";
 import { usePublicData } from "../hooks/usePublicData";
 import { PublicHeader } from "../components/Public/PublicHeader";
@@ -92,6 +93,11 @@ export function PreviewPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>Xem trước - Global Promotion</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+
       <PublicHeader 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}

@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Pagination } from "@heroui/pagination";
 import { ChevronRight, X, Search, LayoutGrid } from "lucide-react";
 import api from "../services/api";
@@ -86,8 +87,25 @@ export function ClientCategoryPage() {
 
     const isLoading = dataLoading || (postsLoading && posts.length === 0);
 
+    // Dynamic page title
+    const pageTitle = search 
+        ? `Tìm kiếm: ${search} - Global Promotion` 
+        : 'Khám phá dự án - Global Promotion';
+    const pageDescription = search
+        ? `Kết quả tìm kiếm cho "${search}". Tìm thấy ${totalItems} dự án.`
+        : `Khám phá ${totalItems} dự án website cao cấp được xây dựng trên công nghệ Craft JS.`;
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+            <Helmet>
+                <title>{pageTitle}</title>
+                <meta name="description" content={pageDescription} />
+                <meta property="og:title" content={pageTitle} />
+                <meta property="og:description" content={pageDescription} />
+                <meta property="og:type" content="website" />
+                <meta name="robots" content="index,follow" />
+            </Helmet>
+
             <PublicHeader
                 searchQuery={search}
                 onSearchChange={handleSearchChange}

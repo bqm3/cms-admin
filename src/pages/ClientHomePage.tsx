@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@heroui/button";
 import { ChevronRight, Sparkles } from "lucide-react";
 import api from "../services/api";
@@ -61,6 +62,15 @@ export function ClientHomePage() {
 
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
+      <Helmet>
+        <title>Global Promotion - Khám phá dự án website cao cấp</title>
+        <meta name="description" content="Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS." />
+        <meta property="og:title" content="Global Promotion - Khám phá dự án website cao cấp" />
+        <meta property="og:description" content="Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="index,follow" />
+      </Helmet>
+
       <PublicHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
