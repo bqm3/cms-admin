@@ -121,13 +121,13 @@ export function ClientCategoryPage() {
                     {/* Page Controls & Meta */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 pb-10 border-b border-slate-200/60">
                         <div className="flex items-center gap-6">
-                            <button
+                            {/* <button
                                 onClick={() => navigate(-1)}
                                 className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 hover:border-blue-500/40 hover:text-blue-600 rounded-xl transition-all shadow-sm hover:shadow-md group"
                                 title="Quay lại"
                             >
                                 <ChevronRight size={20} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
-                            </button>
+                            </button> */}
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
                                     <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
