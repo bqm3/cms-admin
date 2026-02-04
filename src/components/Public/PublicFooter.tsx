@@ -44,7 +44,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
   }, [moreOpen]);
 
   return (
-    <footer className="bg-white border-t border-slate-200 mt-32 pt-20 pb-10">
+    <footer className="font-sans bg-white border-t border-slate-200 mt-32 pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-10 gap-y-12 mb-16">
           {/* BRAND */}
@@ -53,12 +53,12 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
               <div className="bg-blue-600 p-2 rounded-lg shadow-blue-500/20 shadow-lg">
                 <LayoutGrid className="text-white" size={20} />
               </div>
-              <span className="text-lg font-black text-slate-900 uppercase tracking-tighter">
-                GLOBAL PROMOTION
+              <span className="text-xl font-extrabold text-[#0067ff] uppercase tracking-tight">
+                GLOBAL <span className="text-red-500">PROMOTION</span>
               </span>
             </div>
 
-            <p className="text-sm text-slate-600 font-medium leading-relaxed mb-8">
+            <p className="text-[15px] text-[#666666] font-normal leading-relaxed mb-8">
               Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS.
             </p>
 
@@ -77,7 +77,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
             <div key={pc.id} className="min-w-0">
               <button
                 onClick={() => handleLinkClick(String(pc.id), "")}
-                className={`text-[11px] font-bold text-slate-800 uppercase tracking-widest mb-6 transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-blue-600'}`}
+                className={`text-[12px] font-bold text-[#1a1a1a] uppercase tracking-wide mb-6 transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
                 title={pc.name}
               >
                 <span className="inline-block truncate max-w-full">{pc.name}</span>
@@ -88,7 +88,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                   <li key={cat.id} className="min-w-0">
                     <button
                       onClick={() => handleLinkClick(String(pc.id), String(cat.id))}
-                      className={`text-[13px] font-medium text-slate-500 transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-slate-900'}`}
+                      className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
                       title={cat.name}
                     >
                       <span className="inline-block truncate max-w-full">{cat.name}</span>
@@ -110,10 +110,10 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                     handleLinkClick("", ""); // home / all
                     setMoreOpen(false);
                   }}
-                  className={`text-xs font-extrabold text-slate-900 uppercase tracking-[0.18em] transition-colors text-left inline-flex items-center ${isPreview ? 'cursor-default' : 'hover:text-blue-600'}`}
+                  className={`text-[13px] font-bold text-[#1a1a1a] uppercase tracking-wide transition-colors text-left inline-flex items-center ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
                   title="Về trang chủ"
                 >
-                  Xem toàn bộ
+                  Dự án khác
                 </button>
               </div>
 
@@ -134,7 +134,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                             handleLinkClick(String(pc.id), "");
                             setMoreOpen(false);
                           }}
-                          className={`w-full text-left text-sm font-extrabold text-slate-900 transition-colors ${isPreview ? 'cursor-default' : 'hover:text-blue-600'}`}
+                          className={`w-full text-left text-[15px] font-semibold text-[#1a1a1a] transition-colors ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
                           title={pc.name}
                         >
                           <span className="inline-block truncate max-w-full">{pc.name}</span>
@@ -148,7 +148,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                                   handleLinkClick(String(pc.id), String(cat.id));
                                   setMoreOpen(false);
                                 }}
-                                className={`text-sm font-semibold text-slate-700 transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-slate-950'}`}
+                                className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
                                 title={cat.name}
                               >
                                 <span className="inline-block truncate max-w-full">{cat.name}</span>
@@ -180,7 +180,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
         </div>
 
         <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center md:text-left">
+          <p className="text-[11px] font-medium text-[#999999] uppercase tracking-wide text-center md:text-left">
             © {new Date().getFullYear()} GLOBAL PROMOTION. TẤT CẢ QUYỀN ĐƯỢC BẢO LƯU.
           </p>
 
@@ -190,7 +190,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                 key={item}
                 href="#"
                 onClick={(e) => isPreview && e.preventDefault()}
-                className={`text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-colors ${isPreview ? 'cursor-default' : 'hover:text-slate-900'}`}
+                className={`text-[11px] font-medium text-[#999999] uppercase tracking-wide transition-colors ${isPreview ? 'cursor-default' : 'hover:text-[#0067ff]'}`}
               >
                 {item}
               </a>

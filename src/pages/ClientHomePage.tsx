@@ -108,8 +108,8 @@ export function ClientHomePage() {
                     <div className="flex items-center gap-6">
                       <div className="w-1.5 h-10 bg-blue-600 rounded-md shadow-lg shadow-blue-500/20 group-hover/section:scale-y-110 transition-transform duration-500"></div>
                       <div>
-                        <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight uppercase">{pc.name}</h2>
-                        <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-3 opacity-70">Creative Portfolio & Landing Solutions</p>
+                        <h2 className="text-3xl font-bold text-slate-800 tracking-tight uppercase">{pc.name}</h2>
+                        {/* <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-3 opacity-70">Creative Portfolio & Landing Solutions</p> */}
                       </div>
                     </div>
                     <Button
