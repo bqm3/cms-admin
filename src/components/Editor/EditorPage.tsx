@@ -311,6 +311,50 @@ const ContentLoader = ({ content }: { content: string | null }) => {
   return null;
 };
 
+// --- Description Modal Content (Sub-component to avoid lag) ---
+const DescriptionModalContent = ({ initialDescription, onSave }: { initialDescription: string, onSave: (desc: string) => void }) => {
+  const [localDesc, setLocalDesc] = useState(initialDescription);
+  
+  return (
+    <ModalContent>
+      <ModalHeader className="flex flex-col gap-1">
+        <h2 className="text-xl font-bold text-white tracking-tight">Mô tả bài viết (SEO)</h2>
+        <p className="text-sm font-medium text-zinc-400">Đoạn mô tả ngắn hiển thị trên kết quả tìm kiếm và khi chia sẻ liên kết.</p>
+      </ModalHeader>
+      <ModalBody>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+              Nội dung mô tả
+            </label>
+            <textarea
+              className="w-full h-40 bg-zinc-900/50 border border-white/10 rounded-2xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-blue-500/50 transition-all resize-none custom-scrollbar"
+              placeholder="Nhập mô tả cho bài viết này..."
+              value={localDesc}
+              onChange={(e) => setLocalDesc(e.target.value)}
+              autoFocus
+            />
+            <div className="flex justify-between px-1">
+              <span className="text-[10px] text-zinc-500 font-bold">
+                Gợi ý: 150 - 160 ký tự
+              </span>
+              <span className={`text-[10px] font-bold ${localDesc.length > 160 ? 'text-amber-500' : 'text-zinc-500'}`}>
+                {localDesc.length} ký tự
+              </span>
+            </div>
+          </div>
+          <Button
+            onPress={() => onSave(localDesc)}
+            className="bg-blue-600 font-bold h-12 rounded-xl text-white shadow-lg shadow-blue-500/20"
+          >
+            LƯU MÔ TẢ
+          </Button>
+        </div>
+      </ModalBody>
+    </ModalContent>
+  );
+};
+
 // --- Main Page ---
 
 export function EditorPage() {
@@ -743,41 +787,13 @@ export function EditorPage() {
                 body: "p-6",
               }}
             >
-              <ModalContent>
-                <ModalHeader className="flex flex-col gap-1">
-                  <h2 className="text-xl font-bold text-white tracking-tight">Mô tả bài viết (SEO)</h2>
-                  <p className="text-sm font-medium text-zinc-400">Đoạn mô tả ngắn hiển thị trên kết quả tìm kiếm và khi chia sẻ liên kết.</p>
-                </ModalHeader>
-                <ModalBody>
-                  <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
-                        Nội dung mô tả
-                      </label>
-                      <textarea
-                        className="w-full h-40 bg-zinc-900/50 border border-white/10 rounded-2xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-blue-500/50 transition-all resize-none custom-scrollbar"
-                        placeholder="Nhập mô tả cho bài viết này..."
-                        value={postInfo.description}
-                        onChange={(e) => setPostInfo({ ...postInfo, description: e.target.value })}
-                      />
-                      <div className="flex justify-between px-1">
-                        <span className="text-[10px] text-zinc-500 font-bold">
-                          Gợi ý: 150 - 160 ký tự
-                        </span>
-                        <span className={`text-[10px] font-bold ${postInfo.description.length > 160 ? 'text-amber-500' : 'text-zinc-500'}`}>
-                          {postInfo.description.length} ký tự
-                        </span>
-                      </div>
-                    </div>
-                    <Button
-                      onPress={onDescClose}
-                      className="bg-blue-600 font-bold h-12 rounded-xl text-white shadow-lg shadow-blue-500/20"
-                    >
-                      LƯU MÔ TẢ
-                    </Button>
-                  </div>
-                </ModalBody>
-              </ModalContent>
+              <DescriptionModalContent 
+                initialDescription={postInfo.description} 
+                onSave={(newDesc) => {
+                  setPostInfo({ ...postInfo, description: newDesc });
+                  onDescClose();
+                }} 
+              />
             </Modal>
 
             {/* Footer cố định theo cột center */}
