@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable prettier/prettier */
 import { useEditor, Editor, Frame, Element } from "@craftjs/core";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
@@ -70,6 +70,47 @@ import { PresetFAQ } from "./Craft/presets/PresetFAQ";
 import { PresetFooter } from "./Craft/presets/PresetFooter";
 import { SliderComponent } from "./Craft/Components/SliderComponent";
 import { PopupOfferComponent } from "./Craft/Components/PopupOfferComponent";
+
+// ✅ Move resolver outside to keep it stable
+const CRAFT_RESOLVER = {
+  // Default frame
+  MimicPCLandingFrame,
+  DefaultNewPostFrame,
+  PortfolioTemplate,
+  BlogTemplate,
+  ServiceTemplate,
+  ContactTemplate,
+  ProductTemplate,
+  StoreCouponTemplate,
+  // Component
+  TextComponent,
+  Container,
+  ButtonComponent,
+  ImageComponent,
+  HeadingComponent,
+  CardComponent,
+  VideoComponent,
+  TableComponent,
+  ShapeComponent,
+  RowComponent,
+  ColumnComponent,
+  NavbarComponent,
+  SectionComponent,
+  GridComponent,
+  BadgeComponent,
+  AccordionComponent,
+  SpacerComponent,
+  SliderComponent,
+  InputComponent,
+  PopupModalComponent,
+  PopupOfferComponent,
+  // Preset
+  PresetHeader,
+  PresetHero,
+  PresetOffersGrid,
+  PresetFAQ,
+  PresetFooter,
+};
 
 // --- Sub Components ---
 const SaveButton = ({ postInfo, isNew }: any) => {
@@ -279,34 +320,25 @@ const PreviewButton = () => {
 
 const ContentLoader = ({ content }: { content: string | null }) => {
   const { actions } = useEditor();
+  const initialized = useRef(false);
 
   useEffect(() => {
-    if (!content) return;
+    if (!content || initialized.current) return;
+    
     try {
-      let parsed: any;
-      try {
-        parsed = JSON.parse(content);
-      } catch (e) {
-        console.error("Content is not valid JSON:", e);
-        return;
-      }
-
-      if (!parsed || typeof parsed !== "object") {
-        console.error("Parsed content is not an object");
-        return;
-      }
-
-      if (typeof content === "string") {
-        actions.deserialize(content);
-      } else {
-        console.warn("Content is not a string, attempting to serialize first");
-        actions.deserialize(JSON.stringify(content));
-      }
+      actions.deserialize(content);
+      initialized.current = true; // Đánh dấu đã nạp xong, không nạp lại nữa
     } catch (err) {
       console.error("Failed to deserialize content:", err);
-      alert("Không thể tải nội dung bài viết. Dữ liệu có thể bị lỗi.");
     }
   }, [content, actions]);
+
+  // Reset flag if content is explicitly cleared (e.g. for a new blank state)
+  useEffect(() => {
+    if (content === null) {
+      initialized.current = false;
+    }
+  }, [content]);
 
   return null;
 };
@@ -352,6 +384,40 @@ const DescriptionModalContent = ({ initialDescription, onSave }: { initialDescri
         </div>
       </ModalBody>
     </ModalContent>
+  );
+};
+
+// --- Optimize Title Input to avoid full page re-render ---
+const TitleInput = ({ value, onChange }: { value: string; onChange: (val: string) => void }) => {
+  const [localTitle, setLocalTitle] = useState(value);
+
+  useEffect(() => {
+    setLocalTitle(value);
+  }, [value]);
+
+  return (
+    <Input
+      classNames={{
+        base: "w-[280px] max-w-[50vw]",
+        inputWrapper:
+          "h-8 rounded-md bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-blue-500 focus-within:bg-white/10 transition-all duration-200 shadow-sm data-[hover=true]:bg-white/10",
+        input:
+          "text-white !text-white placeholder:!text-zinc-500 font-bold text-xs caret-blue-500",
+      }}
+      placeholder="Tiêu đề..."
+      value={localTitle}
+      onChange={(e) => setLocalTitle(e.target.value)}
+      onBlur={() => {
+        if (localTitle !== value) {
+          onChange(localTitle);
+        }
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          (e.target as HTMLInputElement).blur();
+        }
+      }}
+    />
   );
 };
 
@@ -460,46 +526,7 @@ export function EditorPage() {
     <div className="h-screen text-white font-sans overflow-hidden">
       <Editor
         enabled={true}
-        resolver={{
-          // Default frame
-          MimicPCLandingFrame,
-          DefaultNewPostFrame,
-          PortfolioTemplate,
-          BlogTemplate,
-          ServiceTemplate,
-          ContactTemplate,
-          ProductTemplate,
-          StoreCouponTemplate,
-          // Component
-          TextComponent,
-          Container,
-          ButtonComponent,
-          ImageComponent,
-          HeadingComponent,
-          CardComponent,
-          VideoComponent,
-          TableComponent,
-          ShapeComponent,
-          RowComponent,
-          ColumnComponent,
-          NavbarComponent,
-          SectionComponent,
-          GridComponent,
-          BadgeComponent,
-          AccordionComponent,
-          SpacerComponent,
-          SliderComponent,
-          InputComponent,
-          PopupModalComponent,
-          PopupOfferComponent,
-
-          // Preset
-          PresetHeader,
-          PresetHero,
-          PresetOffersGrid,
-          PresetFAQ,
-          PresetFooter,
-        }}
+        resolver={CRAFT_RESOLVER}
       >
         <ContentLoader content={loadedContent} />
 
@@ -529,19 +556,9 @@ export function EditorPage() {
               </div>
 
               <div className="flex items-center gap-3 min-w-0">
-                <Input
-                  classNames={{
-                    base: "w-[280px] max-w-[50vw]",
-                    inputWrapper:
-                      "h-8 rounded-md bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-blue-500 focus-within:bg-white/10 transition-all duration-200 shadow-sm data-[hover=true]:bg-white/10",
-                    input:
-                      "text-white !text-white placeholder:!text-zinc-500 font-bold text-xs caret-blue-500",
-                  }}
-                  placeholder="Tiêu đề..."
+                <TitleInput
                   value={postInfo.title}
-                  onChange={(e) =>
-                    setPostInfo({ ...postInfo, title: e.target.value })
-                  }
+                  onChange={(val) => setPostInfo({ ...postInfo, title: val })}
                 />
 
                 {/* Category pill */}
@@ -705,7 +722,7 @@ export function EditorPage() {
               <div className="p-8">
                 <div className="flex justify-center">
                   <div className="w-full max-w-[1024px] shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
-                    <Frame key={loadedContent ? 'loaded' : 'empty'}>
+                    <Frame>
                       <Element
                         canvas
                         is={Container}
