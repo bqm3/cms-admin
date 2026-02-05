@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable prettier/prettier */
 import { useEditor, Editor, Frame, Element } from "@craftjs/core";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
@@ -70,6 +70,47 @@ import { PresetFAQ } from "./Craft/presets/PresetFAQ";
 import { PresetFooter } from "./Craft/presets/PresetFooter";
 import { SliderComponent } from "./Craft/Components/SliderComponent";
 import { PopupOfferComponent } from "./Craft/Components/PopupOfferComponent";
+
+// ✅ Move resolver outside to keep it stable
+const CRAFT_RESOLVER = {
+  // Default frame
+  MimicPCLandingFrame,
+  DefaultNewPostFrame,
+  PortfolioTemplate,
+  BlogTemplate,
+  ServiceTemplate,
+  ContactTemplate,
+  ProductTemplate,
+  StoreCouponTemplate,
+  // Component
+  TextComponent,
+  Container,
+  ButtonComponent,
+  ImageComponent,
+  HeadingComponent,
+  CardComponent,
+  VideoComponent,
+  TableComponent,
+  ShapeComponent,
+  RowComponent,
+  ColumnComponent,
+  NavbarComponent,
+  SectionComponent,
+  GridComponent,
+  BadgeComponent,
+  AccordionComponent,
+  SpacerComponent,
+  SliderComponent,
+  InputComponent,
+  PopupModalComponent,
+  PopupOfferComponent,
+  // Preset
+  PresetHeader,
+  PresetHero,
+  PresetOffersGrid,
+  PresetFAQ,
+  PresetFooter,
+};
 
 // --- Sub Components ---
 const SaveButton = ({ postInfo, isNew }: any) => {
@@ -244,7 +285,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
 
   return (
     <Button
-      className="bg-blue-600 font-bold px-6 shadow-md shadow-blue-500/20"
+      className="bg-[#21294a] font-bold px-6 shadow-md shadow-[#21294a]/20"
       color="primary"
       size="sm"
       isLoading={saving}
@@ -279,34 +320,25 @@ const PreviewButton = () => {
 
 const ContentLoader = ({ content }: { content: string | null }) => {
   const { actions } = useEditor();
+  const initialized = useRef(false);
 
   useEffect(() => {
-    if (!content) return;
+    if (!content || initialized.current) return;
+    
     try {
-      let parsed: any;
-      try {
-        parsed = JSON.parse(content);
-      } catch (e) {
-        console.error("Content is not valid JSON:", e);
-        return;
-      }
-
-      if (!parsed || typeof parsed !== "object") {
-        console.error("Parsed content is not an object");
-        return;
-      }
-
-      if (typeof content === "string") {
-        actions.deserialize(content);
-      } else {
-        console.warn("Content is not a string, attempting to serialize first");
-        actions.deserialize(JSON.stringify(content));
-      }
+      actions.deserialize(content);
+      initialized.current = true; // Đánh dấu đã nạp xong, không nạp lại nữa
     } catch (err) {
       console.error("Failed to deserialize content:", err);
-      alert("Không thể tải nội dung bài viết. Dữ liệu có thể bị lỗi.");
     }
   }, [content, actions]);
+
+  // Reset flag if content is explicitly cleared (e.g. for a new blank state)
+  useEffect(() => {
+    if (content === null) {
+      initialized.current = false;
+    }
+  }, [content]);
 
   return null;
 };
@@ -328,7 +360,7 @@ const DescriptionModalContent = ({ initialDescription, onSave }: { initialDescri
               Nội dung mô tả
             </label>
             <textarea
-              className="w-full h-40 bg-zinc-900/50 border border-white/10 rounded-xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-blue-500/50 transition-all resize-none custom-scrollbar"
+              className="w-full h-40 bg-zinc-900/50 border border-white/10 rounded-xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-[#21294a]/50 transition-all resize-none custom-scrollbar"
               placeholder="Nhập mô tả cho bài viết này..."
               value={localDesc}
               onChange={(e) => setLocalDesc(e.target.value)}
@@ -345,13 +377,47 @@ const DescriptionModalContent = ({ initialDescription, onSave }: { initialDescri
           </div>
           <Button
             onPress={() => onSave(localDesc)}
-            className="bg-blue-600 font-bold h-12 rounded-xl text-white shadow-lg shadow-blue-500/20"
+            className="bg-[#21294a] font-bold h-12 rounded-xl text-white shadow-lg shadow-[#21294a]/20"
           >
             LƯU MÔ TẢ
           </Button>
         </div>
       </ModalBody>
     </ModalContent>
+  );
+};
+
+// --- Optimize Title Input to avoid full page re-render ---
+const TitleInput = ({ value, onChange }: { value: string; onChange: (val: string) => void }) => {
+  const [localTitle, setLocalTitle] = useState(value);
+
+  useEffect(() => {
+    setLocalTitle(value);
+  }, [value]);
+
+  return (
+    <Input
+      classNames={{
+        base: "w-[280px] max-w-[50vw]",
+        inputWrapper:
+          "h-8 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-[#21294a] focus-within:bg-white/10 transition-all duration-200 shadow-sm data-[hover=true]:bg-white/10",
+        input:
+          "text-white !text-white placeholder:!text-zinc-500 font-bold text-xs caret-[#21294a]",
+      }}
+      placeholder="Tiêu đề..."
+      value={localTitle}
+      onChange={(e) => setLocalTitle(e.target.value)}
+      onBlur={() => {
+        if (localTitle !== value) {
+          onChange(localTitle);
+        }
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          (e.target as HTMLInputElement).blur();
+        }
+      }}
+    />
   );
 };
 
@@ -449,7 +515,7 @@ export function EditorPage() {
   if (loading)
     return (
       <div className="bg-zinc-950 h-screen flex flex-col items-center justify-center gap-4">
-        <div className="w-8 h-8 border-2 border-zinc-800 border-t-blue-500 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-zinc-800 border-t-[#21294a] rounded-full animate-spin" />
         <p className="text-zinc-500 font-bold text-[10px] tracking-widest uppercase">
           Loading Editor...
         </p>
@@ -460,46 +526,7 @@ export function EditorPage() {
     <div className="h-screen text-white font-sans overflow-hidden">
       <Editor
         enabled={true}
-        resolver={{
-          // Default frame
-          MimicPCLandingFrame,
-          DefaultNewPostFrame,
-          PortfolioTemplate,
-          BlogTemplate,
-          ServiceTemplate,
-          ContactTemplate,
-          ProductTemplate,
-          StoreCouponTemplate,
-          // Component
-          TextComponent,
-          Container,
-          ButtonComponent,
-          ImageComponent,
-          HeadingComponent,
-          CardComponent,
-          VideoComponent,
-          TableComponent,
-          ShapeComponent,
-          RowComponent,
-          ColumnComponent,
-          NavbarComponent,
-          SectionComponent,
-          GridComponent,
-          BadgeComponent,
-          AccordionComponent,
-          SpacerComponent,
-          SliderComponent,
-          InputComponent,
-          PopupModalComponent,
-          PopupOfferComponent,
-
-          // Preset
-          PresetHeader,
-          PresetHero,
-          PresetOffersGrid,
-          PresetFAQ,
-          PresetFooter,
-        }}
+        resolver={CRAFT_RESOLVER}
       >
         <ContentLoader content={loadedContent} />
 
@@ -529,24 +556,14 @@ export function EditorPage() {
               </div>
 
               <div className="flex items-center gap-3 min-w-0">
-                <Input
-                  classNames={{
-                    base: "w-[280px] max-w-[50vw]",
-                    inputWrapper:
-                      "h-8 rounded-md bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-blue-500 focus-within:bg-white/10 transition-all duration-200 shadow-sm data-[hover=true]:bg-white/10",
-                    input:
-                      "text-white !text-white placeholder:!text-zinc-500 font-bold text-xs caret-blue-500",
-                  }}
-                  placeholder="Tiêu đề..."
+                <TitleInput
                   value={postInfo.title}
-                  onChange={(e) =>
-                    setPostInfo({ ...postInfo, title: e.target.value })
-                  }
+                  onChange={(val) => setPostInfo({ ...postInfo, title: val })}
                 />
 
                 {/* Category pill */}
-                <div className="hidden lg:flex items-center gap-2 px-2.5 h-8 rounded-md bg-white/5 border border-white/10 text-zinc-300">
-                  <Layout size={14} className="text-blue-500" />
+                <div className="hidden lg:flex items-center gap-2 px-2.5 h-8 rounded-lg bg-white/5 border border-white/10 text-zinc-300">
+                  <Layout size={14} className="text-[#21294a]" />
                   <select
                     className="bg-transparent outline-none text-[11px] font-bold cursor-pointer"
                     value={postInfo.category_id}
@@ -625,7 +642,7 @@ export function EditorPage() {
               <span
                 className={`w-6 h-6 grid place-items-center rounded border ${postInfo.logoFile
                   ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
-                  : "bg-white/5 border-white/10 text-blue-300"
+                  : "bg-white/5 border-white/10 text-[#21294a]/60"
                   }`}
               >
                 <ImageIcon size={14} />
@@ -651,12 +668,12 @@ export function EditorPage() {
             <button
               onClick={onDescOpen}
               className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.description
-                ? "bg-blue-500/15 border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
+                ? "bg-[#21294a]/15 border-[#21294a]/30 text-[#21294a]/60 hover:bg-[#21294a]/20"
                 : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
                 }`}
               title="Nhập mô tả bài viết (SEO)"
             >
-              <FileText size={14} className={postInfo.description ? "text-blue-400" : ""} />
+              <FileText size={14} className={postInfo.description ? "text-[#21294a]" : ""} />
               <span className="hidden sm:inline">
                 Mô tả
               </span>
@@ -705,7 +722,7 @@ export function EditorPage() {
               <div className="p-8">
                 <div className="flex justify-center">
                   <div className="w-full max-w-[1024px] shadow-2xl shadow-black ring-1 ring-white/5 min-h-[800px] transition-all">
-                    <Frame key={loadedContent ? 'loaded' : 'empty'}>
+                    <Frame>
                       <Element
                         canvas
                         is={Container}
@@ -750,7 +767,7 @@ export function EditorPage() {
                           setSelectedTemplate(tmpl);
                           onTmplClose();
                         }}
-                        className="group cursor-pointer flex flex-col bg-zinc-900/50 border border-white/5 rounded-xl overflow-hidden hover:border-blue-500/50 hover:bg-zinc-900 transition-all duration-300"
+                        className="group cursor-pointer flex flex-col bg-zinc-900/50 border border-white/5 rounded-xl overflow-hidden hover:border-[#21294a]/50 hover:bg-zinc-900 transition-all duration-300"
                       >
                         <div className="relative aspect-[4/3] overflow-hidden">
                           <img

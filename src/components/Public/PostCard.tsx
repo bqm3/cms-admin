@@ -28,7 +28,7 @@ export function PostCard({ post }: PostCardProps) {
                                 loading="lazy"
                             />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 text-blue-200 font-black text-3xl uppercase italic tracking-tighter">
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 text-slate-300 font-black text-3xl uppercase italic tracking-tighter">
                                 {post.title.substring(0, 2)}
                             </div>
                         )}
@@ -38,7 +38,7 @@ export function PostCard({ post }: PostCardProps) {
 
                         {/* Hover Action Badge */}
                         <div className="absolute top-4 right-4 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
-                            <div className="bg-white/95 backdrop-blur-md shadow-xl px-4 py-2 rounded-lg text-[11px] font-semibold text-[#0067ff] uppercase flex items-center gap-2 border border-blue-50">
+                            <div className="bg-white/95 backdrop-blur-md shadow-xl px-4 py-2 rounded-lg text-[11px] font-semibold text-[#21294a] uppercase flex items-center gap-2 border border-slate-100">
                                 Xem chi tiết <ChevronRight size={12} strokeWidth={3} />
                             </div>
                         </div>
@@ -46,14 +46,14 @@ export function PostCard({ post }: PostCardProps) {
 
                     {/* Content area */}
                     <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-[18px] font-bold text-[#1a1a1a] mb-2.5 group-hover:text-[#0067ff] transition-colors line-clamp-2 leading-tight tracking-tight">
+                        <h3 className="text-[18px] font-bold text-[#1a1a1a] mb-2.5 group-hover:text-[#21294a] transition-colors line-clamp-2 leading-tight tracking-tight">
                             {post.title}
                         </h3>
 
                         {/* Category Badges Below Title */}
                         <div className="flex flex-wrap gap-2 mb-5">
                             {post.category?.parent?.name && (
-                                <span className="bg-blue-50 text-[#0067ff] px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border border-blue-100/30">
+                                <span className="bg-slate-50 text-[#21294a] px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border border-slate-200/50">
                                     {post.category.parent.name}
                                 </span>
                             )}
@@ -65,18 +65,18 @@ export function PostCard({ post }: PostCardProps) {
                         </div>
 
                         <div className="mt-auto pt-4 border-t border-[#e6e6e6] flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
+                            {/* <div className="flex items-center gap-2.5">
                                 <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[11px] font-bold text-blue-500 uppercase">
                                     {post.creator?.username?.[0] || 'U'}
                                 </div>
                                 <span className="text-[#666666] text-[13px] font-medium tracking-tight truncate max-w-[120px]">
                                     @{post.creator?.username || "user"}
                                 </span>
-                            </div>
+                            </div> */}
 
-                            <div className="flex items-center gap-1.5 text-[#999999] group-hover:text-[#0067ff] transition-colors">
-                                <Clock size={13} />
-                                <span className="text-[12px] font-medium uppercase tracking-wider">
+                            <div className="flex items-center gap-1.5 text-black group-hover:text-[#21294a] transition-colors">
+                                <Clock size={20} />
+                                <span className="text-[15px] font-medium uppercase tracking-wider">
                                     {formatDate(post.created_at)}
                                 </span>
                             </div>

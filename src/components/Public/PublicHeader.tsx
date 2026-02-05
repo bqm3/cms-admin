@@ -1,8 +1,10 @@
 /* eslint-disable prettier/prettier */
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Search, LayoutGrid, ChevronDown } from "lucide-react";
+import { useDebounce } from "../../hooks/useDebounce";
 
 interface PublicHeaderProps {
   searchQuery: string;
@@ -28,6 +30,20 @@ export function PublicHeader({
   isPreview = false
 }: PublicHeaderProps) {
   const navigate = useNavigate();
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+  const debouncedSearch = useDebounce(localSearch, 500);
+
+  // Sync internal state with prop (for external clears/updates)
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
+
+  // Trigger onSearchChange only when debounced value changes
+  useEffect(() => {
+    if (debouncedSearch !== searchQuery) {
+      onSearchChange(debouncedSearch);
+    }
+  }, [debouncedSearch, onSearchChange, searchQuery]);
 
   const handleCategoryClick = (parentId: string, categoryId: string = "") => {
     if (isPreview) return;
@@ -39,11 +55,11 @@ export function PublicHeader({
 
   const LogoContent = (
     <div className="flex items-center gap-2 group shrink-0 select-none">
-      <div className="bg-blue-600 w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-all duration-300">
+      <div className="bg-[#21294a] w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
         <LayoutGrid className="text-white" size={20} />
       </div>
       <div className="flex flex-col">
-        <span className="text-xl md:text-2xl font-extrabold text-[#0067ff] leading-none tracking-tight">GLOBAL<span className="text-red-500">PROMOTION</span></span>
+        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">GLOBAL<span className="text-red-500">PROMOTION</span></span>
         <span className="text-[9px] md:text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wide mt-1">Giải pháp cao cấp</span>
       </div>
     </div>
@@ -68,19 +84,22 @@ export function PublicHeader({
           >
             <Input
               placeholder="Tìm kiếm dự án, danh mục..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              startContent={<Search size={18} className="text-slate-900 group-focus-within:text-blue-500 transition-colors" />}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              startContent={<Search size={18} className="text-slate-900 group-focus-within:text-[#21294a] transition-colors" />}
               isClearable
-              onClear={() => onSearchChange("")}
+              onClear={() => {
+                setLocalSearch("");
+                onSearchChange("");
+              }}
               classNames={{
-                inputWrapper: "bg-white border-2 border-slate-200 h-11 px-4 shadow-none rounded-full group-hover:border-[#0067ff] group-focus-within:border-[#0067ff] transition-all",
+                inputWrapper: "bg-white border-2 border-slate-200 h-11 px-4 shadow-none rounded-full group-hover:border-[#21294a] group-focus-within:border-[#21294a] transition-all",
                 input: "text-[15px] font-medium text-[#1a1a1a] placeholder:text-[#999999] pl-1"
               }}
             />
             <button 
               type="submit"
-              className="absolute right-1 w-9 h-9 bg-black rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors shadow-sm"
+              className="absolute right-1 w-9 h-9 bg-[#21294a] rounded-full flex items-center justify-center text-white hover:opacity-90 transition-all shadow-sm"
             >
               <Search size={16} strokeWidth={3} />
             </button>
@@ -88,19 +107,20 @@ export function PublicHeader({
 
           {/* Auth Actions */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <Link 
-              to="/login" 
-              className="text-[15px] font-bold text-[#1a1a1a] hover:text-[#0067ff] transition-colors px-2 py-2"
-            >
-              Đăng nhập
-            </Link>
             {/* <Button 
               as={Link}
               to="/login"
-              className="bg-[#0067ff] text-white font-bold text-sm h-10 px-6 rounded-full shadow-lg shadow-blue-500/10 hover:bg-blue-700 transition-all active:scale-95 hidden sm:flex"
+              className="text-[15px] font-bold text-[#1a1a1a] hover:text-[#21294a] transition-colors px-2 py-2"
             >
-              Đăng ký
+              Đăng nhập
             </Button> */}
+            <Button 
+              as={Link}
+              to="/login"
+              className="bg-[#21294a] text-white font-bold text-sm h-10 px-6 rounded-full shadow-lg shadow-[#21294a]/10 hover:bg-[#21294a]/80 transition-all active:scale-95 hidden sm:flex"
+            >
+              Đăng nhập
+            </Button>
             
             {/* Mobile Search Icon */}
             <Button 
@@ -126,8 +146,8 @@ export function PublicHeader({
           >
             <Input
               placeholder="Tìm kiếm dự án..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
               startContent={<Search size={16} className="text-slate-900" />}
               classNames={{
                 inputWrapper: "bg-slate-50 border-slate-200/60 h-10 rounded-full",

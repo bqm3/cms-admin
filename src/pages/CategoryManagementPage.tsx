@@ -21,6 +21,8 @@ export function CategoryManagementPage() {
     const [editName, setEditName] = useState('');
     const [parentId, setParentId] = useState<string>('');
     const [editParentId, setEditParentId] = useState<string>('');
+    const [sequenceNumber, setSequenceNumber] = useState('0');
+    const [editSequenceNumber, setEditSequenceNumber] = useState('0');
     const [parentCategories, setParentCategories] = useState<any[]>([]);
 
     const navigate = useNavigate();
@@ -85,9 +87,14 @@ export function CategoryManagementPage() {
     const handleCreate = async () => {
         if (!name.trim()) return;
         try {
-            await api.post('/categories', { name, parent_id: parentId || null });
+            await api.post('/categories', { 
+                name, 
+                parent_id: parentId || null,
+                sequence_number: parseInt(sequenceNumber) || 0
+            });
             setName('');
             setParentId('');
+            setSequenceNumber('0');
             createModal.onClose();
             alert('Thêm danh mục mới thành công! 🏷️');
             if (page === 1) fetchCategories(); else setPage(1);
@@ -111,13 +118,18 @@ export function CategoryManagementPage() {
         setEditingCategory(cat);
         setEditName(cat.name);
         setEditParentId(cat.parent_id ? String(cat.parent_id) : '');
+        setEditSequenceNumber(cat.sequence_number ? String(cat.sequence_number) : '0');
         editModal.onOpen();
     };
 
     const handleUpdate = async () => {
         if (!editingCategory) return;
         try {
-            await api.put(`/categories/${editingCategory.id}`, { name: editName, parent_id: editParentId || null });
+            await api.put(`/categories/${editingCategory.id}`, { 
+                name: editName, 
+                parent_id: editParentId || null,
+                sequence_number: parseInt(editSequenceNumber) || 0
+            });
             editModal.onClose();
             alert('Cập nhật danh mục thành công! ✨');
             fetchCategories();
@@ -132,7 +144,7 @@ export function CategoryManagementPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-3 rounded-xl shadow-blue-100 shadow-lg">
+                        <div className="bg-[#21294a] p-3 rounded-xl shadow-[#21294a]/10 shadow-lg">
                             <Tag className="text-white" size={24} />
                         </div>
                         <div>
@@ -144,7 +156,7 @@ export function CategoryManagementPage() {
                     </div>
                     <Button
                         onPress={createModal.onOpen}
-                        className="bg-blue-600 text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-blue-100"
+                        className="bg-[#21294a] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#21294a]/10"
                         startContent={<Plus size={18} />}
                     >
                         Thêm danh mục
@@ -154,11 +166,11 @@ export function CategoryManagementPage() {
                 {/* Search & Date Filter Bar */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#21294a] transition-colors" size={18} />
                         <input
                             type="text"
                             placeholder="Tìm kiếm danh mục..."
-                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full shadow-sm transition-all"
+                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#21294a]/20 focus:border-[#21294a] w-full shadow-sm transition-all"
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -219,11 +231,11 @@ export function CategoryManagementPage() {
                         header: 'Tên danh mục',
                         render: (cat) => (
                             <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-100 shadow-sm">
-                                    <Tag size={16} className="text-blue-500" />
+                                <div className="w-10 h-10 rounded-lg bg-[#21294a]/5 flex items-center justify-center border border-[#21294a]/10 shadow-sm">
+                                    <Tag size={16} className="text-[#21294a]" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="font-bold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">{cat.name}</p>
+                                    <p className="font-bold text-slate-800 text-sm group-hover:text-[#21294a] transition-colors">{cat.name}</p>
                                     <div className="flex items-center gap-2 mt-0.5">
                                         {cat.parent && (
                                             <span className="px-1.5 py-0.5 bg-purple-50 text-purple-600 border border-purple-100 rounded text-[9px] font-bold uppercase tracking-wider">
@@ -235,6 +247,10 @@ export function CategoryManagementPage() {
                                 </div>
                             </div>
                         )
+                    },
+                    {
+                        header: 'Số thứ tự',
+                        render: (cat) => <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">{cat.sequence_number || 0}</span>
                     },
                     {
                         header: 'Ngày cập nhật',
@@ -254,7 +270,7 @@ export function CategoryManagementPage() {
                                     isIconOnly
                                     variant="flat"
                                     size="sm"
-                                    className="bg-blue-50 text-blue-600 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-blue-100"
+                                    className="bg-[#21294a]/5 text-[#21294a] rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#21294a]/10"
                                     onPress={() => startEdit(cat)}
                                 >
                                     <Edit size={16} />
@@ -316,6 +332,15 @@ export function CategoryManagementPage() {
                                 onChange={(e) => setName(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
+                            <Input
+                                type="number"
+                                label="Thứ tự hiển thị (STT)"
+                                placeholder="Số nhỏ hiện trước"
+                                variant="flat"
+                                value={sequenceNumber}
+                                onChange={(e) => setSequenceNumber(e.target.value)}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
+                            />
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 ml-1">Danh mục cha</label>
                                 <select
@@ -334,7 +359,7 @@ export function CategoryManagementPage() {
                     <ModalFooter>
                         <Button variant="light" size="sm" onPress={createModal.onClose} className="font-bold rounded-xl h-10 px-6">Hủy</Button>
                         <Button
-                            className="bg-blue-600 text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-blue-100"
+                            className="bg-[#21294a] text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-[#21294a]/10"
                             onPress={handleCreate}
                         >
                             Tạo mới
@@ -372,10 +397,18 @@ export function CategoryManagementPage() {
                                 onChange={(e) => setEditName(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
+                            <Input
+                                type="number"
+                                label="Thứ tự hiển thị (STT)"
+                                variant="flat"
+                                value={editSequenceNumber}
+                                onChange={(e) => setEditSequenceNumber(e.target.value)}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
+                            />
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 ml-1">Danh mục cha</label>
                                 <select
-                                    className="w-full h-12 px-4 bg-white border-none shadow-sm rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500/20 outline-none"
+                                    className="w-full h-12 px-4 bg-white border-none shadow-sm rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#21294a]/20 outline-none"
                                     value={editParentId}
                                     onChange={(e) => setEditParentId(e.target.value)}
                                 >
@@ -390,7 +423,7 @@ export function CategoryManagementPage() {
                     <ModalFooter>
                         <Button variant="light" size="sm" onPress={editModal.onClose} className="font-bold rounded-xl h-10 px-6">Hủy</Button>
                         <Button
-                            className="bg-blue-600 text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-blue-100"
+                            className="bg-[#21294a] text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-[#21294a]/10"
                             onPress={handleUpdate}
                         >
                             Lưu thay đổi

@@ -86,7 +86,7 @@ export function PreviewPage() {
         <LayoutGrid size={48} className="mb-4 opacity-20" />
         <h2 className="text-xl font-bold text-slate-600 mb-2">Không có nội dung xem trước</h2>
         <p className="text-sm">Vui lòng quay lại editor và nhấn "Xem nhanh".</p>
-        <Link to="/dashboard" className="mt-6 text-blue-600 font-bold hover:underline select-none">Quay lại Dashboard</Link>
+        <Link to="/dashboard" className="mt-6 text-[#21294a] font-bold hover:underline select-none">Quay lại Dashboard</Link>
       </div>
     );
   }
@@ -107,7 +107,7 @@ export function PreviewPage() {
         isPreview={true}
       />
       <div className="fixed top-24 right-4 z-[9999] pointer-events-none">
-        <div className="bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-black shadow-2xl shadow-blue-500/50 uppercase tracking-widest border border-white/20 backdrop-blur-md">
+        <div className="bg-[#21294a] text-white px-4 py-2 rounded-full text-xs font-black shadow-2xl shadow-[#21294a]/50 uppercase tracking-widest border border-white/20 backdrop-blur-md">
           Chế độ xem trước
         </div>
       </div>
