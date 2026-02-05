@@ -18,14 +18,15 @@
       content="Detailed information, attractive offers."
       name="description"
     />
-    <meta
-      key="viewport"
-      content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-      name="viewport"
-    />
     <link href="/favicon.ico" rel="icon" />
   </head>
-  <!-- Google Tag Manager -->
+ 
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+
+   <!-- Google Tag Manager -->
   <script>
     (function (w, d, s, l, i) {
       w[l] = w[l] || [];
@@ -49,8 +50,14 @@
     ></iframe
   ></noscript>
   <!-- End Google Tag Manager (noscript) -->
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q09GT1JN79"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q09GT1JN79');
+</script>
 </html>
