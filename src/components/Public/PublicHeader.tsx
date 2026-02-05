@@ -1,8 +1,10 @@
 /* eslint-disable prettier/prettier */
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Search, LayoutGrid, ChevronDown } from "lucide-react";
+import { useDebounce } from "../../hooks/useDebounce";
 
 interface PublicHeaderProps {
   searchQuery: string;
@@ -28,6 +30,20 @@ export function PublicHeader({
   isPreview = false
 }: PublicHeaderProps) {
   const navigate = useNavigate();
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+  const debouncedSearch = useDebounce(localSearch, 500);
+
+  // Sync internal state with prop (for external clears/updates)
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
+
+  // Trigger onSearchChange only when debounced value changes
+  useEffect(() => {
+    if (debouncedSearch !== searchQuery) {
+      onSearchChange(debouncedSearch);
+    }
+  }, [debouncedSearch, onSearchChange, searchQuery]);
 
   const handleCategoryClick = (parentId: string, categoryId: string = "") => {
     if (isPreview) return;
@@ -68,11 +84,14 @@ export function PublicHeader({
           >
             <Input
               placeholder="Tìm kiếm dự án, danh mục..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
               startContent={<Search size={18} className="text-slate-900 group-focus-within:text-[#21294a] transition-colors" />}
               isClearable
-              onClear={() => onSearchChange("")}
+              onClear={() => {
+                setLocalSearch("");
+                onSearchChange("");
+              }}
               classNames={{
                 inputWrapper: "bg-white border-2 border-slate-200 h-11 px-4 shadow-none rounded-full group-hover:border-[#21294a] group-focus-within:border-[#21294a] transition-all",
                 input: "text-[15px] font-medium text-[#1a1a1a] placeholder:text-[#999999] pl-1"
@@ -127,8 +146,8 @@ export function PublicHeader({
           >
             <Input
               placeholder="Tìm kiếm dự án..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
               startContent={<Search size={16} className="text-slate-900" />}
               classNames={{
                 inputWrapper: "bg-slate-50 border-slate-200/60 h-10 rounded-full",
