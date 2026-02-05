@@ -43,8 +43,8 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
 
   const LogoContent = (
     <div className="flex items-center gap-3 mb-6">
-      <div className="bg-[#21294a] p-2 rounded-lg shadow-[#21294a]/20 shadow-lg">
-        <LayoutGrid className="text-white" size={20} />
+      <div className="bg-[#21294a] w-15 h-15 md:w-15 md:h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
+        <img src="/logo_4.png"/>
       </div>
       <span className="text-xl font-extrabold text-[#21294a] uppercase tracking-tight">
         GLOBAL <span className="text-red-500">PROMOTION</span>
@@ -78,14 +78,14 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
               Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS.
             </p> */}
 
-            <div className="flex gap-4">
+            {/* <div className="flex gap-4">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
                   className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200/60 hover:border-black hover:bg-black/30 transition-all cursor-pointer"
                 />
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* VISIBLE PARENTS */}

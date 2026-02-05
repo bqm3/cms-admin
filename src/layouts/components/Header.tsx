@@ -74,7 +74,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                                     {user.role || 'user'}
                                 </p>
                             </div>
-                            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100 border border-blue-700">
+                            <div className="w-10 h-10 rounded-lg bg-[#21294a] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100 border border-blue-700">
                                 {user.username?.substring(0, 1).toUpperCase() || 'A'}
                             </div>
                         </div>

@@ -1,9 +1,12 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable react/jsx-sort-props */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { Search, LayoutGrid, ChevronDown } from "lucide-react";
+import { Search, Menu, X, ChevronDown } from "lucide-react";
 import { useDebounce } from "../../hooks/useDebounce";
 
 interface PublicHeaderProps {
@@ -30,19 +33,15 @@ export function PublicHeader({
   isPreview = false
 }: PublicHeaderProps) {
   const navigate = useNavigate();
+
+  // desktop search (giữ nguyên)
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const debouncedSearch = useDebounce(localSearch, 500);
 
-  // Sync internal state with prop (for external clears/updates)
-  useEffect(() => {
-    setLocalSearch(searchQuery);
-  }, [searchQuery]);
+  useEffect(() => setLocalSearch(searchQuery), [searchQuery]);
 
-  // Trigger onSearchChange only when debounced value changes
   useEffect(() => {
-    if (debouncedSearch !== searchQuery) {
-      onSearchChange(debouncedSearch);
-    }
+    if (debouncedSearch !== searchQuery) onSearchChange(debouncedSearch);
   }, [debouncedSearch, onSearchChange, searchQuery]);
 
   const handleCategoryClick = (parentId: string, categoryId: string = "") => {
@@ -50,36 +49,83 @@ export function PublicHeader({
     let url = `/category?parentCategory=${parentId}`;
     if (categoryId) url += `&category=${categoryId}`;
     navigate(url);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  // ======= MOBILE: hamburger drawer =======
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const parents = useMemo(
+    () => (parentCategories || []).filter((pc) => !pc?.is_deleted),
+    [parentCategories]
+  );
+
+  const [activeParentId, setActiveParentId] = useState<string>(() => {
+    const first = parents?.[0]?.id != null ? String(parents[0].id) : "";
+    return selectedParentCategory ? String(selectedParentCategory) : first;
+  });
+
+  // sync active parent when selectedParentCategory changes
+  useEffect(() => {
+    if (selectedParentCategory != null) {
+      setActiveParentId(String(selectedParentCategory));
+    }
+  }, [selectedParentCategory]);
+
+  // update default when parents loaded later
+  useEffect(() => {
+    if (!activeParentId && parents?.length) setActiveParentId(String(parents[0].id));
+  }, [parents, activeParentId]);
+
+  const subCats = useMemo(() => {
+    const pid = String(activeParentId || "");
+    return (categories || []).filter((c) => String(c.parent_id) === pid && !c?.is_deleted);
+  }, [categories, activeParentId]);
 
   const LogoContent = (
     <div className="flex items-center gap-2 group shrink-0 select-none">
-      <div className="bg-[#21294a] w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
-        <LayoutGrid className="text-white" size={20} />
+      <div className="bg-[#21294a] w-12 h-12 md:w-12 md:h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
+        <img src="/logo_4.png" />
       </div>
       <div className="flex flex-col">
-        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">GLOBAL<span className="text-red-500">PROMOTION</span></span>
-        <span className="text-[9px] md:text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wide mt-1">Giải pháp cao cấp</span>
+        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
+          GLOBAL
+        </span>
+        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
+          <span className="text-red-500">PROMOTION</span>
+        </span>
       </div>
     </div>
   );
 
   return (
-    <header className={`font-sans ${isSticky ? 'sticky top-0 z-50 transition-all duration-300' : 'relative'}`}>
-      {/* Main Header: Logo, Search, Auth */}
+    <header className={`font-sans ${isSticky ? "sticky top-0 z-50 transition-all duration-300" : "relative"}`}>
+      {/* Main Header */}
       <div className="w-full border-b border-[#e6e6e6] bg-white">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-4 md:gap-8">
+          {/* Left: mobile hamburger */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <Button
+              isIconOnly
+              variant="light"
+              className="text-black"
+              onPress={() => setMobileOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu size={22} />
+            </Button>
+          </div>
+
           {/* Logo */}
           {isPreview ? LogoContent : <Link to="/" className="cursor-pointer">{LogoContent}</Link>}
 
-          {/* Search Bar - Centers on desktop */}
-          <form 
+          {/* Desktop Search */}
+          <form
             onSubmit={(e) => {
               e.preventDefault();
               if (isPreview) return;
               onSearchSubmit(e);
-            }} 
+            }}
             className="flex-1 max-w-xl hidden lg:flex items-center relative group"
           >
             <Input
@@ -93,11 +139,12 @@ export function PublicHeader({
                 onSearchChange("");
               }}
               classNames={{
-                inputWrapper: "bg-white border-2 border-slate-200 h-11 px-4 shadow-none rounded-full group-hover:border-[#21294a] group-focus-within:border-[#21294a] transition-all",
-                input: "text-[15px] font-medium text-[#1a1a1a] placeholder:text-[#999999] pl-1"
+                inputWrapper:
+                  "bg-white border-2 border-slate-200 h-11 px-4 shadow-none rounded-full group-hover:border-[#21294a] group-focus-within:border-[#21294a] transition-all",
+                input: "text-[15px] font-medium text-[#1a1a1a] placeholder:text-[#999999] pl-1",
               }}
             />
-            <button 
+            <button
               type="submit"
               className="absolute right-1 w-9 h-9 bg-[#21294a] rounded-full flex items-center justify-center text-white hover:opacity-90 transition-all shadow-sm"
             >
@@ -105,81 +152,61 @@ export function PublicHeader({
             </button>
           </form>
 
-          {/* Auth Actions */}
+          {/* Right: Auth */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            {/* <Button 
-              as={Link}
-              to="/login"
-              className="text-[15px] font-bold text-[#1a1a1a] hover:text-[#21294a] transition-colors px-2 py-2"
-            >
-              Đăng nhập
-            </Button> */}
-            <Button 
+            <Button
               as={Link}
               to="/login"
               className="bg-[#21294a] text-white font-bold text-sm h-10 px-6 rounded-full shadow-lg shadow-[#21294a]/10 hover:bg-[#21294a]/80 transition-all active:scale-95 hidden sm:flex"
             >
               Đăng nhập
             </Button>
-            
-            {/* Mobile Search Icon */}
-            <Button 
-              isIconOnly
-              variant="light"
-              className="lg:hidden text-black"
+
+            {/* (mobile) optional: show login as icon or keep empty */}
+            <Button
+              as={Link}
+              to="/login"
+              className="bg-[#21294a] text-white font-bold text-sm h-9 px-4 rounded-full shadow-sm sm:hidden"
             >
-              <Search size={22} />
+              Đăng nhập
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Search Bar (Only visible on small/medium screens) */}
-      <div className="lg:hidden px-4 py-3 bg-white border-b border-[#e6e6e6]">
-         <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (isPreview) return;
-              onSearchSubmit(e);
-            }}
-            className="font-sans w-full flex items-center relative group"
-          >
-            <Input
-              placeholder="Tìm kiếm dự án..."
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              startContent={<Search size={16} className="text-slate-900" />}
-              classNames={{
-                inputWrapper: "bg-slate-50 border-slate-200/60 h-10 rounded-full",
-                input: "text-sm font-semibold text-black"
-              }}
-            />
-          </form>
-      </div>
+      {/* ✅ MOBILE: bỏ search => KHÔNG render block search mobile nữa */}
 
-      {/* Navigation Bar: Categories */}
-      <div className="font-sans bg-white border-b border-[#e6e6e6]">
+      {/* Desktop Navigation Bar: Categories (giữ nguyên) */}
+      <div className="font-sans bg-white border-b border-[#e6e6e6] hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-12 overflow-x-auto md:overflow-visible custom-scrollbar">
           <nav className="flex items-center h-full min-w-max md:min-w-0 md:justify-around gap-4 px-2">
-            {parentCategories.filter(pc => !pc.is_deleted).map((pc) => {
-              const subCats = categories.filter(c => c.parent_id === pc.id && !c.is_deleted);
+            {parents.map((pc) => {
+              const sub = (categories || []).filter((c) => c.parent_id === pc.id && !c.is_deleted);
               const isActive = String(pc.id) === selectedParentCategory;
 
               return (
                 <div key={pc.id} className="relative group h-full shrink-0 flex items-center">
                   <button
                     onClick={() => handleCategoryClick(String(pc.id))}
-                    className={`flex items-center gap-1.5 px-4 py-2 text-[16px] font-semibold rounded-lg transition-all ${isActive ? 'bg-[#e6e6e6] text-[#1a1a1a]' : 'text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]'}`}
+                    className={`flex items-center gap-1.5 px-4 py-2 text-[16px] font-semibold rounded-lg transition-all ${
+                      isActive ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
+                    }`}
                   >
                     {pc.name}
-                    {subCats.length > 0 && <ChevronDown size={14} className={`transition-transform duration-300 hidden md:block ${isActive ? 'text-[#1a1a1a]' : 'text-[#999999] group-hover:text-[#1a1a1a]'} group-hover:rotate-180`} />}
+                    {sub.length > 0 && (
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-300 ${
+                          isActive ? "text-[#1a1a1a]" : "text-[#999999] group-hover:text-[#1a1a1a]"
+                        } group-hover:rotate-180`}
+                      />
+                    )}
                   </button>
 
-                  {/* Dropdown Menu - Desktop Only */}
-                  {subCats.length > 0 && (
-                    <div className="absolute top-full left-0 pt-1 opacity-0 translate-y-2 pointer-events-none md:group-hover:opacity-100 md:group-hover:translate-y-0 md:group-hover:pointer-events-auto transition-all duration-200 z-[60] hidden md:block">
+                  {sub.length > 0 && (
+                    <div className="absolute top-full left-0 pt-1 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-[60]">
                       <div className="bg-white border border-slate-200 shadow-xl rounded-xl overflow-hidden min-w-[200px] p-1.5">
-                        {subCats.map((cat) => (
+                        {sub.map((cat) => (
                           <button
                             key={cat.id}
                             onClick={() => handleCategoryClick(String(pc.id), String(cat.id))}
@@ -195,6 +222,116 @@ export function PublicHeader({
               );
             })}
           </nav>
+        </div>
+      </div>
+
+      {/* ======= MOBILE DRAWER ======= */}
+      <div className={`lg:hidden ${mobileOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
+        {/* backdrop */}
+        <div
+          className={`fixed inset-0 z-[80] transition-opacity ${mobileOpen ? "opacity-100" : "opacity-0"} bg-black/40`}
+          onClick={() => setMobileOpen(false)}
+        />
+
+        {/* panel */}
+        <div
+          className={`fixed top-0 left-0 h-full w-[86%] max-w-[360px] z-[90] bg-white shadow-2xl transition-transform duration-300 ${
+            mobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          {/* header panel */}
+          <div className="h-16 px-4 border-b border-[#e6e6e6] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="bg-[#21294a] w-10 h-10 rounded-2xl flex items-center justify-center">
+                <img src="/logo_4.png" className="w-8 h-8 object-contain" />
+              </div>
+              <div className="leading-tight">
+                <div className="text-sm font-extrabold text-[#21294a]">GLOBAL</div>
+                <div className="text-sm font-extrabold text-red-500">PROMOTION</div>
+              </div>
+            </div>
+
+            <Button isIconOnly variant="light" className="text-black" onPress={() => setMobileOpen(false)} aria-label="Close menu">
+              <X size={22} />
+            </Button>
+          </div>
+
+          {/* login button first */}
+          {/* <div className="p-4 border-b border-[#e6e6e6]">
+            <Button
+              as={Link}
+              to="/login"
+              className="w-full bg-[#21294a] text-white font-bold text-sm h-11 rounded-2xl shadow-lg shadow-[#21294a]/10"
+              onPress={() => setMobileOpen(false)}
+            >
+              Đăng nhập
+            </Button>
+          </div> */}
+
+          {/* parents list */}
+          <div className="px-4 pt-4">
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Danh mục</div>
+
+            <div className="flex flex-wrap gap-2">
+              {parents.map((pc) => {
+                const active = String(pc.id) === String(activeParentId);
+                return (
+                  <button
+                    key={pc.id}
+                    onClick={() => {
+                      const pid = String(pc.id);
+                      setActiveParentId(pid);
+                      onParentCategoryChange?.(pid);
+                    }}
+                    className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+                      active ? "bg-[#21294a] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
+                    }`}
+                  >
+                    {pc.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* subcategories horizontal scroll */}
+          <div className="px-4 pt-4 pb-6">
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Danh mục con</div>
+
+            <div className="overflow-x-auto">
+              <div className="flex gap-2 min-w-max pb-2">
+                {/* "Tất cả" */}
+                <button
+                  onClick={() => {
+                    if (!activeParentId) return;
+                    handleCategoryClick(String(activeParentId));
+                    setMobileOpen(false);
+                  }}
+                  className="px-3 py-2 rounded-xl text-sm font-semibold bg-[#e6e6e6] text-[#1a1a1a] shrink-0"
+                >
+                  Tất cả
+                </button>
+
+                {subCats.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      handleCategoryClick(String(activeParentId), String(cat.id));
+                      setMobileOpen(false);
+                    }}
+                    className="px-3 py-2 rounded-xl text-sm font-semibold bg-[#f3f4f6] text-[#1a1a1a] shrink-0"
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* optional quick links */}
+          <div className="mt-auto p-4 border-t border-[#e6e6e6] text-xs text-slate-500">
+            © {new Date().getFullYear()} Global Promotion
+          </div>
         </div>
       </div>
     </header>
