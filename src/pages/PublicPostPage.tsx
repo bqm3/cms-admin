@@ -171,7 +171,7 @@ export function PublicPostPage() {
   if (loading)
     return (
       <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-        <div className="w-10 h-10 border-4 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-[#21294a]/10 border-t-[#21294a] rounded-full animate-spin"></div>
         <p className="text-[10px] font-black uppercase tracking-widest">Đang tải nội dung...</p>
       </div>
     );
@@ -180,7 +180,7 @@ export function PublicPostPage() {
     return (
       <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
         <p className="text-xl font-black text-slate-800 uppercase tracking-tight">Dự án không tồn tại</p>
-        <button onClick={() => navigate('/')} className="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold">Quay lại trang chủ</button>
+        <button onClick={() => navigate('/')} className="bg-[#21294a] text-white px-6 py-2 rounded-xl font-bold">Quay lại trang chủ</button>
       </div>
     );
 

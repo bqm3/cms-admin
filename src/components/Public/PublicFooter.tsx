@@ -43,10 +43,10 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
 
   const LogoContent = (
     <div className="flex items-center gap-3 mb-6">
-      <div className="bg-blue-600 p-2 rounded-lg shadow-blue-500/20 shadow-lg">
+      <div className="bg-[#21294a] p-2 rounded-lg shadow-[#21294a]/20 shadow-lg">
         <LayoutGrid className="text-white" size={20} />
       </div>
-      <span className="text-xl font-extrabold text-[#0067ff] uppercase tracking-tight">
+      <span className="text-xl font-extrabold text-[#21294a] uppercase tracking-tight">
         GLOBAL <span className="text-red-500">PROMOTION</span>
       </span>
     </div>
@@ -74,9 +74,9 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
               </Link>
             )}
 
-            <p className="text-[15px] text-[#666666] font-normal leading-relaxed mb-8">
+            {/* <p className="text-[15px] text-[#666666] font-normal leading-relaxed mb-8">
               Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS.
-            </p>
+            </p> */}
 
             <div className="flex gap-4">
               {[1, 2, 3].map((i) => (
@@ -118,8 +118,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
           {/* MORE: text là Home, dropdown là icon */}
           {overflowParents.length > 0 && (
             <div className="min-w-0" ref={moreWrapRef}>
-              <div className="flex items-center justify-between mb-5">
-                {/* "More" = về trang chủ */}
+              {/* <div className="flex items-center justify-between mb-5">
                 <button
                   type="button"
                   onClick={() => {
@@ -131,7 +130,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                 >
                   Dự án khác
                 </button>
-              </div>
+              </div> */}
 
               <div className="relative">
                 <div

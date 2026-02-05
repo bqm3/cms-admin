@@ -82,7 +82,7 @@ export function ClientHomePage() {
       <main className="max-w-7xl mx-auto px-4 md:px-6 mt-12">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
-            <div className="w-12 h-12 border-4 border-[#0067ff]/20 border-t-[#0067ff] rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-[#21294a]/20 border-t-[#21294a] rounded-full animate-spin"></div>
             <p className="text-[#999999] text-[11px] font-semibold uppercase tracking-wide animate-pulse">Đang tải nội dung...</p>
           </div>
         ) : (
@@ -120,7 +120,7 @@ export function ClientHomePage() {
                     </div>
                     <Button
                       variant="light"
-                      className="font-semibold text-[14px] text-black hover:bg-[#f5f5f5] px-6 h-10 rounded-lg group/btn transition-all"
+                      className="font-semibold text-[14px] text-[#21294a] hover:bg-[#f5f5f5] px-6 h-10 rounded-lg group/btn transition-all"
                       onClick={() => navigateToCategory(String(pc.id), "")}
                     >
                       Xem tất cả <ChevronRight size={16} className="ml-1 group-hover/btn:translate-x-1 transition-transform" />

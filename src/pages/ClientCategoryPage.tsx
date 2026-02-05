@@ -96,7 +96,7 @@ export function ClientCategoryPage() {
         : `Khám phá ${totalItems} dự án website cao cấp được xây dựng trên công nghệ Craft JS.`;
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+        <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-slate-200 selection:text-slate-900">
             <Helmet>
                 <title>{pageTitle}</title>
                 <meta name="description" content={pageDescription} />
@@ -116,87 +116,106 @@ export function ClientCategoryPage() {
                 categories={categories}
             />
 
-            <main className="max-w-7xl mx-auto px-4 md:px-6 mt-12">
+            <main className="max-w-7xl mx-auto px-4 md:px-6 mt-8">
                 <section>
-                    {/* Page Controls & Meta */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 pb-10 border-b border-slate-200/60">
-                        <div className="flex items-center gap-6">
-                            {/* <button
-                                onClick={() => navigate(-1)}
-                                className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 hover:border-blue-500/40 hover:text-blue-600 rounded-xl transition-all shadow-sm hover:shadow-md group"
-                                title="Quay lại"
-                            >
-                                <ChevronRight size={20} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
-                            </button> */}
-                            <div>
-                                <div className="flex items-center gap-3 mb-2">
-                                    <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
-                                        {search ? `Tìm kiếm: ${search}` : 'Khám phá dự án'}
-                                    </h2>
+                    {/* Header Section */}
+                    <div className="flex flex-col gap-8 mb-12">
+                        {/* Breadcrumb / Category Info */}
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
+                                    <LayoutGrid size={14} />
+                                    <span>Khám phá dự án</span>
+                                    {selectedParentCategory && (
+                                        <>
+                                            <ChevronRight size={14} />
+                                            <span className="text-black">
+                                                {parentCategories.find(p => p.id === Number(selectedParentCategory))?.name}
+                                            </span>
+                                        </>
+                                    )}
                                 </div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2">
-                                    Tìm thấy <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">{totalItems}</span> trang web đang hoạt động
-                                </p>
+                                
+                                <h1 className="text-4xl md:text-5xl font-extrabold text-black tracking-tight leading-none">
+                                    {search ? (
+                                        <span className="flex items-center gap-4">
+                                            Kết quả cho: <span className="opacity-40 italic">"{search}"</span>
+                                        </span>
+                                    ) : (
+                                        parentCategories.find(p => p.id === Number(selectedParentCategory))?.name || "Tất cả dự án"
+                                    )}
+                                </h1>
+
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-black/5 rounded-full border border-black/10">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                                        <p className="text-[13px] font-bold text-black uppercase tracking-wider">
+                                            <span className="font-black">{totalItems}</span> Trang web đang hoạt động
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="flex flex-wrap items-center gap-4">
-                            {/* Sub-category Filter (only if parent category is active) */}
-                            {selectedParentCategory && (
-                                <div className="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-3">Lọc theo:</span>
-                                    <select
-                                        value={selectedCategory}
-                                        onChange={(e) => updateParams({ category: e.target.value, page: "1" })}
-                                        className="bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-700 py-2.5 px-4 outline-none focus:ring-0 transition-all cursor-pointer min-w-[160px] hover:bg-slate-100"
+                            {/* Filters Bar */}
+                            <div className="flex flex-wrap items-center gap-3 self-start md:self-end">
+                                {selectedParentCategory && (
+                                    <div className="relative group min-w-[200px]">
+                                        <select
+                                            value={selectedCategory}
+                                            onChange={(e) => updateParams({ category: e.target.value, page: "1" })}
+                                            className="appearance-none w-full bg-white border border-slate-200 rounded-xl text-[14px] font-bold text-black px-5 py-3.5 pr-10 outline-none focus:border-black focus:ring-4 focus:ring-black/5 transition-all cursor-pointer shadow-sm hover:border-slate-300"
+                                        >
+                                            <option value="">Tất cả danh mục con</option>
+                                            {categories
+                                                .filter(c => c.parent_id === Number(selectedParentCategory) && !c.is_deleted)
+                                                .map(cat => (
+                                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                                ))}
+                                        </select>
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                            <ChevronRight size={16} className="rotate-90" />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {(search || selectedParentCategory || selectedCategory) && (
+                                    <button
+                                        onClick={() => navigate('/category')}
+                                        className="h-[52px] px-6 rounded-xl border border-rose-100 bg-rose-50/50 text-rose-500 text-[12px] font-bold uppercase tracking-widest hover:bg-rose-100 transition-all flex items-center gap-2 group"
                                     >
-                                        <option value="">Tất cả danh mục</option>
-                                        {categories
-                                            .filter(c => c.parent_id === Number(selectedParentCategory) && !c.is_deleted)
-                                            .map(cat => (
-                                                <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                            ))}
-                                    </select>
-                                </div>
-                            )}
-
-                            {/* Clear All Results (Quick Reset) */}
-                            {(search || selectedParentCategory || selectedCategory) && (
-                                <button
-                                    onClick={() => navigate('/category')}
-                                    className="h-12 px-6 rounded-xl border border-rose-100 bg-rose-50/30 text-rose-500 text-[10px] font-black uppercase tracking-widest hover:bg-rose-50 transition-colors flex items-center gap-2"
-                                >
-                                    <X size={14} /> Xóa tất cả lọc
-                                </button>
-                            )}
+                                        <X size={16} className="group-hover:rotate-90 transition-transform duration-300" /> 
+                                        Xóa lọc
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     {/* Results Grid */}
                     {isLoading ? (
                         <div className="py-40 flex flex-col items-center justify-center gap-6">
-                            <div className="w-12 h-12 border-4 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
+                            <div className="w-12 h-12 border-4 border-black/10 border-t-black rounded-full animate-spin"></div>
                             <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">Đang truy xuất dữ liệu...</p>
                         </div>
                     ) : posts.length === 0 ? (
                         <div className="py-32 text-center flex flex-col items-center gap-8">
-                            <div className="w-24 h-24 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200 border border-slate-100">
-                                <Search size={40} strokeWidth={1.5} />
+                            <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center text-slate-200 border-2 border-slate-100 shadow-inner">
+                                <Search size={40} strokeWidth={1.5} className="text-slate-300" />
                             </div>
                             <div className="max-w-md">
-                                <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-4">Không có kết quả</h3>
-                                <p className="text-slate-400 text-sm font-bold uppercase tracking-wide leading-relaxed"> Rất tiếc, chúng tôi không tìm thấy dự án nào phù hợp với các tiêu chí lọc hiện tại của bạn.</p>
+                                <h3 className="text-3xl font-extrabold text-black tracking-tight mb-4">Không tìm thấy dự án</h3>
+                                <p className="text-slate-500 text-[15px] font-medium leading-relaxed"> Rất tiếc, chúng tôi không tìm thấy dự án nào phù hợp với các tiêu chí lọc hiện tại của bạn. Hãy thử thay đổi từ khóa hoặc bộ lọc khác.</p>
                             </div>
                             <button
                                 onClick={() => navigate('/category')}
-                                className="bg-blue-600 text-white font-black h-14 px-10 rounded-xl shadow-xl shadow-blue-500/20 hover:scale-105 transition-transform"
+                                className="bg-black text-white font-bold h-14 px-10 rounded-2xl shadow-xl shadow-black/20 hover:scale-105 transition-all duration-300 active:scale-95 uppercase tracking-wider text-[13px]"
                             >
-                                QUAY LẠI TẤT CẢ DỰ ÁN
+                                Quay lại tất cả dự án
                             </button>
                         </div>
                     ) : (
                         <>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
                                 {posts.map((post) => (
                                     <PostCard key={post.id} post={post} />
                                 ))}
@@ -212,7 +231,7 @@ export function ClientCategoryPage() {
                                         showControls
                                         classNames={{
                                             item: "w-12 h-12 text-[11px] font-black rounded-xl border-transparent hover:bg-slate-100 transition-colors",
-                                            cursor: "bg-blue-600 text-white font-black shadow-2xl shadow-blue-500/40",
+                                            cursor: "bg-black text-white font-black shadow-2xl shadow-black/40",
                                             prev: "bg-white border border-slate-200 rounded-xl w-12 h-12",
                                             next: "bg-white border border-slate-200 rounded-xl w-12 h-12"
                                         }}
