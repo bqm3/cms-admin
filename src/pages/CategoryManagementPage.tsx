@@ -21,6 +21,8 @@ export function CategoryManagementPage() {
     const [editName, setEditName] = useState('');
     const [parentId, setParentId] = useState<string>('');
     const [editParentId, setEditParentId] = useState<string>('');
+    const [sequenceNumber, setSequenceNumber] = useState('0');
+    const [editSequenceNumber, setEditSequenceNumber] = useState('0');
     const [parentCategories, setParentCategories] = useState<any[]>([]);
 
     const navigate = useNavigate();
@@ -85,9 +87,14 @@ export function CategoryManagementPage() {
     const handleCreate = async () => {
         if (!name.trim()) return;
         try {
-            await api.post('/categories', { name, parent_id: parentId || null });
+            await api.post('/categories', { 
+                name, 
+                parent_id: parentId || null,
+                sequence_number: parseInt(sequenceNumber) || 0
+            });
             setName('');
             setParentId('');
+            setSequenceNumber('0');
             createModal.onClose();
             alert('Thêm danh mục mới thành công! 🏷️');
             if (page === 1) fetchCategories(); else setPage(1);
@@ -111,13 +118,18 @@ export function CategoryManagementPage() {
         setEditingCategory(cat);
         setEditName(cat.name);
         setEditParentId(cat.parent_id ? String(cat.parent_id) : '');
+        setEditSequenceNumber(cat.sequence_number ? String(cat.sequence_number) : '0');
         editModal.onOpen();
     };
 
     const handleUpdate = async () => {
         if (!editingCategory) return;
         try {
-            await api.put(`/categories/${editingCategory.id}`, { name: editName, parent_id: editParentId || null });
+            await api.put(`/categories/${editingCategory.id}`, { 
+                name: editName, 
+                parent_id: editParentId || null,
+                sequence_number: parseInt(editSequenceNumber) || 0
+            });
             editModal.onClose();
             alert('Cập nhật danh mục thành công! ✨');
             fetchCategories();
@@ -237,6 +249,10 @@ export function CategoryManagementPage() {
                         )
                     },
                     {
+                        header: 'Số thứ tự',
+                        render: (cat) => <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">{cat.sequence_number || 0}</span>
+                    },
+                    {
                         header: 'Ngày cập nhật',
                         render: (cat) => (
                             <div className="flex flex-col gap-0.5">
@@ -316,6 +332,15 @@ export function CategoryManagementPage() {
                                 onChange={(e) => setName(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
+                            <Input
+                                type="number"
+                                label="Thứ tự hiển thị (STT)"
+                                placeholder="Số nhỏ hiện trước"
+                                variant="flat"
+                                value={sequenceNumber}
+                                onChange={(e) => setSequenceNumber(e.target.value)}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
+                            />
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 ml-1">Danh mục cha</label>
                                 <select
@@ -370,6 +395,14 @@ export function CategoryManagementPage() {
                                 variant="flat"
                                 value={editName}
                                 onChange={(e) => setEditName(e.target.value)}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
+                            />
+                            <Input
+                                type="number"
+                                label="Thứ tự hiển thị (STT)"
+                                variant="flat"
+                                value={editSequenceNumber}
+                                onChange={(e) => setEditSequenceNumber(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
                             <div className="space-y-1.5">

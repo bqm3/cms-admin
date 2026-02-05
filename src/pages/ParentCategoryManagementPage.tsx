@@ -21,6 +21,8 @@ export function ParentCategoryManagementPage() {
     const [editingCategory, setEditingCategory] = useState<any>(null);
     const [editName, setEditName] = useState('');
     const [editSlug, setEditSlug] = useState('');
+    const [sequenceNumber, setSequenceNumber] = useState('0');
+    const [editSequenceNumber, setEditSequenceNumber] = useState('0');
 
     const navigate = useNavigate();
 
@@ -74,9 +76,14 @@ export function ParentCategoryManagementPage() {
     const handleCreate = async () => {
         if (!name.trim()) return;
         try {
-            await api.post('/parent-categories', { name, slug });
+            await api.post('/parent-categories', { 
+                name, 
+                slug,
+                sequence_number: parseInt(sequenceNumber) || 0
+            });
             setName('');
             setSlug('');
+            setSequenceNumber('0');
             createModal.onClose();
             alert('Thêm danh mục cha mới thành công! 📁');
             if (page === 1) fetchParentCategories(); else setPage(1);
@@ -100,13 +107,18 @@ export function ParentCategoryManagementPage() {
         setEditingCategory(cat);
         setEditName(cat.name);
         setEditSlug(cat.slug || '');
+        setEditSequenceNumber(cat.sequence_number ? String(cat.sequence_number) : '0');
         editModal.onOpen();
     };
 
     const handleUpdate = async () => {
         if (!editingCategory) return;
         try {
-            await api.put(`/parent-categories/${editingCategory.id}`, { name: editName, slug: editSlug });
+            await api.put(`/parent-categories/${editingCategory.id}`, { 
+                name: editName, 
+                slug: editSlug,
+                sequence_number: parseInt(editSequenceNumber) || 0
+            });
             editModal.onClose();
             alert('Cập nhật danh mục cha thành công! ✨');
             fetchParentCategories();
@@ -233,6 +245,12 @@ export function ParentCategoryManagementPage() {
                         )
                     },
                     {
+                        header: 'Số thứ tự',
+                        render: (cat) => (
+                            <p className="text-xs font-semibold text-slate-600">{cat.sequence_number}</p>
+                        )
+                    },
+                    {
                         header: 'Ngày tạo',
                         render: (cat) => (
                             <p className="text-xs font-semibold text-slate-600">{formatDate(cat.created_at)}</p>
@@ -286,6 +304,7 @@ export function ParentCategoryManagementPage() {
                     <ModalBody>
                         <div className="space-y-4">
                             <Input label="Tên danh mục" variant="flat" value={name} onChange={(e) => setName(e.target.value)} />
+                            <Input label="Thứ tự (STT)" type="number" variant="flat" value={sequenceNumber} onChange={(e) => setSequenceNumber(e.target.value)} />
                             <Input label="Slug (Không bắt buộc)" variant="flat" value={slug} onChange={(e) => setSlug(e.target.value)} />
                         </div>
                     </ModalBody>
@@ -303,6 +322,7 @@ export function ParentCategoryManagementPage() {
                     <ModalBody>
                         <div className="space-y-4">
                             <Input label="Tên danh mục" variant="flat" value={editName} onChange={(e) => setEditName(e.target.value)} />
+                            <Input label="Thứ tự (STT)" type="number" variant="flat" value={editSequenceNumber} onChange={(e) => setEditSequenceNumber(e.target.value)} />
                             <Input label="Slug" variant="flat" value={editSlug} onChange={(e) => setEditSlug(e.target.value)} />
                         </div>
                     </ModalBody>
