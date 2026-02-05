@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: http://globalpromotionllc.com/sitemap.xml
