@@ -4,10 +4,10 @@ import { Input } from "@heroui/input";
 interface ImageProps {
   src?: string;
   width?: string;
-  height?: string;          // ✅ NEW
+  height?: string; // ✅ NEW
   alt?: string;
   objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down"; // ✅ NEW (optional)
-  radius?: "none" | "sm" | "md" | "lg" | "xl" | "2xl";              // ✅ NEW (optional)
+  radius?: "none" | "sm" | "md" | "lg" | "xl" | "2xl"; // ✅ NEW (optional)
 }
 
 const radiusClassMap: Record<string, string> = {
@@ -22,10 +22,10 @@ const radiusClassMap: Record<string, string> = {
 export const ImageComponent = ({
   src = "https://via.placeholder.com/150",
   width = "100%",
-  height = "auto",          // ✅ NEW
-  alt = "Image",
-  objectFit = "cover",      // ✅ NEW
-  radius = "lg",            // ✅ NEW
+  height = "auto", // ✅ NEW
+  alt = "Hình ảnh nội dung",
+  objectFit = "cover", // ✅ NEW
+  radius = "lg", // ✅ NEW
 }: ImageProps) => {
   const {
     connectors: { connect, drag },
@@ -68,13 +68,15 @@ const ImageSettings = () => {
     actions: { setProp },
     src,
     width,
-    height,     // ✅ NEW
-    objectFit,  // ✅ NEW
-    radius,     // ✅ NEW
+    height, // ✅ NEW
+    alt,
+    objectFit, // ✅ NEW
+    radius, // ✅ NEW
   } = useNode((node) => ({
     src: node.data.props.src,
     width: node.data.props.width,
     height: node.data.props.height,
+    alt: node.data.props.alt,
     objectFit: node.data.props.objectFit,
     radius: node.data.props.radius,
   }));
@@ -88,13 +90,23 @@ const ImageSettings = () => {
         variant="bordered"
         onChange={(e) => setProp((props: any) => (props.src = e.target.value))}
       />
+      <Input
+        label="Alt text (SEO & accessibility)"
+        size="sm"
+        value={alt || ""}
+        variant="bordered"
+        placeholder="Mô tả nội dung hình ảnh"
+        onChange={(e) => setProp((props: any) => (props.alt = e.target.value))}
+      />
 
       <Input
         label="Width (e.g. 100%, 420px)"
         size="sm"
         value={width || "100%"}
         variant="bordered"
-        onChange={(e) => setProp((props: any) => (props.width = e.target.value))}
+        onChange={(e) =>
+          setProp((props: any) => (props.width = e.target.value))
+        }
       />
 
       <Input
@@ -102,7 +114,9 @@ const ImageSettings = () => {
         size="sm"
         value={height || "auto"}
         variant="bordered"
-        onChange={(e) => setProp((props: any) => (props.height = e.target.value))}
+        onChange={(e) =>
+          setProp((props: any) => (props.height = e.target.value))
+        }
       />
 
       <div>
@@ -110,10 +124,14 @@ const ImageSettings = () => {
         <select
           className="w-full bg-zinc-800 border border-white/10 rounded text-xs p-2 text-white"
           value={objectFit || "cover"}
-          onChange={(e) => setProp((props: any) => (props.objectFit = e.target.value))}
+          onChange={(e) =>
+            setProp((props: any) => (props.objectFit = e.target.value))
+          }
         >
           {["cover", "contain", "fill", "none", "scale-down"].map((v) => (
-            <option key={v} value={v}>{v}</option>
+            <option key={v} value={v}>
+              {v}
+            </option>
           ))}
         </select>
       </div>
@@ -123,10 +141,14 @@ const ImageSettings = () => {
         <select
           className="w-full bg-zinc-800 border border-white/10 rounded text-xs p-2 text-white"
           value={radius || "lg"}
-          onChange={(e) => setProp((props: any) => (props.radius = e.target.value))}
+          onChange={(e) =>
+            setProp((props: any) => (props.radius = e.target.value))
+          }
         >
           {["none", "sm", "md", "lg", "xl", "2xl"].map((r) => (
-            <option key={r} value={r}>{r}</option>
+            <option key={r} value={r}>
+              {r}
+            </option>
           ))}
         </select>
       </div>
@@ -139,10 +161,10 @@ ImageComponent.craft = {
   props: {
     src: "https://via.placeholder.com/300x200",
     width: "100%",
-    height: "auto",     // ✅ NEW
-    alt: "Placeholder Image",
+    height: "auto", // ✅ NEW
+    alt: "Hình ảnh nội dung",
     objectFit: "cover", // ✅ NEW
-    radius: "lg",       // ✅ NEW
+    radius: "lg", // ✅ NEW
   },
   related: {
     settings: ImageSettings,
