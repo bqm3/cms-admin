@@ -42,72 +42,62 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             icon: LayoutDashboard,
             label: 'Quản lý bài viết',
             path: '/dashboard',
-            activeBg: 'bg-blue-50',
-            activeBorder: 'border-blue-200',
-            activeText: 'text-blue-700',
-            iconBg: 'bg-blue-100',
-            iconText: 'text-blue-600'
+            activeBg: 'bg-[#21294a]/5',
+            activeBorder: 'border-[#21294a]/20',
+            activeText: 'text-[#21294a]',
+            iconBg: 'bg-[#21294a]/10',
+            iconText: 'text-[#21294a]'
         },
-        // {
-        //     icon: Plus,
-        //     label: 'Tạo mới',
-        //     path: '/editor/new',
-        //     activeBg: 'bg-blue-50',
-        //     activeBorder: 'border-blue-200',
-        //     activeText: 'text-blue-700',
-        //     iconBg: 'bg-blue-100',
-        //     iconText: 'text-blue-600'
-        // },
         {
             icon: LayoutTemplate,
             label: 'Quản lý Template',
             path: '/template-dashboard',
-            activeBg: 'bg-blue-50',
-            activeBorder: 'border-blue-200',
-            activeText: 'text-blue-700',
-            iconBg: 'bg-blue-100',
-            iconText: 'text-blue-600'
+            activeBg: 'bg-[#21294a]/5',
+            activeBorder: 'border-[#21294a]/20',
+            activeText: 'text-[#21294a]',
+            iconBg: 'bg-[#21294a]/10',
+            iconText: 'text-[#21294a]'
         },
         ...(user.role === 'admin' ? [
             {
                 icon: Users,
                 label: 'Quản lý người dùng',
                 path: '/users',
-                activeBg: 'bg-blue-50',
-                activeBorder: 'border-blue-200',
-                activeText: 'text-blue-700',
-                iconBg: 'bg-blue-100',
-                iconText: 'text-blue-600'
+                activeBg: 'bg-[#21294a]/5',
+                activeBorder: 'border-[#21294a]/20',
+                activeText: 'text-[#21294a]',
+                iconBg: 'bg-[#21294a]/10',
+                iconText: 'text-[#21294a]'
             },
             {
                 icon: Tag,
                 label: 'Danh mục',
                 path: '/categories',
-                activeBg: 'bg-blue-50',
-                activeBorder: 'border-blue-200',
-                activeText: 'text-blue-700',
-                iconBg: 'bg-blue-100',
-                iconText: 'text-blue-600'
+                activeBg: 'bg-[#21294a]/5',
+                activeBorder: 'border-[#21294a]/20',
+                activeText: 'text-[#21294a]',
+                iconBg: 'bg-[#21294a]/10',
+                iconText: 'text-[#21294a]'
             },
             {
                 icon: Layers,
                 label: 'Danh mục cha',
                 path: '/parent-categories',
-                activeBg: 'bg-blue-50',
-                activeBorder: 'border-blue-200',
-                activeText: 'text-blue-700',
-                iconBg: 'bg-blue-100',
-                iconText: 'text-blue-600'
+                activeBg: 'bg-[#21294a]/5',
+                activeBorder: 'border-[#21294a]/20',
+                activeText: 'text-[#21294a]',
+                iconBg: 'bg-[#21294a]/10',
+                iconText: 'text-[#21294a]'
             },
             {
                 icon: ImageIcon,
                 label: 'Thư viện ảnh',
                 path: '/media',
-                activeBg: 'bg-blue-50',
-                activeBorder: 'border-blue-200',
-                activeText: 'text-blue-700',
-                iconBg: 'bg-blue-100',
-                iconText: 'text-blue-600'
+                activeBg: 'bg-[#21294a]/5',
+                activeBorder: 'border-[#21294a]/20',
+                activeText: 'text-[#21294a]',
+                iconBg: 'bg-[#21294a]/10',
+                iconText: 'text-[#21294a]'
             }
         ] : [])
     ];
@@ -129,7 +119,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {/* Logo Section */}
                 <div className="p-5 border-b border-slate-200/80">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-2.5 rounded-lg shadow-lg shadow-blue-100 flex-shrink-0">
+                        <div className="bg-[#21294a] p-2.5 rounded-lg shadow-lg shadow-[#21294a]/10 flex-shrink-0">
                             <Shield className="text-white" size={20} />
                         </div>
                         {isOpen && (
@@ -188,7 +178,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <div className="p-4 border-t border-slate-200/80">
                         <div className="bg-slate-50 p-3 rounded-lg mb-3 border border-slate-100 shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100 flex-shrink-0">
+                                <div className="w-10 h-10 rounded-lg bg-[#21294a] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#21294a]/10 flex-shrink-0">
                                     {user.username?.substring(0, 1).toUpperCase() || 'A'}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -221,7 +211,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {/* Mobile Header */}
                 <div className="p-5 border-b border-slate-200 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-2.5 rounded-lg shadow-lg shadow-blue-100">
+                        <div className="bg-[#21294a] p-2.5 rounded-lg shadow-lg shadow-[#21294a]/10">
                             <Shield className="text-white" size={20} />
                         </div>
                         <div>
@@ -283,7 +273,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <div className="p-4 border-t border-slate-200">
                     <div className="bg-slate-50 p-3 rounded-lg mb-3 border border-slate-100">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-100">
+                            <div className="w-10 h-10 rounded-lg bg-[#21294a] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#21294a]/10">
                                 {user.username?.substring(0, 1).toUpperCase() || 'A'}
                             </div>
                             <div className="flex-1 min-w-0">

@@ -140,7 +140,7 @@ export function DashboardPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-3 rounded-lg shadow-blue-100 shadow-lg">
+                        <div className="bg-[#21294a] p-3 rounded-lg shadow-[#21294a]/10 shadow-lg">
                             <LayoutDashboard className="text-white" size={24} />
                         </div>
                         <div>
@@ -155,7 +155,7 @@ export function DashboardPage() {
                     <Button
                         as={Link}
                         to="/editor/new"
-                        className="bg-blue-600 text-white font-bold h-11 px-6 rounded-lg shadow-lg shadow-blue-100"
+                        className="bg-[#21294a] text-white font-bold h-11 px-6 rounded-lg shadow-lg shadow-[#21294a]/10"
                         startContent={<Plus size={18} />}
                     >
                         Viết bài mới
@@ -190,7 +190,7 @@ export function DashboardPage() {
                                     setSelectedCategory(''); // Reset child category when parent changes
                                     setPage(1);
                                 }}
-                                className="w-full h-11 px-4 rounded-lg bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
+                                className="w-full h-11 px-4 rounded-lg bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#21294a] appearance-none transition-all cursor-pointer text-sm"
                                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                             >
                                 <option value="">Tất cả danh mục cha</option>
@@ -206,7 +206,7 @@ export function DashboardPage() {
                                     setSelectedCategory(e.target.value);
                                     setPage(1);
                                 }}
-                                className="w-full h-11 px-4 rounded-lg bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 appearance-none transition-all cursor-pointer text-sm"
+                                className="w-full h-11 px-4 rounded-lg bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#21294a] appearance-none transition-all cursor-pointer text-sm"
                                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                             >
                                 <option value="">Tất cả danh mục con</option>
@@ -276,14 +276,14 @@ export function DashboardPage() {
                                     {post.logo ? (
                                         <img src={`${SERVER_URL}${post.logo}`} alt={post.title} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-blue-50/50">
-                                            <Globe size={16} className="text-blue-300" />
+                                        <div className="w-full h-full flex items-center justify-center bg-[#21294a]/5">
+                                            <Globe size={16} className="text-[#21294a]/30" />
                                         </div>
                                     )}
                                 </div>
                                 <div className="min-w-0 max-w-[320px]">
                                     <div className="flex items-center gap-2">
-                                        <h4 className="font-bold text-slate-800 text-sm leading-tight truncate group-hover:text-blue-600 transition-colors" title={post.title}>
+                                        <h4 className="font-bold text-slate-800 text-sm leading-tight truncate group-hover:text-[#21294a] transition-colors" title={post.title}>
                                             {post.title}
                                         </h4>
                                         {post.is_hidden && (
@@ -304,7 +304,7 @@ export function DashboardPage() {
                         header: 'Phân loại',
                         render: (post) => (
                             <div className="flex flex-col gap-1">
-                                <span className="text-xs font-bold text-blue-600 bg-blue-50 w-fit px-2 py-0.5 rounded-md border border-blue-100">
+                                <span className="text-xs font-bold text-[#21294a] bg-[#21294a]/5 w-fit px-2 py-0.5 rounded-md border border-[#21294a]/10">
                                     {post.category?.name || 'Chưa phân loại'}
                                 </span>
                                 <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
@@ -340,7 +340,7 @@ export function DashboardPage() {
                         header: 'Lượt xem',
                         align: 'center',
                         render: (post) => (
-                            <div className="inline-flex items-center gap-1.5 text-blue-600 font-bold text-xs bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-md">
+                            <div className="inline-flex items-center gap-1.5 text-[#21294a] font-bold text-xs bg-[#21294a]/5 border border-[#21294a]/10 px-2.5 py-1 rounded-md">
                                 <Eye size={12} /> {post.view_count || 0}
                             </div>
                         )
@@ -366,7 +366,7 @@ export function DashboardPage() {
                                     isIconOnly
                                     size="sm"
                                     variant="flat"
-                                    className="bg-blue-50 text-blue-600 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-blue-100"
+                                    className="bg-[#21294a]/5 text-[#21294a] rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#21294a]/10"
                                     title="Sửa nội dung"
                                 >
                                     <Edit size={16} />

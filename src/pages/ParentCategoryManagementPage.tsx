@@ -132,7 +132,7 @@ export function ParentCategoryManagementPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-blue-600 p-3 rounded-xl shadow-blue-100 shadow-lg">
+                        <div className="bg-[#21294a] p-3 rounded-xl shadow-[#21294a]/10 shadow-lg">
                             <Layers className="text-white" size={24} />
                         </div>
                         <div>
@@ -144,7 +144,7 @@ export function ParentCategoryManagementPage() {
                     </div>
                     <Button
                         onPress={createModal.onOpen}
-                        className="bg-blue-600 text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-blue-100"
+                        className="bg-[#21294a] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#21294a]/10"
                         startContent={<Plus size={18} />}
                     >
                         Thêm danh mục cha
@@ -153,11 +153,11 @@ export function ParentCategoryManagementPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#21294a] transition-colors" size={18} />
                         <input
                             type="text"
                             placeholder="Tìm kiếm danh mục cha..."
-                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-full shadow-sm transition-all"
+                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#21294a]/20 focus:border-[#21294a] w-full shadow-sm transition-all"
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -218,8 +218,8 @@ export function ParentCategoryManagementPage() {
                         header: 'Tên danh mục cha',
                         render: (cat) => (
                             <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-100 shadow-sm">
-                                    <Layers size={16} className="text-blue-500" />
+                                <div className="w-10 h-10 rounded-lg bg-[#21294a]/5 flex items-center justify-center border border-[#21294a]/10 shadow-sm">
+                                    <Layers size={16} className="text-[#21294a]" />
                                 </div>
                                 <div className="min-w-0">
                                     <p className="font-bold text-slate-800 text-sm">{cat.name}</p>
@@ -265,7 +265,7 @@ export function ParentCategoryManagementPage() {
                                     isIconOnly
                                     variant="flat"
                                     size="sm"
-                                    className="bg-blue-50 text-blue-600 rounded-lg h-8 w-8 transition-all hover:bg-blue-100"
+                                    className="bg-[#21294a]/5 text-[#21294a] rounded-lg h-8 w-8 transition-all hover:bg-[#21294a]/10"
                                     onPress={() => startEdit(cat)}
                                 >
                                     <Edit size={16} />
@@ -310,7 +310,7 @@ export function ParentCategoryManagementPage() {
                     </ModalBody>
                     <ModalFooter>
                         <Button variant="light" onPress={createModal.onClose}>Hủy</Button>
-                        <Button className="bg-blue-600 text-white font-bold" onPress={handleCreate}>Tạo mới</Button>
+                        <Button className="bg-[#21294a] text-white font-bold" onPress={handleCreate}>Tạo mới</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
@@ -328,7 +328,7 @@ export function ParentCategoryManagementPage() {
                     </ModalBody>
                     <ModalFooter>
                         <Button variant="light" onPress={editModal.onClose}>Hủy</Button>
-                        <Button className="bg-blue-600 text-white font-bold" onPress={handleUpdate}>Lưu thay đổi</Button>
+                        <Button className="bg-[#21294a] text-white font-bold" onPress={handleUpdate}>Lưu thay đổi</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
