@@ -98,11 +98,11 @@ export function ClientCategoryPage() {
   // ===== SEO dynamic =====
   const parentName =
     parentCategories.find(
-      (p) => String(p.id) === String(selectedParentCategory),
+      (p) => String(p.slug) === String(selectedParentCategory),
     )?.name || "";
 
   const categoryName =
-    categories.find((c) => String(c.id) === String(selectedCategory))?.name ||
+    categories.find((c) => String(c.slug) === String(selectedCategory))?.name ||
     "";
 
   // Ưu tiên category con > category cha
@@ -155,7 +155,7 @@ export function ClientCategoryPage() {
                       <span className="text-black">
                         {
                           parentCategories.find(
-                            (p) => p.id === Number(selectedParentCategory),
+                            (p) => String(p.slug) === String(selectedParentCategory),
                           )?.name
                         }
                       </span>
@@ -173,7 +173,7 @@ export function ClientCategoryPage() {
                     </span>
                   ) : (
                     parentCategories.find(
-                      (p) => p.id === Number(selectedParentCategory),
+                      (p) => String(p.slug) === String(selectedParentCategory),
                     )?.name || "All projects"
                   )}
                 </h1>

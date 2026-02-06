@@ -44,10 +44,10 @@ export function PublicHeader({
     if (debouncedSearch !== searchQuery) onSearchChange(debouncedSearch);
   }, [debouncedSearch, onSearchChange, searchQuery]);
 
-  const handleCategoryClick = (parentId: string, categoryId: string = "") => {
+  const handleCategoryClick = (parentSlug: string, categorySlug: string = "") => {
     if (isPreview) return;
-    let url = `/category?parentCategory=${parentId}`;
-    if (categoryId) url += `&category=${categoryId}`;
+    let url = `/category?parentCategory=${parentSlug}`;
+    if (categorySlug) url += `&category=${categorySlug}`;
     navigate(url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -60,8 +60,8 @@ export function PublicHeader({
     [parentCategories]
   );
 
-  const [activeParentId, setActiveParentId] = useState<string>(() => {
-    const first = parents?.[0]?.id != null ? String(parents[0].id) : "";
+  const [activeParentSlug, setActiveParentSlug] = useState<string>(() => {
+    const first = parents?.[0]?.slug ? String(parents[0].slug) : "";
     return selectedParentCategory ? String(selectedParentCategory) : first;
   });
 
@@ -71,27 +71,29 @@ export function PublicHeader({
   // sync active parent when selectedParentCategory changes
   useEffect(() => {
     if (selectedParentCategory != null) {
-      setActiveParentId(String(selectedParentCategory));
+      setActiveParentSlug(String(selectedParentCategory));
     }
   }, [selectedParentCategory]);
 
   // update default when parents loaded later
   useEffect(() => {
-    if (!activeParentId && parents?.length) setActiveParentId(String(parents[0].id));
-  }, [parents, activeParentId]);
+    if (!activeParentSlug && parents?.length) setActiveParentSlug(String(parents[0].slug));
+  }, [parents, activeParentSlug]);
 
   // ✅ set default opened item when opening mobile drawer
   useEffect(() => {
     if (mobileOpen) {
-      const pid = String(activeParentId || parents?.[0]?.id || "");
-      setOpenParentId(pid);
+      const slug = String(activeParentSlug || parents?.[0]?.slug || "");
+      setOpenParentId(slug);
     }
   }, [mobileOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const subCats = useMemo(() => {
-    const pid = String(activeParentId || "");
-    return (categories || []).filter((c) => String(c.parent_id) === pid && !c?.is_deleted);
-  }, [categories, activeParentId]);
+    const parentSlug = String(activeParentSlug || "");
+    const parent = (parentCategories || []).find(p => p.slug === parentSlug);
+    if (!parent) return [];
+    return (categories || []).filter((c) => c.parent_id === parent.id && !c?.is_deleted);
+  }, [categories, activeParentSlug, parentCategories]);
 
   const LogoContent = (
     <div className="flex items-center gap-2 group shrink-0 select-none">
@@ -190,12 +192,12 @@ export function PublicHeader({
           <nav className="flex items-center h-full min-w-max md:min-w-0 md:justify-around gap-4 px-2">
             {parents.map((pc) => {
               const sub = (categories || []).filter((c) => c.parent_id === pc.id && !c.is_deleted);
-              const isActive = String(pc.id) === selectedParentCategory;
+              const isActive = String(pc.slug) === selectedParentCategory;
 
               return (
                 <div key={pc.id} className="relative group h-full shrink-0 flex items-center">
                   <button
-                    onClick={() => handleCategoryClick(String(pc.id))}
+                    onClick={() => handleCategoryClick(String(pc.slug))}
                     className={`flex items-center gap-1.5 px-4 py-2 text-[16px] font-semibold rounded-lg transition-all ${
                       isActive ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
                     }`}
@@ -217,7 +219,7 @@ export function PublicHeader({
                         {sub.map((cat) => (
                           <button
                             key={cat.id}
-                            onClick={() => handleCategoryClick(String(pc.id), String(cat.id))}
+                            onClick={() => handleCategoryClick(String(pc.slug), String(cat.slug))}
                             className="w-full text-left px-3 py-2 text-[14px] font-medium text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6] rounded-lg transition-all"
                           >
                             {cat.name}
@@ -270,82 +272,82 @@ export function PublicHeader({
 
             <div className="space-y-2">
               {parents.map((pc) => {
-                const pid = String(pc.id);
+                const pSlug = String(pc.slug);
                 const sub = (categories || []).filter(
-                  (c) => String(c.parent_id) === pid && !c?.is_deleted
+                  (c) => c.parent_id === pc.id && !c?.is_deleted
                 );
 
-                const isOpen = openParentId === pid;
+                const isOpen = openParentId === pSlug;
 
                 return (
-                  <div
-                    key={pid}
-                    className={`border rounded-2xl overflow-hidden transition-all ${
-                      isOpen ? "border-[#21294a] bg-[#f6f8ff]" : "border-slate-200 bg-white"
-                    }`}
-                  >
-                    {/* header row */}
                     <div
-                      className={`flex items-center justify-between px-3 py-3 ${
-                        isOpen ? "bg-[#eef2ff]" : "bg-white"
+                      key={pSlug}
+                      className={`border rounded-2xl overflow-hidden transition-all ${
+                        isOpen ? "border-[#21294a] bg-[#f6f8ff]" : "border-slate-200 bg-white"
                       }`}
                     >
-                      {/* click title => navigate parent */}
-                      <button
-                        onClick={() => {
-                          setActiveParentId(pid);
-                          onParentCategoryChange?.(pid);
-                          handleCategoryClick(pid);
-                          setMobileOpen(false);
-                        }}
-                        className={`flex-1 text-left font-semibold text-[15px] ${
-                          isOpen ? "text-[#21294a]" : "text-[#1a1a1a]"
+                      {/* header row */}
+                      <div
+                        className={`flex items-center justify-between px-3 py-3 ${
+                          isOpen ? "bg-[#eef2ff]" : "bg-white"
                         }`}
                       >
-                        {pc.name}
-                      </button>
+                        {/* click title => navigate parent */}
+                        <button
+                          onClick={() => {
+                            setActiveParentSlug(pSlug);
+                            onParentCategoryChange?.(pSlug);
+                            handleCategoryClick(pSlug);
+                            setMobileOpen(false);
+                          }}
+                          className={`flex-1 text-left font-semibold text-[15px] ${
+                            isOpen ? "text-[#21294a]" : "text-[#1a1a1a]"
+                          }`}
+                        >
+                          {pc.name}
+                        </button>
 
-                      {/* chevron rotate toggle */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveParentId(pid);
-                          onParentCategoryChange?.(pid);
-                          setOpenParentId((prev) => (prev === pid ? "" : pid)); // ✅ single open
-                        }}
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                          isOpen ? "bg-[#21294a] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
-                        }`}
-                        aria-label={isOpen ? "Collapse" : "Expand"}
-                      >
-                        <ChevronDown
-                          size={18}
-                          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : "rotate-0"}`}
-                        />
-                      </button>
-                    </div>
+                        {/* chevron rotate toggle */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveParentSlug(pSlug);
+                            onParentCategoryChange?.(pSlug);
+                            setOpenParentId((prev) => (prev === pSlug ? "" : pSlug)); // ✅ single open
+                          }}
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                            isOpen ? "bg-[#21294a] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
+                          }`}
+                          aria-label={isOpen ? "Collapse" : "Expand"}
+                        >
+                          <ChevronDown
+                            size={18}
+                            className={`transition-transform duration-200 ${isOpen ? "rotate-180" : "rotate-0"}`}
+                          />
+                        </button>
+                      </div>
 
-                    {/* content (simple show/hide) */}
-                    <div className={`${isOpen ? "block" : "hidden"} px-3 pb-3`}>
-                      {/* Tất cả */}
-                      <button
-                        onClick={() => {
-                          setActiveParentId(pid);
-                          handleCategoryClick(pid);
-                          setMobileOpen(false);
-                        }}
-                        className="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-[#e6e6e6] text-[#1a1a1a]"
-                      >
-                        Tất cả
-                      </button>
+                      {/* content (simple show/hide) */}
+                      <div className={`${isOpen ? "block" : "hidden"} px-3 pb-3`}>
+                        {/* Tất cả */}
+                        <button
+                          onClick={() => {
+                            setActiveParentSlug(pSlug);
+                            handleCategoryClick(pSlug);
+                            setMobileOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-[#e6e6e6] text-[#1a1a1a]"
+                        >
+                          Tất cả
+                        </button>
 
                       <div className="mt-2 space-y-2">
                         {sub.map((cat) => (
                           <button
                             key={cat.id}
                             onClick={() => {
-                              setActiveParentId(pid);
-                              handleCategoryClick(pid, String(cat.id));
+                              setActiveParentSlug(pSlug);
+                              handleCategoryClick(pSlug, String(cat.slug));
                               setMobileOpen(false);
                             }}
                             className="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-[#f3f4f6] text-[#1a1a1a] hover:bg-[#e6e6e6] transition"

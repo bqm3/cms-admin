@@ -26,9 +26,9 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
 
   const childrenOf = (parentId: any) => (categories || []).filter((c) => c?.parent_id === parentId && !c?.is_deleted);
 
-  const handleLinkClick = (parentId: string, categoryId: string) => {
+  const handleLinkClick = (parentSlug: string, categorySlug: string) => {
     if (isPreview) return;
-    onCategoryClick(parentId, categoryId);
+    onCategoryClick(parentSlug, categorySlug);
   };
 
   // đóng dropdown khi click ra ngoài
@@ -78,7 +78,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
           {visibleParents.map((pc) => (
             <div key={pc.id} className="min-w-0">
               <button
-                onClick={() => handleLinkClick(String(pc.id), "")}
+                onClick={() => handleLinkClick(String(pc.slug), "")}
                 className={`text-[12px] font-bold text-[#1a1a1a] uppercase tracking-wide mb-6 transition-colors text-left block w-full ${isPreview ? "cursor-default" : "hover:text-[#4a4a4a]"}`}
                 title={pc.name}
               >
@@ -89,7 +89,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                 {childrenOf(pc.id).map((cat) => (
                   <li key={cat.id} className="min-w-0">
                     <button
-                      onClick={() => handleLinkClick(String(pc.id), String(cat.id))}
+                      onClick={() => handleLinkClick(String(pc.slug), String(cat.slug))}
                       className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${isPreview ? "cursor-default" : "hover:text-[#1a1a1a]"}`}
                       title={cat.name}
                     >
@@ -118,7 +118,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                       <div key={pc.id} className="py-2">
                         <button
                           onClick={() => {
-                            handleLinkClick(String(pc.id), "");
+                            handleLinkClick(String(pc.slug), "");
                             setMoreOpen(false);
                           }}
                           className={`w-full text-left text-[15px] font-semibold text-[#1a1a1a] transition-colors ${isPreview ? "cursor-default" : "hover:text-[#4a4a4a]"}`}
@@ -134,7 +134,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                               <li key={cat.id} className="min-w-0">
                                 <button
                                   onClick={() => {
-                                    handleLinkClick(String(pc.id), String(cat.id));
+                                    handleLinkClick(String(pc.slug), String(cat.slug));
                                     setMoreOpen(false);
                                   }}
                                   className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${isPreview ? "cursor-default" : "hover:text-[#1a1a1a]"}`}
@@ -146,17 +146,17 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                             ))}
 
                           {childrenOf(pc.id).length > 8 && (
-                            <li>
-                              <button
-                                onClick={() => {
-                                  handleLinkClick(String(pc.id), "");
-                                  setMoreOpen(false);
-                                }}
-                                className={`text-xs font-bold text-black transition ${isPreview ? "cursor-default" : "hover:text-black"}`}
-                              >
-                                More →
-                              </button>
-                            </li>
+                              <li>
+                                <button
+                                  onClick={() => {
+                                    handleLinkClick(String(pc.slug), "");
+                                    setMoreOpen(false);
+                                  }}
+                                  className={`text-xs font-bold text-black transition ${isPreview ? "cursor-default" : "hover:text-black"}`}
+                                >
+                                  More →
+                                </button>
+                              </li>
                           )}
                         </ul>
                       </div>

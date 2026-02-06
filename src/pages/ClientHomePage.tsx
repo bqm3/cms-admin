@@ -29,16 +29,16 @@ export function ClientHomePage() {
         parents.map((pc) =>
           api.get("/posts/public", {
             params: {
-              parentCategory: pc.id,
+              parentCategory: pc.slug || pc.id,
               limit: 8,
               sort: "sequence_number:ASC",
             },
           }),
         ),
       );
-      const mapping: Record<number, any[]> = {};
+      const mapping: Record<string, any[]> = {};
       parents.forEach((pc, idx) => {
-        mapping[pc.id] = results[idx].data.posts || [];
+        mapping[pc.slug || pc.id] = results[idx].data.posts || [];
       });
       setGroupedPosts(mapping);
     } catch (err) {
@@ -61,9 +61,9 @@ export function ClientHomePage() {
     }
   };
 
-  const navigateToCategory = (parentId: string, categoryId: string) => {
-    let url = `/category?parentCategory=${parentId}`;
-    if (categoryId) url += `&category=${categoryId}`;
+  const navigateToCategory = (parentSlug: string, categorySlug: string) => {
+    let url = `/category?parentCategory=${parentSlug}`;
+    if (categorySlug) url += `&category=${categorySlug}`;
     navigate(url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -124,7 +124,7 @@ export function ClientHomePage() {
             {parentCategories
               .filter((pc) => !pc.is_deleted)
               .map((pc) => {
-                const pcPosts = groupedPosts[pc.id] || [];
+                const pcPosts = groupedPosts[pc.slug || pc.id] || [];
                 if (pcPosts.length === 0) return null;
 
                 return (
@@ -151,7 +151,7 @@ export function ClientHomePage() {
                           px-6 h-10 rounded-lg
                           group/btn transition-all
                         "
-                        onClick={() => navigateToCategory(String(pc.id), "")}
+                        onClick={() => navigateToCategory(String(pc.slug || pc.id), "")}
                       >
                         More
                         <ChevronRight

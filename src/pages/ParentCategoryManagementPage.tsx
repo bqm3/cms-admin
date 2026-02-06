@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { formatDate } from "../utils/formatDate";
 import { DataTable } from '../components/Common/DataTable';
+import { slugify } from '../utils/slugify';
 
 export function ParentCategoryManagementPage() {
     const [parentCategories, setParentCategories] = useState<any[]>([]);
@@ -303,9 +304,17 @@ export function ParentCategoryManagementPage() {
                     <ModalHeader>Thêm danh mục cha mới</ModalHeader>
                     <ModalBody>
                         <div className="space-y-4">
-                            <Input label="Tên danh mục" variant="flat" value={name} onChange={(e) => setName(e.target.value)} />
+                            <Input 
+                                label="Tên danh mục" 
+                                variant="flat" 
+                                value={name} 
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                    setSlug(slugify(e.target.value));
+                                }} 
+                            />
+                            <Input label="Slug (URL)" variant="flat" value={slug} onChange={(e) => setSlug(e.target.value)} />
                             <Input label="Thứ tự (STT)" type="number" variant="flat" value={sequenceNumber} onChange={(e) => setSequenceNumber(e.target.value)} />
-                            <Input label="Slug (Không bắt buộc)" variant="flat" value={slug} onChange={(e) => setSlug(e.target.value)} />
                         </div>
                     </ModalBody>
                     <ModalFooter>

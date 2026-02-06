@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { formatDate } from "../utils/formatDate";
 import { DataTable } from '../components/Common/DataTable';
+import { slugify } from '../utils/slugify';
 
 export function CategoryManagementPage() {
     const [categories, setCategories] = useState<any[]>([]);
@@ -17,8 +18,10 @@ export function CategoryManagementPage() {
     const [endDate, setEndDate] = useState('');
 
     const [name, setName] = useState('');
+    const [slug, setSlug] = useState('');
     const [editingCategory, setEditingCategory] = useState<any>(null);
     const [editName, setEditName] = useState('');
+    const [editSlug, setEditSlug] = useState('');
     const [parentId, setParentId] = useState<string>('');
     const [editParentId, setEditParentId] = useState<string>('');
     const [sequenceNumber, setSequenceNumber] = useState('0');
@@ -89,10 +92,12 @@ export function CategoryManagementPage() {
         try {
             await api.post('/categories', { 
                 name, 
+                slug,
                 parent_id: parentId || null,
                 sequence_number: parseInt(sequenceNumber) || 0
             });
             setName('');
+            setSlug('');
             setParentId('');
             setSequenceNumber('0');
             createModal.onClose();
@@ -117,6 +122,7 @@ export function CategoryManagementPage() {
     const startEdit = (cat: any) => {
         setEditingCategory(cat);
         setEditName(cat.name);
+        setEditSlug(cat.slug || '');
         setEditParentId(cat.parent_id ? String(cat.parent_id) : '');
         setEditSequenceNumber(cat.sequence_number ? String(cat.sequence_number) : '0');
         editModal.onOpen();
@@ -127,6 +133,7 @@ export function CategoryManagementPage() {
         try {
             await api.put(`/categories/${editingCategory.id}`, { 
                 name: editName, 
+                slug: editSlug,
                 parent_id: editParentId || null,
                 sequence_number: parseInt(editSequenceNumber) || 0
             });
@@ -329,7 +336,18 @@ export function CategoryManagementPage() {
                                 placeholder="Ví dụ: Portfolio, Tin tức..."
                                 variant="flat"
                                 value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                    setSlug(slugify(e.target.value));
+                                }}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
+                            />
+                            <Input
+                                label="Slug (URL)"
+                                placeholder="tu-dong-tao-tu-ten"
+                                variant="flat"
+                                value={slug}
+                                onChange={(e) => setSlug(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
                             <Input
@@ -395,6 +413,13 @@ export function CategoryManagementPage() {
                                 variant="flat"
                                 value={editName}
                                 onChange={(e) => setEditName(e.target.value)}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
+                            />
+                            <Input
+                                label="Slug (URL)"
+                                variant="flat"
+                                value={editSlug}
+                                onChange={(e) => setEditSlug(e.target.value)}
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
                             <Input
