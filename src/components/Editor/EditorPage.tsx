@@ -668,12 +668,12 @@ export function EditorPage() {
             <button
               onClick={onDescOpen}
               className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.description
-                ? "bg-[#21294a]/15 border-[#21294a]/30 text-[#21294a]/60 hover:bg-[#21294a]/20"
+                ? "bg-blue-500/15 border-blue-500/30 text-blue-400 hover:bg-blue-500/20"
                 : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
                 }`}
               title="Nhập mô tả bài viết (SEO)"
             >
-              <FileText size={14} className={postInfo.description ? "text-[#21294a]" : ""} />
+              <FileText size={14} className={postInfo.description ? "text-blue-400" : ""} />
               <span className="hidden sm:inline">
                 Mô tả
               </span>
