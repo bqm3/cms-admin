@@ -41,7 +41,7 @@ export function LoginPage() {
                         <div className="bg-white/10 w-16 h-16 rounded-2xl backdrop-blur-md mx-auto flex items-center justify-center mb-5 shadow-xl">
                             <Shield className="text-white" size={32} />
                         </div>
-                        <h1 className="text-2xl font-black text-white tracking-tight mb-1">Hệ thống Quản trị</h1>
+                        <h1 className="text-2xl font-black text-white tracking-tight mb-1">Administration System</h1>
                         <p className="text-white/70 font-bold text-[10px] uppercase tracking-widest opacity-80">Administrative Portal</p>
                     </div>
 
@@ -88,7 +88,7 @@ export function LoginPage() {
                             className="bg-[#21294a] hover:bg-[#21294a]/90 text-white font-bold h-12 rounded-lg shadow-lg shadow-[#21294a]/10 text-sm group transition-all"
                             endContent={<ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />}
                         >
-                            Đăng nhập
+                            Log in
                         </Button>
 
                         <p className="text-center text-slate-400 text-[10px] font-bold tracking-tight uppercase">

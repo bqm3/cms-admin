@@ -129,7 +129,7 @@ export function PublicHeader({
             className="flex-1 max-w-xl hidden lg:flex items-center relative group"
           >
             <Input
-              placeholder="Tìm kiếm dự án, danh mục..."
+              placeholder="Search projects and categories..."
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
               startContent={<Search size={18} className="text-slate-900 group-focus-within:text-[#21294a] transition-colors" />}
@@ -159,7 +159,7 @@ export function PublicHeader({
               to="/login"
               className="bg-[#21294a] text-white font-bold text-sm h-10 px-6 rounded-full shadow-lg shadow-[#21294a]/10 hover:bg-[#21294a]/80 transition-all active:scale-95 hidden sm:flex"
             >
-              Đăng nhập
+              Log in
             </Button>
 
             {/* (mobile) optional: show login as icon or keep empty */}
@@ -168,7 +168,7 @@ export function PublicHeader({
               to="/login"
               className="bg-[#21294a] text-white font-bold text-sm h-9 px-4 rounded-full shadow-sm sm:hidden"
             >
-              Đăng nhập
+              Log in
             </Button>
           </div>
         </div>
@@ -264,7 +264,7 @@ export function PublicHeader({
               className="w-full bg-[#21294a] text-white font-bold text-sm h-11 rounded-2xl shadow-lg shadow-[#21294a]/10"
               onPress={() => setMobileOpen(false)}
             >
-              Đăng nhập
+              Log in
             </Button>
           </div> */}
 

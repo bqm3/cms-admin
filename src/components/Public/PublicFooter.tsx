@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react/jsx-sort-props */
 /* eslint-disable prettier/prettier */
 import React from "react";
@@ -18,7 +19,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
 
   const parents = useMemo(() => (parentCategories || []).filter((pc) => !pc?.is_deleted), [parentCategories]);
 
-  const MAX_PARENT_COLUMNS = 4;
+  const MAX_PARENT_COLUMNS = 5;
   const visibleParents = parents.slice(0, MAX_PARENT_COLUMNS);
   const overflowParents = parents.slice(MAX_PARENT_COLUMNS);
 
@@ -43,29 +44,26 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
 
   const LogoContent = (
     <div className="flex items-center gap-3 mb-6">
-      <div className="bg-[#21294a] w-15 h-15 md:w-15 md:h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
+      <div className="bg-[#21294a] w-12 h-12 md:w-12 md:h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
         <img src="/logo_4.png"/>
       </div>
-      <span className="text-xl font-extrabold text-[#21294a] uppercase tracking-tight">
-        GLOBAL <span className="text-red-500">PROMOTION</span>
-      </span>
+       <div className="flex flex-col">
+        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
+          GLOBAL
+        </span>
+        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
+          <span className="text-red-500">PROMOTION</span>
+        </span>
+      </div>
     </div>
   );
 
   return (
     <footer className="font-sans bg-white border-t border-[#e6e6e6] mt-20 pt-16 pb-10">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-10 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2.5fr_repeat(5,1fr)] gap-x-8 gap-y-10 mb-12">
           {/* BRAND */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            {/* <div className="flex items-center gap-3 mb-6">
-              <div className="bg-blue-600 p-2 rounded-lg shadow-blue-500/20 shadow-lg">
-                <LayoutGrid className="text-white" size={20} />
-              </div>
-              <span className="text-xl font-extrabold text-[#0067ff] uppercase tracking-tight">
-                GLOBAL <span className="text-red-500">PROMOTION</span>
-              </span>
-            </div> */}
+          <div className="min-w-0">
             {isPreview ? (
               LogoContent
             ) : (
@@ -73,19 +71,6 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                 {LogoContent}
               </Link>
             )}
-
-            {/* <p className="text-[15px] text-[#666666] font-normal leading-relaxed mb-8">
-              Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS.
-            </p> */}
-
-            {/* <div className="flex gap-4">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200/60 hover:border-black hover:bg-black/30 transition-all cursor-pointer"
-                />
-              ))}
-            </div> */}
           </div>
 
           {/* VISIBLE PARENTS */}
@@ -118,20 +103,6 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
           {/* MORE: text là Home, dropdown là icon */}
           {overflowParents.length > 0 && (
             <div className="min-w-0" ref={moreWrapRef}>
-              {/* <div className="flex items-center justify-between mb-5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleLinkClick("", ""); // home / all
-                    setMoreOpen(false);
-                  }}
-                  className={`text-[13px] font-bold text-[#1a1a1a] uppercase tracking-wide transition-colors text-left inline-flex items-center ${isPreview ? "cursor-default" : "hover:text-[#4a4a4a]"}`}
-                  title="Về trang chủ"
-                >
-                  Dự án khác
-                </button>
-              </div> */}
-
               <div className="relative">
                 <div
                   className={[
@@ -182,7 +153,7 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
                                 }}
                                 className={`text-xs font-bold text-black transition ${isPreview ? "cursor-default" : "hover:text-black"}`}
                               >
-                                Xem tất cả →
+                                More →
                               </button>
                             </li>
                           )}
@@ -198,11 +169,11 @@ export function PublicFooter({ parentCategories, categories, onCategoryClick, is
 
         <div className="pt-6 border-t border-[#e6e6e6] flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[11px] font-medium text-[#999999] uppercase tracking-wide text-center md:text-left">
-            © {new Date().getFullYear()} GLOBAL PROMOTION. TẤT CẢ QUYỀN ĐƯỢC BẢO LƯU.
+            © {new Date().getFullYear()} GLOBAL PROMOTION. ALL RIGHTS RESERVED.
           </p>
 
           <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-3">
-            {["Về chúng tôi", "Điều khoản", "Bảo mật", "Liên hệ"].map((item) => (
+            {["About us", "Terms", "Privacy", "Contact"].map((item) => (
               <a
                 key={item}
                 href="#"

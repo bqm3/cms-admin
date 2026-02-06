@@ -39,7 +39,7 @@ export function PostCard({ post }: PostCardProps) {
                         {/* Hover Action Badge */}
                         <div className="absolute top-4 right-4 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
                             <div className="bg-white/95 backdrop-blur-md shadow-xl px-4 py-2 rounded-lg text-[11px] font-semibold text-[#21294a] uppercase flex items-center gap-2 border border-slate-100">
-                                Xem chi tiết <ChevronRight size={12} strokeWidth={3} />
+                                See details <ChevronRight size={12} strokeWidth={3} />
                             </div>
                         </div>
                     </div>

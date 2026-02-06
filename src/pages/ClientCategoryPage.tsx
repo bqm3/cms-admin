@@ -90,7 +90,7 @@ export function ClientCategoryPage() {
     // Dynamic page title
     const pageTitle = search 
         ? `Tìm kiếm: ${search} - Global Promotion` 
-        : 'Khám phá dự án - Global Promotion';
+        : 'Explore the project - Global Promotion';
     const pageDescription = search
         ? `Kết quả tìm kiếm cho "${search}". Tìm thấy ${totalItems} dự án.`
         : `Khám phá ${totalItems} dự án website cao cấp được xây dựng trên công nghệ Craft JS.`;
@@ -125,7 +125,7 @@ export function ClientCategoryPage() {
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2 text-[13px] font-bold text-black uppercase tracking-widest">
                                     <LayoutGrid size={14} />
-                                    <span>Khám phá dự án</span>
+                                    <span>Explore the project</span>
                                     {selectedParentCategory && (
                                         <>
                                             <ChevronRight size={14} />
@@ -139,10 +139,10 @@ export function ClientCategoryPage() {
                                 <h1 className="text-4xl md:text-5xl font-extrabold text-black tracking-tight leading-none">
                                     {search ? (
                                         <span className="flex items-center gap-4">
-                                            Kết quả cho: <span className="opacity-40 italic">"{search}"</span>
+                                            Kết quả cho: <span className="opacity-40 italic">&ldquo;{search}&ldquo;</span>
                                         </span>
                                     ) : (
-                                        parentCategories.find(p => p.id === Number(selectedParentCategory))?.name || "Tất cả dự án"
+                                        parentCategories.find(p => p.id === Number(selectedParentCategory))?.name || "All projects"
                                     )}
                                 </h1>
 
@@ -150,14 +150,14 @@ export function ClientCategoryPage() {
                                     <div className="flex items-center gap-2 px-3 py-1.5 bg-black/5 rounded-full border border-black/10">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                                         <p className="text-[13px] font-bold text-black uppercase tracking-wider">
-                                            <span className="font-black">{totalItems}</span> Trang web đang hoạt động
+                                            <span className="font-black">{totalItems}</span> The website is live
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Filters Bar */}
-                            <div className="flex flex-wrap items-center gap-3 self-start md:self-end">
+                            {/* <div className="flex flex-wrap items-center gap-3 self-start md:self-end">
                                 {selectedParentCategory && (
                                     <div className="relative group min-w-[200px]">
                                         <select
@@ -187,7 +187,7 @@ export function ClientCategoryPage() {
                                         Xóa lọc
                                     </button>
                                 )}
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
@@ -203,14 +203,14 @@ export function ClientCategoryPage() {
                                 <Search size={40} strokeWidth={1.5} className="text-slate-300" />
                             </div>
                             <div className="max-w-md">
-                                <h3 className="text-3xl font-extrabold text-black tracking-tight mb-4">Không tìm thấy dự án</h3>
-                                <p className="text-slate-500 text-[15px] font-medium leading-relaxed"> Rất tiếc, chúng tôi không tìm thấy dự án nào phù hợp với các tiêu chí lọc hiện tại của bạn. Hãy thử thay đổi từ khóa hoặc bộ lọc khác.</p>
+                                <h3 className="text-3xl font-extrabold text-black tracking-tight mb-4">No project found</h3>
+                                <p className="text-slate-500 text-[15px] font-medium leading-relaxed"> Sorry, we couldn&apos;t find any projects that match your current filter criteria. Try changing other keywords or filters.</p>
                             </div>
                             <button
                                 onClick={() => navigate('/category')}
                                 className="bg-black text-white font-bold h-14 px-10 rounded-2xl shadow-xl shadow-black/20 hover:scale-105 transition-all duration-300 active:scale-95 uppercase tracking-wider text-[13px]"
                             >
-                                Quay lại tất cả dự án
+                                Back to all projects
                             </button>
                         </div>
                     ) : (
