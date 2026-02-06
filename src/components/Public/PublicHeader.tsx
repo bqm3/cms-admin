@@ -65,6 +65,9 @@ export function PublicHeader({
     return selectedParentCategory ? String(selectedParentCategory) : first;
   });
 
+  // ✅ accordion open state (single-open)
+  const [openParentId, setOpenParentId] = useState<string>("");
+
   // sync active parent when selectedParentCategory changes
   useEffect(() => {
     if (selectedParentCategory != null) {
@@ -76,6 +79,14 @@ export function PublicHeader({
   useEffect(() => {
     if (!activeParentId && parents?.length) setActiveParentId(String(parents[0].id));
   }, [parents, activeParentId]);
+
+  // ✅ set default opened item when opening mobile drawer
+  useEffect(() => {
+    if (mobileOpen) {
+      const pid = String(activeParentId || parents?.[0]?.id || "");
+      setOpenParentId(pid);
+    }
+  }, [mobileOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const subCats = useMemo(() => {
     const pid = String(activeParentId || "");
@@ -162,7 +173,6 @@ export function PublicHeader({
               Log in
             </Button>
 
-            {/* (mobile) optional: show login as icon or keep empty */}
             <Button
               as={Link}
               to="/login"
@@ -173,8 +183,6 @@ export function PublicHeader({
           </div>
         </div>
       </div>
-
-      {/* ✅ MOBILE: bỏ search => KHÔNG render block search mobile nữa */}
 
       {/* Desktop Navigation Bar: Categories (giữ nguyên) */}
       <div className="font-sans bg-white border-b border-[#e6e6e6] hidden lg:block">
@@ -256,79 +264,108 @@ export function PublicHeader({
             </Button>
           </div>
 
-          {/* login button first */}
-          {/* <div className="p-4 border-b border-[#e6e6e6]">
-            <Button
-              as={Link}
-              to="/login"
-              className="w-full bg-[#21294a] text-white font-bold text-sm h-11 rounded-2xl shadow-lg shadow-[#21294a]/10"
-              onPress={() => setMobileOpen(false)}
-            >
-              Log in
-            </Button>
-          </div> */}
+          {/* ✅ MOBILE ACCORDION */}
+          <div className="px-4 pt-4 pb-6 overflow-y-auto h-[calc(100%-64px-52px)]">
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Category</div>
 
-          {/* parents list */}
-          <div className="px-4 pt-4">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Danh mục</div>
-
-            <div className="flex flex-wrap gap-2">
+            <div className="space-y-2">
               {parents.map((pc) => {
-                const active = String(pc.id) === String(activeParentId);
+                const pid = String(pc.id);
+                const sub = (categories || []).filter(
+                  (c) => String(c.parent_id) === pid && !c?.is_deleted
+                );
+
+                const isOpen = openParentId === pid;
+
                 return (
-                  <button
-                    key={pc.id}
-                    onClick={() => {
-                      const pid = String(pc.id);
-                      setActiveParentId(pid);
-                      onParentCategoryChange?.(pid);
-                    }}
-                    className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
-                      active ? "bg-[#21294a] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
+                  <div
+                    key={pid}
+                    className={`border rounded-2xl overflow-hidden transition-all ${
+                      isOpen ? "border-[#21294a] bg-[#f6f8ff]" : "border-slate-200 bg-white"
                     }`}
                   >
-                    {pc.name}
-                  </button>
+                    {/* header row */}
+                    <div
+                      className={`flex items-center justify-between px-3 py-3 ${
+                        isOpen ? "bg-[#eef2ff]" : "bg-white"
+                      }`}
+                    >
+                      {/* click title => navigate parent */}
+                      <button
+                        onClick={() => {
+                          setActiveParentId(pid);
+                          onParentCategoryChange?.(pid);
+                          handleCategoryClick(pid);
+                          setMobileOpen(false);
+                        }}
+                        className={`flex-1 text-left font-semibold text-[15px] ${
+                          isOpen ? "text-[#21294a]" : "text-[#1a1a1a]"
+                        }`}
+                      >
+                        {pc.name}
+                      </button>
+
+                      {/* chevron rotate toggle */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveParentId(pid);
+                          onParentCategoryChange?.(pid);
+                          setOpenParentId((prev) => (prev === pid ? "" : pid)); // ✅ single open
+                        }}
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                          isOpen ? "bg-[#21294a] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
+                        }`}
+                        aria-label={isOpen ? "Collapse" : "Expand"}
+                      >
+                        <ChevronDown
+                          size={18}
+                          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : "rotate-0"}`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* content (simple show/hide) */}
+                    <div className={`${isOpen ? "block" : "hidden"} px-3 pb-3`}>
+                      {/* Tất cả */}
+                      <button
+                        onClick={() => {
+                          setActiveParentId(pid);
+                          handleCategoryClick(pid);
+                          setMobileOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-[#e6e6e6] text-[#1a1a1a]"
+                      >
+                        Tất cả
+                      </button>
+
+                      <div className="mt-2 space-y-2">
+                        {sub.map((cat) => (
+                          <button
+                            key={cat.id}
+                            onClick={() => {
+                              setActiveParentId(pid);
+                              handleCategoryClick(pid, String(cat.id));
+                              setMobileOpen(false);
+                            }}
+                            className="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-[#f3f4f6] text-[#1a1a1a] hover:bg-[#e6e6e6] transition"
+                          >
+                            {cat.name}
+                          </button>
+                        ))}
+
+                        {sub.length === 0 && (
+                          <div className="text-sm text-slate-500 px-2 py-2">There are no subcategories</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
           </div>
 
-          {/* subcategories horizontal scroll */}
-          <div className="px-4 pt-4 pb-6">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Danh mục con</div>
-
-            <div className="overflow-x-auto">
-              <div className="flex gap-2 min-w-max pb-2">
-                {/* "Tất cả" */}
-                <button
-                  onClick={() => {
-                    if (!activeParentId) return;
-                    handleCategoryClick(String(activeParentId));
-                    setMobileOpen(false);
-                  }}
-                  className="px-3 py-2 rounded-xl text-sm font-semibold bg-[#e6e6e6] text-[#1a1a1a] shrink-0"
-                >
-                  Tất cả
-                </button>
-
-                {subCats.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      handleCategoryClick(String(activeParentId), String(cat.id));
-                      setMobileOpen(false);
-                    }}
-                    className="px-3 py-2 rounded-xl text-sm font-semibold bg-[#f3f4f6] text-[#1a1a1a] shrink-0"
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* optional quick links */}
+          {/* footer */}
           <div className="mt-auto p-4 border-t border-[#e6e6e6] text-xs text-slate-500">
             © {new Date().getFullYear()} Global Promotion
           </div>

@@ -77,21 +77,28 @@ export function ClientHomePage() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet>
-        <title>Global Promotion - Explore the project website cao cấp</title>
+        <title>Global Promotion</title>
         <meta
           name="description"
-          content="Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS."
+          content="Use globalpromotionllc.com to find the latest discount codes and best deals when shopping online at Global through Globalpromotionllc.com. Save more on every order with our verified discount codes, food coupons, and cashback offers."
         />
         <meta
           property="og:title"
-          content="Global Promotion - Explore the project website cao cấp"
+          content="Global Promotion latest"
         />
+         <meta
+          property="title"
+          content="Global Promotion latest"
+        />
+        
+        <meta name="keywords" content="Global, Global Promotion, Global Promotion newest" />
         <meta
           property="og:description"
-          content="Nền tảng trưng bày và khám phá những mẫu thiết kế website cao cấp được xây dựng trên công nghệ Craft JS."
+          content="Use Globalpromotionllc.com to find the latest discount codes and best deals when shopping online at Global through Globalpromotionllc.com. Save more on every order with our verified discount codes, food coupons, and cashback offers."
         />
         <meta property="og:type" content="website" />
         <meta name="robots" content="index,follow" />
+
       </Helmet>
 
       <PublicHeader
@@ -107,7 +114,7 @@ export function ClientHomePage() {
           <div className="flex flex-col items-center justify-center py-40 gap-6">
             <div className="w-12 h-12 border-4 border-[#21294a]/20 border-t-[#21294a] rounded-full animate-spin"></div>
             <p className="text-[#999999] text-[11px] font-semibold uppercase tracking-wide animate-pulse">
-              Đang tải nội dung...
+              Loading...
             </p>
           </div>
         ) : (
