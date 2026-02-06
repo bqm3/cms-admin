@@ -30,7 +30,7 @@ export function ClientHomePage() {
           api.get("/posts/public", {
             params: {
               parentCategory: pc.id,
-              limit: 4,
+              limit: 8,
               sort: "sequence_number:ASC",
             },
           }),
@@ -122,12 +122,19 @@ export function ClientHomePage() {
 
                 return (
                   <section key={pc.id} className="relative">
-                    <div className="flex justify-between items-center mb-8">
-                      <div className="flex items-center gap-4">
-                        <h2 className="text-[28px] font-bold text-[#1a1a1a] tracking-tight">
-                          {pc.name}
-                        </h2>
-                      </div>
+                    <div className="flex items-center gap-4 mb-8">
+                      <h2 className="text-[28px] font-bold text-[#1a1a1a] tracking-tight">
+                        {pc.name}
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {pcPosts.map((post) => (
+                        <PostCard key={post.id} post={post} />
+                      ))}
+                    </div>
+
+                    <div className="flex justify-center mt-10">
                       <Button
                         variant="light"
                         className="
@@ -142,15 +149,9 @@ export function ClientHomePage() {
                         More
                         <ChevronRight
                           size={16}
-                          className="ml-1 text-white "
+                          className="ml-1 text-white"
                         />
                       </Button>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {pcPosts.map((post) => (
-                        <PostCard key={post.id} post={post} />
-                      ))}
                     </div>
                   </section>
                 );
