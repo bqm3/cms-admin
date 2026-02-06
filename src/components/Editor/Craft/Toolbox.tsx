@@ -66,7 +66,7 @@ export const Toolbox = () => {
           text="New Text Block"
           fontWeight="400"
           textAlign="left"
-          color="#e4e4e7"
+          color="#000000"
         />
       ),
     },
@@ -318,14 +318,14 @@ export const Toolbox = () => {
             canvas
             span={6}
             padding={10}
-            background="#27272a"
+            background="white"
           />
           <Element
             is={ColumnComponent}
             canvas
             span={6}
             padding={10}
-            background="#27272a"
+            background="white"
           />
         </Element>
       ),
