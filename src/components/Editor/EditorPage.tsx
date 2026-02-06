@@ -59,7 +59,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  useDisclosure
+  useDisclosure,
 } from "@heroui/modal";
 
 // Presets
@@ -202,9 +202,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       }
 
       console.log("Validation results:", bad);
-      if (bad.length > 0) {
-        console.table(bad);
-      }
+      if (bad.length > 0) console.table(bad);
 
       // ✅ Check if there are any unfixable errors
       const unfixableErrors = bad.filter((b) => !b.fixed);
@@ -218,11 +216,8 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       let json: string;
       if (bad.length > 0) {
         console.warn(`Fixed ${bad.length} node issues before serialization`);
-        // Create temporary state with fixed nodes
         const tempState = { ...state, nodes: fixedNodes };
 
-        // Manually serialize with fixed state
-        // Note: This is a workaround - ideally you'd fix the source of bad nodes
         try {
           json = JSON.stringify(tempState.nodes);
         } catch (err) {
@@ -237,6 +232,7 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       }
 
       console.log("Serialized JSON length:", json.length);
+
       if (postInfo.category_id == "") {
         alert("Thiếu danh mục!");
         return;
@@ -248,20 +244,25 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       formData.append("content", json);
       formData.append("view_count", String(postInfo.viewCount ?? 0));
       formData.append("is_hidden", String(postInfo.isHidden));
-      formData.append("description", postInfo.description || "");
+
+      // ✅ meta
+      formData.append("meta_override", String(!!postInfo.meta_override));
+      formData.append("meta_title", (postInfo.meta_title || "").trim());
+      formData.append("meta_keyword", (postInfo.meta_keyword || "").trim());
+      formData.append(
+        "meta_description",
+        (postInfo.meta_description || "").trim(),
+      );
+
       if (postInfo.logoFile) formData.append("logo", postInfo.logoFile);
 
       if (isNew) {
-        if (isNew) {
-          const res = await api.post("/posts", formData);
-
-          alert("🎉 Xuất bản thành công!");
-          navigate(`/editor/${res.data.id}`);
-        }
+        const res = await api.post("/posts", formData);
+        alert("🎉 Xuất bản thành công!");
+        navigate(`/editor/${res.data.id}`);
       } else {
         const res = await api.put(`/posts/${id}`, formData);
         console.log("Post updated:", res.data);
-
         alert("✅ Cập nhật thành công!");
       }
     } catch (err: any) {
@@ -269,13 +270,10 @@ const SaveButton = ({ postInfo, isNew }: any) => {
       console.error("SERVER:", err?.response?.status, err?.response?.data);
 
       let errorMessage = "Lỗi khi lưu: ";
-      if (err?.response?.data?.message) {
+      if (err?.response?.data?.message)
         errorMessage += err.response.data.message;
-      } else if (err?.message) {
-        errorMessage += err.message;
-      } else {
-        errorMessage += "Unknown error";
-      }
+      else if (err?.message) errorMessage += err.message;
+      else errorMessage += "Unknown error";
 
       alert(errorMessage);
     } finally {
@@ -307,11 +305,11 @@ const PreviewButton = () => {
 
   return (
     <Button
-       variant="flat"
-       size="sm"
-       className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold px-4"
-       onPress={handlePreview}
-       startContent={<Eye size={16} />}
+      variant="flat"
+      size="sm"
+      className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold px-4"
+      onPress={handlePreview}
+      startContent={<Eye size={16} />}
     >
       Xem nhanh
     </Button>
@@ -324,7 +322,7 @@ const ContentLoader = ({ content }: { content: string | null }) => {
 
   useEffect(() => {
     if (!content || initialized.current) return;
-    
+
     try {
       actions.deserialize(content);
       initialized.current = true; // Đánh dấu đã nạp xong, không nạp lại nữa
@@ -333,62 +331,21 @@ const ContentLoader = ({ content }: { content: string | null }) => {
     }
   }, [content, actions]);
 
-  // Reset flag if content is explicitly cleared (e.g. for a new blank state)
   useEffect(() => {
-    if (content === null) {
-      initialized.current = false;
-    }
+    if (content === null) initialized.current = false;
   }, [content]);
 
   return null;
 };
 
-// --- Description Modal Content (Sub-component to avoid lag) ---
-const DescriptionModalContent = ({ initialDescription, onSave }: { initialDescription: string, onSave: (desc: string) => void }) => {
-  const [localDesc, setLocalDesc] = useState(initialDescription);
-  
-  return (
-    <ModalContent>
-      <ModalHeader className="flex flex-col gap-1">
-        <h2 className="text-xl font-bold text-white tracking-tight">Mô tả bài viết (SEO)</h2>
-        <p className="text-sm font-medium text-zinc-400">Đoạn mô tả ngắn hiển thị trên kết quả tìm kiếm và khi chia sẻ liên kết.</p>
-      </ModalHeader>
-      <ModalBody>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
-              Nội dung mô tả
-            </label>
-            <textarea
-              className="w-full h-40 bg-zinc-900/50 border border-white/10 rounded-xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-[#21294a]/50 transition-all resize-none custom-scrollbar"
-              placeholder="Nhập mô tả cho bài viết này..."
-              value={localDesc}
-              onChange={(e) => setLocalDesc(e.target.value)}
-              autoFocus
-            />
-            <div className="flex justify-between px-1">
-              <span className="text-[10px] text-zinc-500 font-bold">
-                Gợi ý: 150 - 160 ký tự
-              </span>
-              <span className={`text-[10px] font-bold ${localDesc.length > 160 ? 'text-amber-500' : 'text-zinc-500'}`}>
-                {localDesc.length} ký tự
-              </span>
-            </div>
-          </div>
-          <Button
-            onPress={() => onSave(localDesc)}
-            className="bg-[#21294a] font-bold h-12 rounded-xl text-white shadow-lg shadow-[#21294a]/20"
-          >
-            LƯU MÔ TẢ
-          </Button>
-        </div>
-      </ModalBody>
-    </ModalContent>
-  );
-};
-
 // --- Optimize Title Input to avoid full page re-render ---
-const TitleInput = ({ value, onChange }: { value: string; onChange: (val: string) => void }) => {
+const TitleInput = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+}) => {
   const [localTitle, setLocalTitle] = useState(value);
 
   useEffect(() => {
@@ -408,34 +365,183 @@ const TitleInput = ({ value, onChange }: { value: string; onChange: (val: string
       value={localTitle}
       onChange={(e) => setLocalTitle(e.target.value)}
       onBlur={() => {
-        if (localTitle !== value) {
-          onChange(localTitle);
-        }
+        if (localTitle !== value) onChange(localTitle);
       }}
       onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          (e.target as HTMLInputElement).blur();
-        }
+        if (e.key === "Enter") (e.target as HTMLInputElement).blur();
       }}
     />
   );
 };
 
-// --- Main Page ---
+const MetaModalContent = ({
+  initial,
+  onSave,
+}: {
+  initial: {
+    meta_title: string;
+    meta_keyword: string;
+    meta_description: string;
+    meta_override: boolean;
+    title: string;
+  };
+  onSave: (v: {
+    meta_title: string;
+    meta_keyword: string;
+    meta_description: string;
+    meta_override: boolean;
+  }) => void;
+}) => {
+  const [metaTitle, setMetaTitle] = useState(initial.meta_title || "");
+  const [metaKeyword, setMetaKeyword] = useState(initial.meta_keyword || "");
+  const [metaDesc, setMetaDesc] = useState(initial.meta_description || "");
+  const [override, setOverride] = useState(!!initial.meta_override);
 
+  useEffect(() => {
+    setMetaTitle(initial.meta_title || "");
+    setMetaKeyword(initial.meta_keyword || "");
+    setMetaDesc(initial.meta_description || "");
+    setOverride(!!initial.meta_override);
+  }, [
+    initial.meta_title,
+    initial.meta_keyword,
+    initial.meta_description,
+    initial.meta_override,
+  ]);
+
+  return (
+    <ModalContent>
+      <ModalHeader className="flex flex-col gap-1">
+        <h2 className="text-xl font-bold text-white tracking-tight">
+          Meta SEO
+        </h2>
+        <p className="text-sm font-medium text-zinc-400">
+          Nếu bật “Ghi đè meta”, hệ thống sẽ dùng nội dung bạn nhập. Nếu tắt,
+          backend tự sinh từ Title.
+        </p>
+      </ModalHeader>
+
+      <ModalBody>
+        <div className="flex flex-col gap-4">
+          {/* Checkbox */}
+          <label className="flex items-center gap-3 p-3 rounded-xl border border-white/10 bg-white/5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={override}
+              onChange={(e) => setOverride(e.target.checked)}
+            />
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-zinc-200">
+                Ghi đè meta (override)
+              </span>
+              <span className="text-[11px] text-zinc-500">
+                Bật để dùng meta custom. Tắt để backend tự sinh theo title:{" "}
+                <b>{initial.title || "-"}</b>
+              </span>
+            </div>
+          </label>
+
+          {/* Inputs */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+              meta_title
+            </label>
+            <Input
+              value={metaTitle}
+              onChange={(e) => setMetaTitle(e.target.value)}
+              isDisabled={!override}
+              placeholder='Ví dụ: "Binance promotion latest"'
+              classNames={{
+                inputWrapper:
+                  "h-10 rounded-xl bg-zinc-900/50 border border-white/10 data-[disabled=true]:opacity-50",
+                input: "text-white text-sm font-medium",
+              }}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+              meta_keyword
+            </label>
+            <Input
+              value={metaKeyword}
+              onChange={(e) => setMetaKeyword(e.target.value)}
+              isDisabled={!override}
+              placeholder='Ví dụ: "Binance, Binance promotion, Binance promotion newest"'
+              classNames={{
+                inputWrapper:
+                  "h-10 rounded-xl bg-zinc-900/50 border border-white/10 data-[disabled=true]:opacity-50",
+                input: "text-white text-sm font-medium",
+              }}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+              meta_description
+            </label>
+            <textarea
+              className="w-full h-36 bg-zinc-900/50 border border-white/10 rounded-xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-[#21294a]/50 transition-all resize-none custom-scrollbar disabled:opacity-50"
+              placeholder="Ví dụ: Use Globalpromotionllc.com to find the latest discount codes..."
+              value={metaDesc}
+              onChange={(e) => setMetaDesc(e.target.value)}
+              disabled={!override}
+            />
+            <div className="flex justify-between px-1">
+              <span className="text-[10px] text-zinc-500 font-bold">
+                Gợi ý: 150 - 160 ký tự
+              </span>
+              <span
+                className={`text-[10px] font-bold ${metaDesc.length > 160 ? "text-amber-500" : "text-zinc-500"}`}
+              >
+                {metaDesc.length} ký tự
+              </span>
+            </div>
+          </div>
+
+          <Button
+            onPress={() =>
+              onSave({
+                meta_title: metaTitle,
+                meta_keyword: metaKeyword,
+                meta_description: metaDesc,
+                meta_override: override,
+              })
+            }
+            className="bg-[#21294a] font-bold h-12 rounded-xl text-white shadow-lg shadow-[#21294a]/20"
+          >
+            LƯU META
+          </Button>
+        </div>
+      </ModalBody>
+    </ModalContent>
+  );
+};
+
+// --- Main Page ---
 export function EditorPage() {
+  const PUBLIC_SITE_URL =
+    import.meta.env.VITE_PUBLIC_SITE_URL || window.location.origin;
+
+
   const { id } = useParams();
   const navigate = useNavigate();
   const isNew = id === "new" || !id;
 
   const [postInfo, setPostInfo] = useState({
     title: "",
+    slug: "",
     category_id: "",
     viewCount: 0,
     logoFile: null as File | null,
     logoUrl: "",
     isHidden: false,
-    description: "",
+
+    // ✅ meta fields
+    meta_title: "",
+    meta_keyword: "",
+    meta_description: "",
+    meta_override: false,
   });
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -444,8 +550,23 @@ export function EditorPage() {
   const [loading, setLoading] = useState(!isNew);
   const [templates, setTemplates] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
-  const { isOpen: isTmplOpen, onOpen: onTmplOpen, onClose: onTmplClose } = useDisclosure({ defaultOpen: isNew });
-  const { isOpen: isDescOpen, onOpen: onDescOpen, onClose: onDescClose } = useDisclosure();
+
+  const { isOpen: isTmplOpen, onClose: onTmplClose } = useDisclosure({
+    defaultOpen: isNew,
+  });
+  const {
+    isOpen: isMetaOpen,
+    onOpen: onMetaOpen,
+    onClose: onMetaClose,
+  } = useDisclosure();
+
+  const buildViewUrl = () => {
+    // ưu tiên slug từ postInfo
+    const slug = (postInfo as any)?.slug?.trim();
+    if (!slug) return PUBLIC_SITE_URL; // fallback
+
+    return `${PUBLIC_SITE_URL}/site/${slug}`;
+  };
 
   // Fetch Categories, Parent Categories & Templates
   useEffect(() => {
@@ -454,22 +575,27 @@ export function EditorPage() {
         const [catRes, parentRes, templatesRes] = await Promise.all([
           api.get("/categories"),
           api.get("/parent-categories"),
-          api.get("/templates/public")
+          api.get("/templates/public"),
         ]);
-        setCategories(catRes.data || []);
-        setParentCategories(parentRes.data.parentCategories || parentRes.data || []);
 
-        // Templates from DB with their saved content
+        setCategories(catRes.data || []);
+        setParentCategories(
+          parentRes.data.parentCategories || parentRes.data || [],
+        );
+
         const templatesFromDB = (templatesRes.data || []).map((tmpl: any) => ({
           ...tmpl,
-          preview: tmpl.logo ? `${SERVER_URL}${tmpl.logo}` : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=300",
-          description: tmpl.content ? "Template từ database" : "Mẫu thiết kế tùy chỉnh"
+          preview: tmpl.logo
+            ? `${SERVER_URL}${tmpl.logo}`
+            : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=300",
+          description: tmpl.content
+            ? "Template từ database"
+            : "Mẫu thiết kế tùy chỉnh",
         }));
 
         setTemplates(templatesFromDB);
-        if (templatesFromDB.length > 0 && !selectedTemplate) {
+        if (templatesFromDB.length > 0 && !selectedTemplate)
           setSelectedTemplate(templatesFromDB[0]);
-        }
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -485,15 +611,22 @@ export function EditorPage() {
           setLoading(true);
           const res = await api.get(`/posts/public/${id}`);
           const post = res.data;
+
           setPostInfo({
             title: post.title || "",
+            slug: post.slug || "",
             category_id: String(post.category_id || ""),
             viewCount: post.view_count || 0,
             logoFile: null,
             logoUrl: post.logo || "",
             isHidden: post.is_hidden || false,
-            description: post.description || "",
+
+            meta_title: post.meta_title || "",
+            meta_keyword: post.meta_keyword || "",
+            meta_description: post.meta_description || "",
+            meta_override: !!post.meta_override,
           });
+
           setLoadedContent(post.content || null);
         } catch (err) {
           console.error("Failed to fetch post:", err);
@@ -507,12 +640,11 @@ export function EditorPage() {
 
   // Load Template Content for new post
   useEffect(() => {
-    if (isNew && selectedTemplate?.content) {
+    if (isNew && selectedTemplate?.content)
       setLoadedContent(selectedTemplate.content);
-    }
   }, [isNew, selectedTemplate]);
 
-  if (loading)
+  if (loading) {
     return (
       <div className="bg-zinc-950 h-screen flex flex-col items-center justify-center gap-4">
         <div className="w-8 h-8 border-2 border-zinc-800 border-t-[#21294a] rounded-full animate-spin" />
@@ -521,13 +653,11 @@ export function EditorPage() {
         </p>
       </div>
     );
+  }
 
   return (
     <div className="h-screen text-white font-sans overflow-hidden">
-      <Editor
-        enabled={true}
-        resolver={CRAFT_RESOLVER}
-      >
+      <Editor enabled={true} resolver={CRAFT_RESOLVER}>
         <ContentLoader content={loadedContent} />
 
         {/* ✅ Header sticky */}
@@ -546,9 +676,9 @@ export function EditorPage() {
 
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-[9px] text-zinc-400 uppercase font-black tracking-wider">
-                <span className="">Trang chủ</span>
+                <span>Trang chủ</span>
                 <span className="opacity-50">•</span>
-                <span className="">Chỉnh sửa</span>
+                <span>Chỉnh sửa</span>
                 <span className="opacity-50">•</span>
                 <span className="truncate max-w-[200px] text-zinc-200">
                   {isNew ? "Mới" : `#${id}`}
@@ -574,24 +704,39 @@ export function EditorPage() {
                     <option className="bg-zinc-900" value="">
                       Chọn danh mục
                     </option>
-                    {/* Group categories by parent */}
+
                     {parentCategories.map((parent) => (
-                      <optgroup key={parent.id} label={parent.name} className="bg-zinc-900 text-zinc-500 italic">
+                      <optgroup
+                        key={parent.id}
+                        label={parent.name}
+                        className="bg-zinc-900 text-zinc-500 italic"
+                      >
                         {categories
                           .filter((cat) => cat.parent_id === parent.id)
                           .map((cat) => (
-                            <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
+                            <option
+                              key={cat.id}
+                              className="bg-zinc-900 text-white not-italic"
+                              value={cat.id}
+                            >
                               {cat.name}
                             </option>
                           ))}
                       </optgroup>
                     ))}
-                    {/* Categories without parent */}
-                    <optgroup label="Khác" className="bg-zinc-900 text-zinc-500 italic">
+
+                    <optgroup
+                      label="Khác"
+                      className="bg-zinc-900 text-zinc-500 italic"
+                    >
                       {categories
                         .filter((cat) => !cat.parent_id)
                         .map((cat) => (
-                          <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
+                          <option
+                            key={cat.id}
+                            className="bg-zinc-900 text-white not-italic"
+                            value={cat.id}
+                          >
                             {cat.name}
                           </option>
                         ))}
@@ -615,22 +760,39 @@ export function EditorPage() {
                 <option className="bg-zinc-900" value="">
                   Danh mục
                 </option>
+
                 {parentCategories.map((parent) => (
-                  <optgroup key={parent.id} label={parent.name} className="bg-zinc-900 text-zinc-500 italic">
+                  <optgroup
+                    key={parent.id}
+                    label={parent.name}
+                    className="bg-zinc-900 text-zinc-500 italic"
+                  >
                     {categories
                       .filter((cat) => cat.parent_id === parent.id)
                       .map((cat) => (
-                        <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
+                        <option
+                          key={cat.id}
+                          className="bg-zinc-900 text-white not-italic"
+                          value={cat.id}
+                        >
                           {cat.name}
                         </option>
                       ))}
                   </optgroup>
                 ))}
-                <optgroup label="Khác" className="bg-zinc-900 text-zinc-500 italic">
+
+                <optgroup
+                  label="Khác"
+                  className="bg-zinc-900 text-zinc-500 italic"
+                >
                   {categories
                     .filter((cat) => !cat.parent_id)
                     .map((cat) => (
-                      <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
+                      <option
+                        key={cat.id}
+                        className="bg-zinc-900 text-white not-italic"
+                        value={cat.id}
+                      >
                         {cat.name}
                       </option>
                     ))}
@@ -640,10 +802,11 @@ export function EditorPage() {
 
             <label className="group cursor-pointer h-8 px-2.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 text-zinc-200">
               <span
-                className={`w-6 h-6 grid place-items-center rounded border ${postInfo.logoFile
-                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
-                  : "bg-white/5 border-white/10 text-[#21294a]/60"
-                  }`}
+                className={`w-6 h-6 grid place-items-center rounded border ${
+                  postInfo.logoFile
+                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
+                    : "bg-white/5 border-white/10 text-[#21294a]/60"
+                }`}
               >
                 <ImageIcon size={14} />
               </span>
@@ -665,36 +828,36 @@ export function EditorPage() {
               />
             </label>
 
+            {/* ✅ META button */}
             <button
-              onClick={onDescOpen}
-              className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.description
-                ? "bg-[#21294a]/15 border-[#21294a]/30 text-[#21294a]/60 hover:bg-[#21294a]/20"
-                : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
-                }`}
-              title="Nhập mô tả bài viết (SEO)"
+              onClick={onMetaOpen}
+              className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold transition-all ${
+                postInfo.meta_override
+                  ? "bg-[#21294a]/15 border-[#21294a]/30 text-[#21294a]/60 hover:bg-[#21294a]/20"
+                  : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
+              }`}
+              title="Meta SEO"
             >
-              <FileText size={14} className={postInfo.description ? "text-[#21294a]" : ""} />
-              <span className="hidden sm:inline">
-                Mô tả
-              </span>
+              <FileText
+                size={14}
+                className={postInfo.meta_override ? "text-[#21294a]" : ""}
+              />
+              <span className="hidden sm:inline">Meta</span>
             </button>
 
             <button
-              onClick={() => setPostInfo({ ...postInfo, isHidden: !postInfo.isHidden })}
-              className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold transition-all ${postInfo.isHidden
-                ? "bg-amber-500/15 border-amber-500/30 text-amber-300 hover:bg-amber-500/20"
-                : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
-                }`}
-              title={postInfo.isHidden ? "Bài viết đang ẩn" : "Bài viết công khai"}
+              onClick={() => window.open(buildViewUrl(), "_blank")}
+              className="h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold
+             bg-emerald-500/15 border-emerald-500/30 text-emerald-300
+             hover:bg-emerald-500/20 transition-all"
+              title="Xem trang công khai"
             >
-              <Eye size={14} className={postInfo.isHidden ? "opacity-50" : ""} />
-              <span className="hidden sm:inline">
-                {postInfo.isHidden ? "Đang ẩn" : "Công khai"}
-              </span>
+              <Eye size={14} />
+              <span className="hidden sm:inline">Xem trang</span>
             </button>
 
             <div className="hidden md:block h-5 w-px bg-white/10 mx-1" />
-            
+
             <PreviewButton />
             <SaveButton isNew={isNew} postInfo={postInfo} />
           </div>
@@ -754,9 +917,16 @@ export function EditorPage() {
             >
               <ModalContent>
                 <ModalHeader className="flex flex-col gap-1">
-                  <h2 className="text-2xl font-bold text-white tracking-tight">Chọn mẫu thiết kế</h2>
-                  <p className="text-sm font-medium text-zinc-400">Bắt đầu nhanh với các mẫu được thiết kế sẵn cho từng mục đích</p>
-                  <p className="text-sm font-medium text-zinc-400">Bạn có thể bỏ qua bước này</p>
+                  <h2 className="text-2xl font-bold text-white tracking-tight">
+                    Chọn mẫu thiết kế
+                  </h2>
+                  <p className="text-sm font-medium text-zinc-400">
+                    Bắt đầu nhanh với các mẫu được thiết kế sẵn cho từng mục
+                    đích
+                  </p>
+                  <p className="text-sm font-medium text-zinc-400">
+                    Bạn có thể bỏ qua bước này
+                  </p>
                 </ModalHeader>
                 <ModalBody>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -777,7 +947,9 @@ export function EditorPage() {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent" />
                           <div className="absolute bottom-4 left-4">
-                            <h3 className="text-lg font-bold text-white">{tmpl.title || tmpl.name}</h3>
+                            <h3 className="text-lg font-bold text-white">
+                              {tmpl.title || tmpl.name}
+                            </h3>
                           </div>
                         </div>
                         <div className="p-4 flex-1">
@@ -792,10 +964,10 @@ export function EditorPage() {
               </ModalContent>
             </Modal>
 
-            {/* Description Editor Modal */}
+            {/* ✅ Meta Editor Modal */}
             <Modal
-              isOpen={isDescOpen}
-              onClose={onDescClose}
+              isOpen={isMetaOpen}
+              onClose={onMetaClose}
               size="2xl"
               backdrop="blur"
               classNames={{
@@ -804,22 +976,20 @@ export function EditorPage() {
                 body: "p-6",
               }}
             >
-              <DescriptionModalContent 
-                initialDescription={postInfo.description} 
-                onSave={(newDesc) => {
-                  setPostInfo({ ...postInfo, description: newDesc });
-                  onDescClose();
-                }} 
+              <MetaModalContent
+                initial={{
+                  meta_title: postInfo.meta_title,
+                  meta_keyword: postInfo.meta_keyword,
+                  meta_description: postInfo.meta_description,
+                  meta_override: postInfo.meta_override,
+                  title: postInfo.title,
+                }}
+                onSave={(v) => {
+                  setPostInfo({ ...postInfo, ...v });
+                  onMetaClose();
+                }}
               />
             </Modal>
-
-            {/* Footer cố định theo cột center */}
-            {/* <div className="shrink-0 h-8 bg-white/5 border-t border-white/5 flex items-center justify-between px-4 text-[10px] text-zinc-500">
-              <span>1024px (Máy tính)</span>
-              <div className="flex gap-2">
-                <span>Trạng thái: Sẵn sàng</span>
-              </div>
-            </div> */}
           </div>
 
           {/* ================= RIGHT: SettingsPanel ================= */}
