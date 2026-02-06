@@ -198,7 +198,7 @@ export function ClientCategoryPage() {
                                             onChange={(e) => updateParams({ category: e.target.value, page: "1" })}
                                             className="appearance-none w-full bg-white border border-slate-200 rounded-xl text-[14px] font-bold text-black px-5 py-3.5 pr-10 outline-none focus:border-black focus:ring-4 focus:ring-black/5 transition-all cursor-pointer shadow-sm hover:border-slate-300"
                                         >
-                                            <option value="">Tất cả danh mục con</option>
+                                            <option value="">All subcategories</option>
                                             {categories
                                                 .filter(c => c.parent_id === Number(selectedParentCategory) && !c.is_deleted)
                                                 .map(cat => (
@@ -217,7 +217,7 @@ export function ClientCategoryPage() {
                                         className="h-[52px] px-6 rounded-xl border border-rose-100 bg-rose-50/50 text-rose-500 text-[12px] font-bold uppercase tracking-widest hover:bg-rose-100 transition-all flex items-center gap-2 group"
                                     >
                                         <X size={16} className="group-hover:rotate-90 transition-transform duration-300" /> 
-                                        Xóa lọc
+                                        Clear filters
                                     </button>
                                 )}
                             </div> */}
@@ -229,7 +229,7 @@ export function ClientCategoryPage() {
             <div className="py-40 flex flex-col items-center justify-center gap-6">
               <div className="w-12 h-12 border-4 border-black/10 border-t-black rounded-full animate-spin"></div>
               <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">
-                Đang truy xuất dữ liệu...
+                Retrieving data...
               </p>
             </div>
           ) : posts.length === 0 ? (
