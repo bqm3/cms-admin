@@ -203,8 +203,8 @@ export function PublicPostPage() {
   }, [content]);
 
   const navigateToCategory = (parentId: string, categoryId: string) => {
-    let url = `/category?parentCategory=${parentId}`;
-    if (categoryId) url += `&category=${categoryId}`;
+    let url = `/category/${parentId}`;
+    if (categoryId) url += `/${categoryId}`;
     navigate(url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -243,7 +243,7 @@ export function PublicPostPage() {
 
   return (
     <div className="min-h-screen p-0 m-0 bg-white">
-      <Helmet>
+      <Helmet prioritizeSeoTags>
         {/* Basic */}
         <title>{seo.title}</title>
         <meta name="description" content={seo.description} />

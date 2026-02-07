@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardBody } from "@heroui/card";
 import { Clock, ChevronRight } from "lucide-react";
 import { SERVER_URL } from "../../services/api";
@@ -7,17 +7,16 @@ import { formatDate } from "../../utils/formatDate";
 interface PostCardProps {
     post: any;
 }
-
 export function PostCard({ post }: PostCardProps) {
+    const navigate = useNavigate();
+
     return (
-        <a
-            href={`/site/${post.slug || post.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-sans block group h-full focus:outline-none"
+        <div
+            className="font-sans block group h-full focus:outline-none relative cursor-pointer"
+            onClick={() => window.open(`/site/${post.slug || post.id}`, "_blank")}
         >
             <Card className="bg-white border border-[#e6e6e6] hover:border-[#cccccc] transition-all duration-300 overflow-hidden shadow-sm hover:shadow-lg rounded-xl h-full flex flex-col">
-                <CardBody className="p-0 flex-1 flex flex-col">
+                <CardBody className="p-0 flex-1 flex flex-col relative">
                     {/* Image Container */}
                     <div className="aspect-[16/10] bg-slate-50 overflow-hidden relative">
                         {post.logo ? (
@@ -52,28 +51,33 @@ export function PostCard({ post }: PostCardProps) {
 
                         {/* Category Badges Below Title */}
                         <div className="flex flex-wrap gap-2 mb-5">
-                            {post.category?.parent?.name && (
-                                <span className="bg-slate-50 text-[#21294a] px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border border-slate-200/50">
+                            {post.category?.parent && (
+                                <Link
+                                    to={`/category/${post.category.parent.slug}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.scrollTo({ top: 0, behavior: "smooth" });
+                                    }}
+                                    className="bg-slate-50 text-[#21294a] px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border border-slate-200/50 hover:bg-[#21294a] hover:text-white transition-all z-20 relative"
+                                >
                                     {post.category.parent.name}
-                                </span>
+                                </Link>
                             )}
-                            {post.category?.name && (
-                                <span className="bg-slate-50 text-[#666666] px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border border-slate-200/50">
+                            {post.category && (
+                                <Link
+                                    to={`/category/${post.category?.parent?.slug || "all"}/${post.category.slug}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.scrollTo({ top: 0, behavior: "smooth" });
+                                    }}
+                                    className="bg-slate-50 text-[#666666] px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border border-slate-200/50 hover:bg-slate-200 transition-all z-20 relative"
+                                >
                                     {post.category.name}
-                                </span>
+                                </Link>
                             )}
                         </div>
 
                         <div className="mt-auto pt-4 border-t border-[#e6e6e6] flex items-center justify-between">
-                            {/* <div className="flex items-center gap-2.5">
-                                <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[11px] font-bold text-blue-500 uppercase">
-                                    {post.creator?.username?.[0] || 'U'}
-                                </div>
-                                <span className="text-[#666666] text-[13px] font-medium tracking-tight truncate max-w-[120px]">
-                                    @{post.creator?.username || "user"}
-                                </span>
-                            </div> */}
-
                             <div className="flex items-center gap-1.5 text-black group-hover:text-[#21294a] transition-colors">
                                 <Clock size={20} />
                                 <span className="text-[15px] font-medium uppercase tracking-wider">
@@ -84,6 +88,6 @@ export function PostCard({ post }: PostCardProps) {
                     </div>
                 </CardBody>
             </Card>
-        </a>
+        </div>
     );
 }

@@ -27,9 +27,8 @@ export function ClientHomePage() {
       setPostsLoading(true);
       const results = await Promise.all(
         parents.map((pc) =>
-          api.get("/posts/public", {
+          api.get(`/posts/public/catalog/${pc.slug || pc.id}`, {
             params: {
-              parentCategory: pc.slug || pc.id,
               limit: 8,
               sort: "sequence_number:ASC",
             },
@@ -61,9 +60,9 @@ export function ClientHomePage() {
     }
   };
 
-  const navigateToCategory = (parentSlug: string, categorySlug: string) => {
-    let url = `/category?parentCategory=${parentSlug}`;
-    if (categorySlug) url += `&category=${categorySlug}`;
+  const navigateToCategory = (parentId: string, categoryId: string) => {
+    let url = `/category/${parentId}`;
+    if (categoryId) url += `/${categoryId}`;
     navigate(url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -76,7 +75,7 @@ export function ClientHomePage() {
 
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
-      <Helmet>
+      <Helmet prioritizeSeoTags>
         <title>Global Promotion</title>
         <meta
           name="description"

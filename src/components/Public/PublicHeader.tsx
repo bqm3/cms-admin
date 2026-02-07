@@ -46,8 +46,8 @@ export function PublicHeader({
 
   const handleCategoryClick = (parentSlug: string, categorySlug: string = "") => {
     if (isPreview) return;
-    let url = `/category?parentCategory=${parentSlug}`;
-    if (categorySlug) url += `&category=${categorySlug}`;
+    let url = `/category/${parentSlug}`;
+    if (categorySlug) url += `/${categorySlug}`;
     navigate(url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

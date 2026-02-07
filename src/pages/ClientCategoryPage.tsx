@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState, useCallback } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Pagination } from "@heroui/pagination";
 import { ChevronRight, X, Search, LayoutGrid } from "lucide-react";
@@ -11,6 +11,7 @@ import { PublicHeader } from "../components/Public/PublicHeader";
 import { PublicFooter } from "../components/Public/PublicFooter";
 
 export function ClientCategoryPage() {
+  const { parentSlug: pathParentSlug, categorySlug: pathCategorySlug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
@@ -24,8 +25,8 @@ export function ClientCategoryPage() {
 
   // Params from URL
   const search = searchParams.get("search") || "";
-  const selectedCategory = searchParams.get("category") || "";
-  const selectedParentCategory = searchParams.get("parentCategory") || "";
+  const selectedCategory = pathCategorySlug || searchParams.get("category") || "";
+  const selectedParentCategory = pathParentSlug || searchParams.get("parentCategory") || "";
   const page = parseInt(searchParams.get("page") || "1");
   const limit = 12;
 
@@ -35,12 +36,19 @@ export function ClientCategoryPage() {
   const fetchPosts = useCallback(async () => {
     try {
       setPostsLoading(true);
-      const response = await api.get("/posts/public", {
+
+      let url = "/posts/public";
+      if (selectedParentCategory) {
+        url = `/posts/public/catalog/${selectedParentCategory}`;
+        if (selectedCategory) {
+          url += `/${selectedCategory}`;
+        }
+      }
+
+      const response = await api.get(url, {
         params: {
           sort: "sequence_number:ASC",
           search,
-          category: selectedCategory,
-          parentCategory: selectedParentCategory,
           page,
           limit,
         },
@@ -87,8 +95,14 @@ export function ClientCategoryPage() {
     // or we can just let it be.
   };
 
-  const navigateToCategory = (parentId: string, categoryId: string) => {
-    updateParams({ parentCategory: parentId, category: categoryId, page: "1" });
+  const navigateToCategory = (pSlug: string, cSlug: string) => {
+    let url = `/category/${pSlug}`;
+    if (cSlug) url += `/${cSlug}`;
+
+    const searchStr = searchParams.get("search");
+    if (searchStr) url += `?search=${encodeURIComponent(searchStr)}`;
+
+    navigate(url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -116,7 +130,7 @@ export function ClientCategoryPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-slate-200 selection:text-slate-900">
-      <Helmet>
+      <Helmet prioritizeSeoTags>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={pageKeywords} />
@@ -133,7 +147,7 @@ export function ClientCategoryPage() {
         onSearchSubmit={handleSearchSubmit}
         selectedParentCategory={selectedParentCategory}
         onParentCategoryChange={(val) =>
-          updateParams({ parentCategory: val, category: "", page: "1" })
+          navigateToCategory(val, "")
         }
         parentCategories={parentCategories}
         categories={categories}

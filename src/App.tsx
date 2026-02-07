@@ -20,6 +20,8 @@ function App() {
     <Routes>
       <Route element={<ClientHomePage />} path="/" />
       <Route element={<ClientCategoryPage />} path="/category" />
+      <Route element={<ClientCategoryPage />} path="/category/:parentSlug" />
+      <Route element={<ClientCategoryPage />} path="/category/:parentSlug/:categorySlug" />
       <Route element={<LoginPage />} path="/login" />
       <Route element={<DashboardPage />} path="/dashboard" />
       <Route element={<EditorPage />} path="/editor/new" />

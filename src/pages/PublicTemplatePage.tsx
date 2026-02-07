@@ -160,7 +160,7 @@ export function PublicTemplatePage() {
 
   return (
     <div className="min-h-screen p-0 m-0">
-      <Helmet>
+      <Helmet prioritizeSeoTags>
         <title>{seo.title}</title>
         <meta name="description" content={seo.description} />
         <link rel="canonical" href={seo.canonical} />
