@@ -159,7 +159,6 @@ const SaveButton = ({ templateInfo, isNew }: any) => {
         }
       }
 
-      console.log("Validation results:", bad);
       if (bad.length > 0) {
         console.table(bad);
       }
@@ -194,7 +193,6 @@ const SaveButton = ({ templateInfo, isNew }: any) => {
         json = query.serialize();
       }
 
-      console.log("Serialized JSON length:", json.length);
       if (templateInfo.category_id == "") {
         alert("Thiếu danh mục!");
         return;
@@ -216,7 +214,6 @@ const SaveButton = ({ templateInfo, isNew }: any) => {
         }
       } else {
         const res = await api.put(`/templates/${id}`, formData);
-        console.log("Post updated:", res.data);
 
         alert("✅ Cập nhật thành công!");
       }
