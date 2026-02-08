@@ -246,16 +246,20 @@ export function PublicPostPage() {
 
   if (!frameData)
     return (
-      <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-        <p className="text-xl font-black text-slate-800 uppercase tracking-tight">
+      <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-6 bg-slate-50 px-6 text-center overflow-hidden">
+        <p className="text-3xl md:text-5xl font-black text-slate-800 uppercase tracking-tighter leading-tight md:leading-none">
           The project does not exist
         </p>
-        <p className="text-sm text-slate-500 font-medium">
-          Automatically returning to the homepage in <span className="text-[#21294a] font-bold">{countdown}</span> seconds...
+        <p className="text-base sm:text-2xl md:text-3xl text-slate-500 font-semibold leading-relaxed">
+          Automatically returning to the homepage in{" "}
+          <span className="text-[#21294a] font-black text-3xl md:text-5xl inline-block min-w-[1.5em]">
+            {countdown}
+          </span>{" "}
+          seconds...
         </p>
         <button
           onClick={() => navigate("/")}
-          className="bg-[#21294a] text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#21294a]/20 hover:scale-105 transition-all active:scale-95"
+          className="bg-[#21294a] text-white px-8 md:px-10 py-3 md:py-4 rounded-2xl font-bold text-base md:text-lg shadow-2xl shadow-[#21294a]/30 hover:scale-105 transition-all active:scale-95 uppercase tracking-wide mt-4"
         >
           Return to homepage now
         </button>
