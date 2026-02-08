@@ -96,6 +96,7 @@ export function PublicPostPage() {
   const [content, setContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [countdown, setCountdown] = useState(5);
   const hasFetched = useRef(false);
 
   const [seo, setSeo] = useState<{
@@ -186,6 +187,7 @@ export function PublicPostPage() {
     fetchPost();
   }, [slug, searchParams]);
 
+
   const frameData = useMemo(() => {
     if (!content) return null;
 
@@ -201,6 +203,22 @@ export function PublicPostPage() {
     if (parsed?.nodes && typeof parsed.nodes === "object") return parsed.nodes;
     return parsed;
   }, [content]);
+
+  useEffect(() => {
+    if (!loading && !frameData) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            navigate("/");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [loading, frameData, navigate]);
 
   const navigateToCategory = (parentId: string, categoryId: string) => {
     let url = `/category/${parentId}`;
@@ -232,11 +250,14 @@ export function PublicPostPage() {
         <p className="text-xl font-black text-slate-800 uppercase tracking-tight">
           The project does not exist
         </p>
+        <p className="text-sm text-slate-500 font-medium">
+          Automatically returning to the homepage in <span className="text-[#21294a] font-bold">{countdown}</span> seconds...
+        </p>
         <button
           onClick={() => navigate("/")}
-          className="bg-[#21294a] text-white px-6 py-2 rounded-xl font-bold"
+          className="bg-[#21294a] text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#21294a]/20 hover:scale-105 transition-all active:scale-95"
         >
-          Return to homepage
+          Return to homepage now
         </button>
       </div>
     );

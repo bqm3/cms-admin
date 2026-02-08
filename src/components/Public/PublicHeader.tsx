@@ -329,7 +329,7 @@ export function PublicHeader({
 
                       {/* content (simple show/hide) */}
                       <div className={`${isOpen ? "block" : "hidden"} px-3 pb-3`}>
-                        {/* Tất cả */}
+                        {/* View all */}
                         <button
                           onClick={() => {
                             setActiveParentSlug(pSlug);
@@ -338,7 +338,7 @@ export function PublicHeader({
                           }}
                           className="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-[#e6e6e6] text-[#1a1a1a]"
                         >
-                          Tất cả
+                          View all
                         </button>
 
                       <div className="mt-2 space-y-2">
