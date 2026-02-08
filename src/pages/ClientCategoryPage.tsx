@@ -14,11 +14,7 @@ export function ClientCategoryPage() {
   const { parentSlug: pathParentSlug, categorySlug: pathCategorySlug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const {
-    categories,
-    parentCategories,
-    loading: dataLoading,
-  } = usePublicData();
+  const { categories, parentCategories, loading: dataLoading } = usePublicData();
 
   const [posts, setPosts] = useState<any[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
@@ -110,14 +106,9 @@ export function ClientCategoryPage() {
 
   // Dynamic page title
   // ===== SEO dynamic =====
-  const parentName =
-    parentCategories.find(
-      (p) => String(p.slug) === String(selectedParentCategory),
-    )?.name || "";
+  const parentName = parentCategories.find((p) => String(p.slug) === String(selectedParentCategory))?.name || "";
 
-  const categoryName =
-    categories.find((c) => String(c.slug) === String(selectedCategory))?.name ||
-    "";
+  const categoryName = categories.find((c) => String(c.slug) === String(selectedCategory))?.name || "";
 
   // Ưu tiên category con > category cha
   const brandName = categoryName || parentName || "Global Promotion";
@@ -146,9 +137,7 @@ export function ClientCategoryPage() {
         onSearchChange={handleSearchChange}
         onSearchSubmit={handleSearchSubmit}
         selectedParentCategory={selectedParentCategory}
-        onParentCategoryChange={(val) =>
-          navigateToCategory(val, "")
-        }
+        onParentCategoryChange={(val) => navigateToCategory(val, "")}
         parentCategories={parentCategories}
         categories={categories}
       />
@@ -166,38 +155,26 @@ export function ClientCategoryPage() {
                   {selectedParentCategory && (
                     <>
                       <ChevronRight size={14} />
-                      <span className="text-black">
-                        {
-                          parentCategories.find(
-                            (p) => String(p.slug) === String(selectedParentCategory),
-                          )?.name
-                        }
-                      </span>
+                      <span className="text-black">{parentCategories.find((p) => String(p.slug) === String(selectedParentCategory))?.name}</span>
                     </>
                   )}
                 </div>
 
-                <h1 className="text-4xl md:text-5xl font-extrabold text-black tracking-tight leading-none">
+                <h2 className="text-4xl md:text-5xl font-extrabold text-black tracking-tight leading-none">
                   {search ? (
                     <span className="flex items-center gap-4">
-                      Results for:{" "}
-                      <span className="opacity-40 italic">
-                        &ldquo;{search}&ldquo;
-                      </span>
+                      Results for: <span className="opacity-40 italic">&ldquo;{search}&ldquo;</span>
                     </span>
                   ) : (
-                    parentCategories.find(
-                      (p) => String(p.slug) === String(selectedParentCategory),
-                    )?.name || "All projects"
+                    parentCategories.find((p) => String(p.slug) === String(selectedParentCategory))?.name || "All projects"
                   )}
-                </h1>
+                </h2>
 
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-black/5 rounded-full border border-black/10">
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                     <p className="text-[13px] font-bold text-black uppercase tracking-wider">
-                      <span className="font-black">{totalItems}</span> The
-                      website is live
+                      <span className="font-black">{totalItems}</span> The website is live
                     </p>
                   </div>
                 </div>
@@ -242,28 +219,18 @@ export function ClientCategoryPage() {
           {isLoading ? (
             <div className="py-40 flex flex-col items-center justify-center gap-6">
               <div className="w-12 h-12 border-4 border-black/10 border-t-black rounded-full animate-spin"></div>
-              <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">
-                Retrieving data...
-              </p>
+              <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">Retrieving data...</p>
             </div>
           ) : posts.length === 0 ? (
             <div className="py-32 text-center flex flex-col items-center gap-8">
               <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center text-slate-200 border-2 border-slate-100 shadow-inner">
-                <Search
-                  size={40}
-                  strokeWidth={1.5}
-                  className="text-slate-300"
-                />
+                <Search size={40} strokeWidth={1.5} className="text-slate-300" />
               </div>
               <div className="max-w-md">
-                <h3 className="text-3xl font-extrabold text-black tracking-tight mb-4">
-                  No project found
-                </h3>
+                <h3 className="text-3xl font-extrabold text-black tracking-tight mb-4">No project found</h3>
                 <p className="text-slate-500 text-[15px] font-medium leading-relaxed">
                   {" "}
-                  Sorry, we couldn&apos;t find any projects that match your
-                  current filter criteria. Try changing other keywords or
-                  filters.
+                  Sorry, we couldn&apos;t find any projects that match your current filter criteria. Try changing other keywords or filters.
                 </p>
               </div>
               <button
@@ -283,18 +250,20 @@ export function ClientCategoryPage() {
 
               {/* Pagination area */}
               {totalPages > 1 && (
-                <div className="flex justify-center mt-20 pt-10 border-t border-slate-100">
+                <div className="flex justify-center items-center mt-20 pt-10 border-t border-slate-100">
                   <Pagination
                     total={totalPages}
                     page={page}
                     onChange={(p) => updateParams({ page: String(p) })}
                     showControls
                     classNames={{
-                      item: "w-12 h-12 text-[11px] font-black rounded-xl border-transparent hover:bg-slate-100 transition-colors",
+                      wrapper: "flex items-center gap-2",
+                      base: "flex items-center",
+                      item: "w-12 h-12 min-w-[48px] min-h-[48px] text-[11px] font-black rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-50 hover:border-slate-400 transition-all flex items-center justify-center",
                       cursor:
-                        "bg-black text-white font-black shadow-2xl shadow-black/40",
-                      prev: "bg-white border border-slate-200 rounded-xl w-12 h-12",
-                      next: "bg-white border border-slate-200 rounded-xl w-12 h-12",
+                        "bg-black text-white font-black shadow-2xl shadow-black/40 w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center border-2 border-black",
+                      prev: "bg-white border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-50 rounded-xl w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center transition-all",
+                      next: "bg-white border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-50 rounded-xl w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center transition-all",
                     }}
                   />
                 </div>
@@ -304,11 +273,7 @@ export function ClientCategoryPage() {
         </section>
       </main>
 
-      <PublicFooter
-        parentCategories={parentCategories}
-        categories={categories}
-        onCategoryClick={navigateToCategory}
-      />
+      <PublicFooter parentCategories={parentCategories} categories={categories} onCategoryClick={navigateToCategory} />
     </div>
   );
 }
