@@ -20,7 +20,7 @@ export const RowComponent: React.FC<RowProps> & {
 } = ({
   gap = 12,
   padding = 10,
-  background = "transparent",
+  background = "#fff",
   justifyContent = "flex-start",
   alignItems = "stretch",
   wrap = false,
@@ -63,7 +63,7 @@ RowComponent.craft = {
   props: {
     gap: 12,
     padding: 10,
-    background: "transparent",
+    background: "#fff",
     justifyContent: "flex-start",
     alignItems: "stretch",
     wrap: false,

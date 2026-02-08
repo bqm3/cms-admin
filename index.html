@@ -2,61 +2,78 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo_4.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/logo_4.png" />
+
+    <!-- Viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary SEO (fallback for SPA) -->
     <title>Global Promotion</title>
-    <meta key="title" content="Global Promotion" property="og:title" />
-    <meta
-      content="Detailed information, attractive offers."
-      property="og:description"
-    />
+    <meta name="description" content="Detailed information, attractive offers." />
+
+    <!-- Open Graph (fallback for bots) -->
+    <meta property="og:title" content="Global Promotion" />
+    <meta property="og:description" content="Detailed information, attractive offers." />
+    <meta property="og:type" content="website" />
+
+    <!-- (Optional) If you have a default share image, enable this:
+    <meta property="og:image" content="https://globalpromotionllc.com/og-image.png" />
+    <meta property="og:url" content="https://globalpromotionllc.com/" />
+    -->
+
+    <!-- Robots -->
+    <meta name="robots" content="index,follow" />
+
+    <!-- Google Site Verification -->
     <meta
       name="google-site-verification"
       content="8bj0tDo4LMRnCeg3R104AiEdWTI6xRa1-UqQqixr9Nc"
     />
-    <meta
-      content="Detailed information, attractive offers."
-      name="description"
-    />
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-MLK7VJ5H");
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google tag (gtag.js) - GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q09GT1JN79"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-Q09GT1JN79");
+    </script>
   </head>
- 
+
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-MLK7VJ5H"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <div id="root"></div>
+
+    <!-- Vite entry -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
-
-   <!-- Google Tag Manager -->
-  <script>
-    (function (w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-      var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s),
-        dl = l != "dataLayer" ? "&l=" + l : "";
-      j.async = true;
-      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, "script", "dataLayer", "GTM-MLK7VJ5H");
-  </script>
-  <!-- End Google Tag Manager -->
-  <!-- Google Tag Manager (noscript) -->
-  <noscript
-    ><iframe
-      src="https://www.googletagmanager.com/ns.html?id=GTM-MLK7VJ5H"
-      height="0"
-      width="0"
-      style="display: none; visibility: hidden"
-    ></iframe
-  ></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q09GT1JN79"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-Q09GT1JN79');
-</script>
 </html>

@@ -347,14 +347,14 @@ export const Toolbox = () => {
             canvas
             span={3}
             padding={4}
-            background="#27272a"
+            background="white"
           />
           <Element
             is={ColumnComponent}
             canvas
             span={9}
             padding={4}
-            background="#27272a"
+            background="white"
           />
         </Element>
       ),
@@ -376,14 +376,14 @@ export const Toolbox = () => {
             canvas
             span={9}
             padding={4}
-            background="#27272a"
+            background="white"
           />
           <Element
             is={ColumnComponent}
             canvas
             span={3}
             padding={4}
-            background="#27272a"
+            background="white"
           />
         </Element>
       ),
@@ -405,21 +405,21 @@ export const Toolbox = () => {
             canvas
             span={4}
             padding={4}
-            background="#27272a"
+            background="white"
           />
           <Element
             is={ColumnComponent}
             canvas
             span={4}
             padding={4}
-            background="#27272a"
+            background="white"
           />
           <Element
             is={ColumnComponent}
             canvas
             span={4}
             padding={4}
-            background="#27272a"
+            background="white"
           />
         </Element>
       ),
@@ -431,7 +431,7 @@ export const Toolbox = () => {
       icon: "▭",
       component: (
         <CardComponent
-          background="#27272a"
+          background="white"
           padding={20}
           radius={"md"}
           shadow={"md"}
