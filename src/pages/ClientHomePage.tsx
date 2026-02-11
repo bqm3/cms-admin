@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@heroui/button";
@@ -77,27 +77,36 @@ export function ClientHomePage() {
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
         <title>Global Promotion</title>
+
+        <meta name="title" content="Global Promotion latest" />
         <meta
           name="description"
-          content="Use globalpromotionllc.com to find the latest discount codes and best deals when shopping online at Global through Globalpromotionllc.com. Save more on every order with our verified discount codes, food coupons, and cashback offers."
+          content="Use globalpromotionllc.com to find the latest discount codes..."
         />
         <meta
-          property="og:title"
-          content="Global Promotion latest"
+          name="keywords"
+          content="Global, Global Promotion, Global Promotion newest"
         />
-         <meta
-          property="title"
-          content="Global Promotion latest"
-        />
-        
-        <meta name="keywords" content="Global, Global Promotion, Global Promotion newest" />
-        <meta
-          property="og:description"
-          content="Use Globalpromotionllc.com to find the latest discount codes and best deals when shopping online at Global through Globalpromotionllc.com. Save more on every order with our verified discount codes, food coupons, and cashback offers."
-        />
-        <meta property="og:type" content="website" />
         <meta name="robots" content="index,follow" />
 
+        <link rel="canonical" href="https://globalpromotionllc.com/" />
+
+        <meta property="og:title" content="Global Promotion latest" />
+        <meta
+          property="og:description"
+          content="Use Globalpromotionllc.com to find the latest discount codes..."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://globalpromotionllc.com/" />
+        {/* nên có og:image */}
+        {/* <meta property="og:image" content="https://globalpromotionllc.com/og.jpg" /> */}
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Global Promotion latest" />
+        <meta
+          name="twitter:description"
+          content="Use Globalpromotionllc.com to find the latest discount codes..."
+        />
       </Helmet>
 
       <PublicHeader
@@ -118,7 +127,6 @@ export function ClientHomePage() {
           </div>
         ) : (
           <div className="space-y-20">
-
             {/* Grouped Categories */}
             {parentCategories
               .filter((pc) => !pc.is_deleted)
@@ -150,13 +158,12 @@ export function ClientHomePage() {
                           px-6 h-10 rounded-lg
                           group/btn transition-all
                         "
-                        onClick={() => navigateToCategory(String(pc.slug || pc.id), "")}
+                        onClick={() =>
+                          navigateToCategory(String(pc.slug || pc.id), "")
+                        }
                       >
                         More
-                        <ChevronRight
-                          size={16}
-                          className="ml-1 text-white"
-                        />
+                        <ChevronRight size={16} className="ml-1 text-white" />
                       </Button>
                     </div>
                   </section>

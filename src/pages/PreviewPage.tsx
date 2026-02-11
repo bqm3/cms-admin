@@ -71,13 +71,11 @@ export function PreviewPage() {
 
   const navigateToCategory = () => {
     // Disable navigation in preview mode
-    console.log("Navigation disabled in preview mode");
   };
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
     // Disable search in preview mode
-    console.log("Search disabled in preview mode");
   };
 
   if (!content) {

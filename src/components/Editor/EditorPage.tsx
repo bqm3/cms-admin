@@ -192,7 +192,6 @@ const SaveButton = ({ postInfo, isNew }: any) => {
         }
       }
 
-      console.log("Validation results:", bad);
       if (bad.length > 0) console.table(bad);
 
       const unfixableErrors = bad.filter((b) => !b.fixed);
@@ -218,7 +217,6 @@ const SaveButton = ({ postInfo, isNew }: any) => {
         json = query.serialize();
       }
 
-      console.log("Serialized JSON length:", json.length);
 
       if (postInfo.category_id == "") {
         alert("Thiếu danh mục!");
@@ -246,7 +244,6 @@ const SaveButton = ({ postInfo, isNew }: any) => {
         navigate(`/editor/${res.data.id}`);
       } else {
         const res = await api.put(`/posts/${id}`, formData);
-        console.log("Post updated:", res.data);
         alert("✅ Cập nhật thành công!");
       }
     } catch (err: any) {
