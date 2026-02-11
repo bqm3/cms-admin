@@ -98,7 +98,7 @@ export function PublicHeader({
   const LogoContent = (
     <div className="flex items-center gap-2 group shrink-0 select-none">
       <div className="bg-[#21294a] w-12 h-12 md:w-12 md:h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
-        <img src="/logo_4.png" />
+        <img src="/logo_4.png" alt="Global Promotion"/>
       </div>
       <div className="flex flex-col">
         <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
@@ -253,7 +253,7 @@ export function PublicHeader({
           <div className="h-16 px-4 border-b border-[#e6e6e6] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="bg-[#21294a] w-10 h-10 rounded-2xl flex items-center justify-center">
-                <img src="/logo_4.png" className="w-8 h-8 object-contain" />
+                <img src="/logo_4.png" alt="Global Promotion" className="w-8 h-8 object-contain" />
               </div>
               <div className="leading-tight">
                 <div className="text-sm font-extrabold text-[#21294a]">GLOBAL</div>
