@@ -70,7 +70,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                                 <p className="text-sm font-bold text-slate-800 leading-tight">
                                     {user.username || 'Admin'}
                                 </p>
-                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                                     {user.role || 'user'}
                                 </p>
                             </div>

@@ -154,7 +154,7 @@ export function PublicHeader({
               classNames={{
                 inputWrapper:
                   "bg-white border-2 border-slate-200 h-11 px-4 shadow-none rounded-full group-hover:border-[#21294a] group-focus-within:border-[#21294a] transition-all",
-                input: "text-[15px] font-medium text-[#1a1a1a] placeholder:text-[#999999] pl-1",
+                input: "text-[15px] font-medium text-[#1a1a1a] placeholder:text-gray-700 pl-1",
               }}
             />
             <button
@@ -207,7 +207,7 @@ export function PublicHeader({
                       <ChevronDown
                         size={14}
                         className={`transition-transform duration-300 ${
-                          isActive ? "text-[#1a1a1a]" : "text-[#999999] group-hover:text-[#1a1a1a]"
+                          isActive ? "text-[#1a1a1a]" : "text-gray-700 group-hover:text-[#1a1a1a]"
                         } group-hover:rotate-180`}
                       />
                     )}

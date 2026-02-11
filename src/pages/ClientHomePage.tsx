@@ -121,7 +121,7 @@ export function ClientHomePage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
             <div className="w-12 h-12 border-4 border-[#21294a]/20 border-t-[#21294a] rounded-full animate-spin"></div>
-            <p className="text-[#999999] text-[11px] font-semibold uppercase tracking-wide animate-pulse">
+            <p className="text-gray-700 text-xs font-semibold uppercase tracking-wide animate-pulse">
               Loading...
             </p>
           </div>

@@ -406,14 +406,14 @@ const MetaModalContent = ({
             />
             <div className="flex flex-col">
               <span className="text-sm font-bold text-zinc-200">Ghi đè meta (override)</span>
-              <span className="text-[11px] text-zinc-500">
+              <span className="text-xs text-zinc-500">
                 Bật để dùng meta custom. Tắt để backend tự sinh theo title: <b>{initial.title || "-"}</b>
               </span>
             </div>
           </label>
 
           <div className="flex flex-col gap-2">
-            <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+            <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-1">
               meta_title
             </label>
             <Input
@@ -430,7 +430,7 @@ const MetaModalContent = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+            <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-1">
               meta_keyword
             </label>
             <Input
@@ -447,7 +447,7 @@ const MetaModalContent = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest pl-1">
+            <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-1">
               meta_description
             </label>
             <textarea
@@ -694,7 +694,7 @@ export function EditorPage() {
                 <div className="hidden lg:flex items-center gap-2 px-2.5 h-8 rounded-lg bg-white/5 border border-white/10 text-zinc-300">
                   <Layout size={14} className="text-[#21294a]" />
                   <select
-                    className="bg-transparent outline-none text-[11px] font-bold cursor-pointer"
+                    className="bg-transparent outline-none text-xs font-bold cursor-pointer"
                     value={postInfo.category_id}
                     onChange={(e) => setPostInfo({ ...postInfo, category_id: e.target.value })}
                   >
@@ -745,7 +745,7 @@ export function EditorPage() {
           <div className="flex items-center gap-2 md:gap-3">
             <div className="md:hidden">
               <select
-                className="h-8 px-2 rounded-md bg-white/5 border border-white/10 text-[11px] font-bold text-zinc-200 outline-none"
+                className="h-8 px-2 rounded-md bg-white/5 border border-white/10 text-xs font-bold text-zinc-200 outline-none"
                 value={postInfo.category_id}
                 onChange={(e) => setPostInfo({ ...postInfo, category_id: e.target.value })}
               >
@@ -800,7 +800,7 @@ export function EditorPage() {
                 <ImageIcon size={14} />
               </span>
 
-              <span className="hidden sm:inline text-[11px] font-bold text-zinc-300 group-hover:text-white">
+              <span className="hidden sm:inline text-xs font-bold text-zinc-300 group-hover:text-white">
                 {postInfo.logoFile ? "Logo OK" : "Tải logo"}
               </span>
 
@@ -820,7 +820,7 @@ export function EditorPage() {
             {/* ✅ META button */}
             <button
               onClick={onMetaOpen}
-              className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold transition-all ${
+              className={`h-8 px-2.5 rounded-md border flex items-center gap-2 text-xs font-bold transition-all ${
                 postInfo.meta_override
                   ? "bg-[#21294a]/15 border-[#21294a]/30 text-[#21294a]/60 hover:bg-[#21294a]/20"
                   : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
@@ -836,7 +836,7 @@ export function EditorPage() {
 
             <button
               onClick={() => window.open(buildViewUrl(), "_blank")}
-              className="h-8 px-2.5 rounded-md border flex items-center gap-2 text-[11px] font-bold
+              className="h-8 px-2.5 rounded-md border flex items-center gap-2 text-xs font-bold
               bg-emerald-500/15 border-emerald-500/30 text-emerald-300
               hover:bg-emerald-500/20 transition-all"
               title="Xem trang công khai"

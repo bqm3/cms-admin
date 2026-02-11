@@ -503,7 +503,7 @@ export function TemplateEditorPage() {
                 <div className="hidden lg:flex items-center gap-2 px-2.5 h-8 rounded-lg bg-white/5 border border-white/10 text-zinc-300">
                   <Layout size={14} className="text-[#21294a]" />
                   <select
-                    className="bg-transparent outline-none text-[11px] font-bold cursor-pointer"
+                    className="bg-transparent outline-none text-xs font-bold cursor-pointer"
                     value={templateInfo.category_id}
                     onChange={(e) =>
                       settemplateInfo({ ...templateInfo, category_id: e.target.value })
@@ -544,7 +544,7 @@ export function TemplateEditorPage() {
           <div className="flex items-center gap-2 md:gap-3">
             <div className="md:hidden">
               <select
-                className="h-8 px-2 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-zinc-200 outline-none"
+                className="h-8 px-2 rounded-lg bg-white/5 border border-white/10 text-xs font-bold text-zinc-200 outline-none"
                 value={templateInfo.category_id}
                 onChange={(e) =>
                   settemplateInfo({ ...templateInfo, category_id: e.target.value })
@@ -586,7 +586,7 @@ export function TemplateEditorPage() {
                 <ImageIcon size={14} />
               </span>
 
-              <span className="hidden sm:inline text-[11px] font-bold text-zinc-300 group-hover:text-white">
+              <span className="hidden sm:inline text-xs font-bold text-zinc-300 group-hover:text-white">
                 {templateInfo.logoFile ? "Logo OK" : "Tải logo"}
               </span>
 

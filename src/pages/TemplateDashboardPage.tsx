@@ -139,7 +139,7 @@ export function TemplateDashboardPage() {
                     <span className="text-xs font-bold text-[#21294a] bg-[#21294a]/5 w-fit px-2 py-0.5 rounded-md border border-[#21294a]/10">
                         {template.category?.name || 'Chưa phân loại'}
                     </span>
-                    <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                    <span className="text-xs font-semibold text-slate-400 flex items-center gap-1">
                         <div className="w-1 h-1 rounded-full bg-slate-300"></div>
                         @{template.creator?.username || 'vô danh'}
                     </span>

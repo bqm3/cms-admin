@@ -94,7 +94,7 @@ export const TableSettings = () => {
           {border ? "Hide Border" : "Show Border"}
         </button>
       </div>
-      <p className="text-[11px] text-zinc-500">Edit cells directly on the canvas.</p>
+      <p className="text-xs text-zinc-500">Edit cells directly on the canvas.</p>
     </div>
   );
 };

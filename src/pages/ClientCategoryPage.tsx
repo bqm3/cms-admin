@@ -259,7 +259,7 @@ export function ClientCategoryPage() {
                     classNames={{
                       wrapper: "flex items-center gap-2",
                       base: "flex items-center",
-                      item: "w-12 h-12 min-w-[48px] min-h-[48px] text-[11px] font-black rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-50 hover:border-slate-400 transition-all flex items-center justify-center",
+                      item: "w-12 h-12 min-w-[48px] min-h-[48px] text-xs font-black rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-50 hover:border-slate-400 transition-all flex items-center justify-center",
                       cursor:
                         "bg-black text-white font-black shadow-2xl shadow-black/40 w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center border-2 border-black",
                       prev: "bg-white border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-50 rounded-xl w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center transition-all",

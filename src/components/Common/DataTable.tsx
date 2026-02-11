@@ -45,7 +45,7 @@ export function DataTable<T>({
                             {columns.map((column, index) => (
                                 <th
                                     key={index}
-                                    className={`px-6 py-5 text-[11px] font-bold uppercase text-slate-400 tracking-widest ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : ''
+                                    className={`px-6 py-5 text-xs font-bold uppercase text-slate-400 tracking-widest ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : ''
                                         } ${column.headerClassName || ''}`}
                                 >
                                     {column.header}
@@ -100,7 +100,7 @@ export function DataTable<T>({
                 <div className="px-6 py-5 bg-slate-50/30 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2.5">
-                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Hiển thị:</p>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Hiển thị:</p>
                             <select
                                 className="bg-white border border-slate-200 rounded-xl text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#21294a]/5 transition-all cursor-pointer h-9 shadow-sm"
                                 value={pagination.limit}
@@ -112,7 +112,7 @@ export function DataTable<T>({
                             </select>
                         </div>
                         <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
-                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                             Tổng cộng: <span className="text-[#21294a] ml-1">{pagination.totalItems}</span>
                         </p>
                     </div>

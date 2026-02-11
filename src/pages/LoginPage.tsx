@@ -77,7 +77,7 @@ export function LoginPage() {
                         </div>
 
                         {error && (
-                            <div className="bg-rose-50 text-rose-500 p-3 rounded-lg text-[11px] font-bold border border-rose-100 animate-shake">
+                            <div className="bg-rose-50 text-rose-500 p-3 rounded-lg text-xs font-bold border border-rose-100 animate-shake">
                                 {error}
                             </div>
                         )}

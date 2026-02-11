@@ -519,7 +519,7 @@ export const Toolbox = () => {
       </div>
 
       <div>
-        <div className="px-4 py-3 text-[11px] text-zinc-400 uppercase tracking-wider">
+        <div className="px-4 py-3 text-xs text-zinc-400 uppercase tracking-wider">
           Presets
         </div>
         <div className="px-3 pb-3 flex flex-col gap-2">

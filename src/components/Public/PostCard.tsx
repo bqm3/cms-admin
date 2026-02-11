@@ -37,7 +37,7 @@ export function PostCard({ post }: PostCardProps) {
 
                         {/* Hover Action Badge */}
                         <div className="absolute top-4 right-4 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
-                            <div className="bg-white/95 backdrop-blur-md shadow-xl px-4 py-2 rounded-lg text-[11px] font-semibold text-[#21294a] uppercase flex items-center gap-2 border border-slate-100">
+                            <div className="bg-white/95 backdrop-blur-md shadow-xl px-4 py-2 rounded-lg text-xs font-semibold text-[#21294a] uppercase flex items-center gap-2 border border-slate-100">
                                 See details <ChevronRight size={12} strokeWidth={3} />
                             </div>
                         </div>
@@ -58,7 +58,7 @@ export function PostCard({ post }: PostCardProps) {
                                         e.stopPropagation();
                                         window.scrollTo({ top: 0, behavior: "smooth" });
                                     }}
-                                    className="bg-slate-50 text-[#21294a] px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border border-slate-200/50 hover:bg-[#21294a] hover:text-white transition-all z-20 relative"
+                                    className="bg-slate-50 text-[#21294a] px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider border border-slate-200/50 hover:bg-[#21294a] hover:text-white transition-all z-20 relative"
                                 >
                                     {post.category.parent.name}
                                 </Link>
@@ -70,7 +70,7 @@ export function PostCard({ post }: PostCardProps) {
                                         e.stopPropagation();
                                         window.scrollTo({ top: 0, behavior: "smooth" });
                                     }}
-                                    className="bg-slate-50 text-[#666666] px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider border border-slate-200/50 hover:bg-slate-200 transition-all z-20 relative"
+                                    className="bg-slate-50 text-[#666666] px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider border border-slate-200/50 hover:bg-slate-200 transition-all z-20 relative"
                                 >
                                     {post.category.name}
                                 </Link>
