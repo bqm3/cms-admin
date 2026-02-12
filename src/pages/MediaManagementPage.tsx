@@ -31,7 +31,7 @@ export function MediaManagementPage() {
     // Add Media Form state
     const [name, setName] = useState('');
     const [url, setUrl] = useState('');
-    const [file, setFile] = useState<File | null>(null);
+    const [files, setFiles] = useState<File[]>([]);
     const [uploadType, setUploadType] = useState<'upload' | 'link'>('upload');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedMediaType, setSelectedMediaType] = useState('');
@@ -108,8 +108,10 @@ export function MediaManagementPage() {
             if (selectedMediaType) formData.append('media_type_id', selectedMediaType);
             if (selectedCategory) formData.append('category_id', selectedCategory);
 
-            if (uploadType === 'upload' && file) {
-                formData.append('file', file);
+            if (uploadType === 'upload' && files.length > 0) {
+                files.forEach(f => {
+                    formData.append('files', f);
+                });
             } else if (uploadType === 'link' && url) {
                 formData.append('url', url);
             }
@@ -120,7 +122,7 @@ export function MediaManagementPage() {
 
             setName('');
             setUrl('');
-            setFile(null);
+            setFiles([]);
             setSelectedCategory('');
             setSelectedMediaType('');
             mediaModal.onClose();
@@ -495,14 +497,34 @@ export function MediaManagementPage() {
                                         <input
                                             type="file" id="media-upload"
                                             className="hidden" accept="image/*"
-                                            onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                            multiple
+                                            onChange={(e) => setFiles(prev => [...prev, ...Array.from(e.target.files || [])])}
                                         />
-                                        <label htmlFor="media-upload" className="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-200 rounded-2xl bg-white cursor-pointer hover:border-[#21294a]/40 hover:bg-[#21294a]/5 transition-all group lg:p-4">
-                                            {file ? (
-                                                <div className="relative w-full h-full">
-                                                    <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover rounded-xl" />
-                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                                                        <ImageIcon className="text-white" size={24} />
+                                        <label htmlFor="media-upload" className="flex flex-col items-center justify-center w-full min-h-44 border-2 border-dashed border-slate-200 rounded-2xl bg-white cursor-pointer hover:border-[#21294a]/40 hover:bg-[#21294a]/5 transition-all group lg:p-4">
+                                            {files.length > 0 ? (
+                                                <div className="grid grid-cols-4 gap-2 w-full p-2 max-h-64 overflow-y-auto">
+                                                    {files.map((f, i) => (
+                                                        <div key={i} className="relative group/item aspect-square">
+                                                            <img src={URL.createObjectURL(f)} alt="Preview" className="w-full h-full object-cover rounded-xl shadow-sm border border-slate-100" />
+                                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                                                                <button 
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        e.stopPropagation();
+                                                                        setFiles(prev => prev.filter((_, idx) => idx !== i));
+                                                                    }}
+                                                                    className="bg-rose-500 text-white rounded-full p-1.5 shadow-lg hover:scale-110 transition-transform"
+                                                                >
+                                                                    <Trash size={12} />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                    <div 
+                                                        onClick={() => document.getElementById('media-upload')?.click()}
+                                                        className="aspect-square border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-400 hover:border-[#21294a]/40 hover:bg-[#21294a]/5 transition-all cursor-pointer"
+                                                    >
+                                                        <Plus size={20} />
                                                     </div>
                                                 </div>
                                             ) : (
