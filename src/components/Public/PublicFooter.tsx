@@ -24,17 +24,18 @@ export function PublicFooter({
 
   const parents = useMemo(
     () => (parentCategories || []).filter((pc) => !pc?.is_deleted),
-    [parentCategories]
+    [parentCategories],
   );
 
   const cats = useMemo(
     () => (categories || []).filter((c) => !c?.is_deleted),
-    [categories]
+    [categories],
   );
 
   const isDataReady = parents.length > 0; // quan trọng để chống CLS
 
   const MAX_PARENT_COLUMNS = 5;
+  const MAX_CHILDREN_PER_PARENT = 5;
   const visibleParents = parents.slice(0, MAX_PARENT_COLUMNS);
   const overflowParents = parents.slice(MAX_PARENT_COLUMNS);
 
@@ -134,7 +135,12 @@ export function PublicFooter({
                 className="w-10 h-10 rounded-xl bg-black/5 flex items-center justify-center text-black hover:bg-black hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-black/20 hover:-translate-y-1"
                 title="X (Twitter)"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
               </a>
@@ -146,7 +152,12 @@ export function PublicFooter({
                 className="w-10 h-10 rounded-xl bg-[#E60023]/10 flex items-center justify-center text-[#E60023] hover:bg-[#E60023] hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-[#E60023]/30 hover:-translate-y-1"
                 title="Pinterest"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
                   <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.966 1.406-5.966s-.359-.72-.359-1.781c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.259 7.929-7.259 4.162 0 7.398 2.965 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12.017 24c6.62 0 11.983-5.363 11.983-11.987C24 5.367 18.637 0 12.017 0z" />
                 </svg>
               </a>
@@ -158,7 +169,12 @@ export function PublicFooter({
                 className="w-10 h-10 rounded-xl bg-black/5 flex items-center justify-center text-black hover:bg-black hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-black/20 hover:-translate-y-1"
                 title="TikTok"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
                   <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.9-.32-1.98-.23-2.81.33-.85.51-1.44 1.43-1.58 2.41-.05.3-.01.61.12.89.26.82.91 1.54 1.72 1.78.73.22 1.57.14 2.23-.29.83-.51 1.34-1.47 1.34-2.43 0-4.07-.02-8.14.02-12.21z" />
                 </svg>
               </a>
@@ -184,23 +200,33 @@ export function PublicFooter({
                     }`}
                     title={pc.name}
                   >
-                    <span className="inline-block truncate max-w-full">{pc.name}</span>
+                    <span className="inline-block truncate max-w-full">
+                      {pc.name}
+                    </span>
                   </button>
 
                   <ul className="space-y-3.5">
-                    {childrenOf(pc.id).map((cat) => (
-                      <li key={cat.id} className="min-w-0">
-                        <button
-                          onClick={() => handleLinkClick(String(pc.slug), String(cat.slug))}
-                          className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${
-                            isPreview ? "cursor-default" : "hover:text-[#1a1a1a]"
-                          }`}
-                          title={cat.name}
-                        >
-                          <span className="inline-block truncate max-w-full">{cat.name}</span>
-                        </button>
-                      </li>
-                    ))}
+                    {childrenOf(pc.id)
+                      .slice(0, MAX_CHILDREN_PER_PARENT)
+                      .map((cat) => (
+                        <li key={cat.id} className="min-w-0">
+                          <button
+                            onClick={() =>
+                              handleLinkClick(String(pc.slug), String(cat.slug))
+                            }
+                            className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${
+                              isPreview
+                                ? "cursor-default"
+                                : "hover:text-[#1a1a1a]"
+                            }`}
+                            title={cat.name}
+                          >
+                            <span className="inline-block truncate max-w-full">
+                              {cat.name}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
                   </ul>
                 </div>
               ))}
@@ -215,7 +241,10 @@ export function PublicFooter({
                   }`}
                 >
                   <span className="truncate">More</span>
-                  <ChevronDown size={14} className={`transition-transform ${moreOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform ${moreOpen ? "rotate-180" : ""}`}
+                  />
                 </button>
 
                 {overflowParents.length > 0 && (
@@ -237,42 +266,55 @@ export function PublicFooter({
                                 setMoreOpen(false);
                               }}
                               className={`w-full text-left text-[15px] font-semibold text-[#1a1a1a] transition-colors ${
-                                isPreview ? "cursor-default" : "hover:text-[#4a4a4a]"
+                                isPreview
+                                  ? "cursor-default"
+                                  : "hover:text-[#4a4a4a]"
                               }`}
                               title={pc.name}
                             >
-                              <span className="inline-block truncate max-w-full">{pc.name}</span>
+                              <span className="inline-block truncate max-w-full">
+                                {pc.name}
+                              </span>
                             </button>
 
                             <ul className="mt-2 space-y-2 pl-3 border-l border-slate-200">
                               {childrenOf(pc.id)
-                                .slice(0, 8)
+                                .slice(0, MAX_CHILDREN_PER_PARENT)
                                 .map((cat) => (
                                   <li key={cat.id} className="min-w-0">
                                     <button
                                       onClick={() => {
-                                        handleLinkClick(String(pc.slug), String(cat.slug));
+                                        handleLinkClick(
+                                          String(pc.slug),
+                                          String(cat.slug),
+                                        );
                                         setMoreOpen(false);
                                       }}
                                       className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${
-                                        isPreview ? "cursor-default" : "hover:text-[#1a1a1a]"
+                                        isPreview
+                                          ? "cursor-default"
+                                          : "hover:text-[#1a1a1a]"
                                       }`}
                                       title={cat.name}
                                     >
-                                      <span className="inline-block truncate max-w-full">{cat.name}</span>
+                                      <span className="inline-block truncate max-w-full">
+                                        {cat.name}
+                                      </span>
                                     </button>
                                   </li>
                                 ))}
 
-                              {childrenOf(pc.id).length > 8 && (
+                              {childrenOf(pc.id).length >
+                                MAX_CHILDREN_PER_PARENT && (
                                 <li>
                                   <button
-                                    onClick={() => {
-                                      handleLinkClick(String(pc.slug), "");
-                                      setMoreOpen(false);
-                                    }}
+                                    onClick={() =>
+                                      handleLinkClick(String(pc.slug), "")
+                                    }
                                     className={`text-xs font-bold text-black transition ${
-                                      isPreview ? "cursor-default" : "hover:text-black"
+                                      isPreview
+                                        ? "cursor-default"
+                                        : "hover:text-black"
                                     }`}
                                   >
                                     More →
@@ -320,7 +362,7 @@ export function PublicFooter({
                 >
                   {item.label}
                 </Link>
-              )
+              ),
             )}
           </div>
         </div>
