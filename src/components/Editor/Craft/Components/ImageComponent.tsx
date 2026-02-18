@@ -99,7 +99,6 @@ export const ImageComponent = ({
         alt={computedAlt}
         src={src || FALLBACK_SRC}
         style={imgStyle}
-        loading="lazy"
         decoding="async"
         className={`${radiusClassMap[radius] || "rounded-lg"} shadow-sm`}
         onError={(e) => {
