@@ -608,7 +608,9 @@ export function EditorPage() {
       const fetchPost = async () => {
         try {
           setLoading(true);
-          const res = await api.get(`/posts/public/${id}`);
+          const res = await api.get(`/posts/public/${id}`, {
+            params: { is_editor: "true" }
+          });
           const post = res.data;
 
           setPostInfo({
