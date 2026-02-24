@@ -35,6 +35,7 @@ import { PresetHero } from "./presets/PresetHero";
 import { PresetOffersGrid } from "./presets/PresetOffersGrid";
 import { PresetFAQ } from "./presets/PresetFAQ";
 import { PresetFooter } from "./presets/PresetFooter";
+import { ScriptComponent } from "./Components/ScriptComponent";
 
 const PresetItem = ({ label, comp }: any) => {
   const { connectors } = useEditor();
@@ -165,6 +166,11 @@ export const Toolbox = () => {
       name: "Khoảng cách",
       icon: "︽",
       component: <SpacerComponent size={20} direction={"vertical"} />,
+    },
+    {
+      name: "Script",
+      icon: "</>",
+      component: <ScriptComponent />,
     },
   ];
 

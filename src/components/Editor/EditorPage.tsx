@@ -43,6 +43,7 @@ import { Toolbox } from "./Craft/Toolbox";
 import { SettingsPanel } from "./Craft/SettingsPanel";
 import { PopupModalComponent } from "./Craft/Components/PopupModalComponent";
 import { InputComponent } from "./Craft/Components/InputComponent";
+import { ScriptComponent } from "./Craft/Components/ScriptComponent";
 
 // --- Frame Default ---
 import { DefaultNewPostFrame } from "./DefaultNewPostFrame";
@@ -53,6 +54,7 @@ import { ServiceTemplate } from "./ServiceTemplate";
 import { ContactTemplate } from "./ContactTemplate";
 import { ProductTemplate } from "./ProductTemplate";
 import { StoreCouponTemplate } from "./StoreCouponTemplate";
+
 
 import {
   Modal,
@@ -104,6 +106,7 @@ const CRAFT_RESOLVER = {
   InputComponent,
   PopupModalComponent,
   PopupOfferComponent,
+  ScriptComponent,
   // Preset
   PresetHeader,
   PresetHero,
@@ -638,6 +641,21 @@ export function EditorPage() {
       fetchPost();
     }
   }, [id, isNew]);
+
+  const useScriptNodes = () => {
+  const { query } = useEditor();
+  const state = query.getState();
+  const nodes = state.nodes || {};
+
+  const scripts = Object.entries(nodes)
+    .filter(([_, n]: any) => n?.data?.displayName === "Script")
+    .map(([id, n]: any) => ({
+      id,
+      props: n.data.props || {},
+    }));
+
+  return scripts;
+};
 
   // Load Template Content for new post
   useEffect(() => {

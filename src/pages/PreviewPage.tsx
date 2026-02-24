@@ -44,6 +44,7 @@ import { PresetOffersGrid } from "../components/Editor/Craft/presets/PresetOffer
 import { InputComponent } from "../components/Editor/Craft/Components/InputComponent";
 import { PopupModalComponent } from "../components/Editor/Craft/Components/PopupModalComponent";
 import { PopupOfferComponent } from "../components/Editor/Craft/Components/PopupOfferComponent";
+import { ScriptComponent } from "@/components/Editor/Craft/Components/ScriptComponent";
 
 export function PreviewPage() {
   const navigate = useNavigate();
@@ -138,6 +139,7 @@ export function PreviewPage() {
           AccordionComponent,
           SpacerComponent,
           SliderComponent,
+          ScriptComponent,
           InputComponent,
           PopupModalComponent,
           PopupOfferComponent,

@@ -30,6 +30,7 @@ import { TableComponent } from "../components/Editor/Craft/Components/TableCompo
 import { ShapeComponent } from "../components/Editor/Craft/Components/ShapeComponent";
 import { RowComponent } from "../components/Editor/Craft/Components/RowComponent";
 import { ColumnComponent } from "../components/Editor/Craft/Components/ColumnComponent";
+import { ScriptComponent } from "../components/Editor/Craft/Components/ScriptComponent";
 
 // ✅ Các component bạn từng dùng trong EditorPage
 import { NavbarComponent } from "../components/Editor/Craft/Components/NavbarComponent";
@@ -334,6 +335,7 @@ export function PublicPostPage() {
           InputComponent,
           PopupModalComponent,
           PopupOfferComponent,
+          ScriptComponent,
           // Preset
           PresetHeader,
           PresetHero,
