@@ -7,6 +7,7 @@ import { ClientHomePage } from "./pages/ClientHomePage";
 import { CategoryManagementPage } from "./pages/CategoryManagementPage";
 import { ParentCategoryManagementPage } from "./pages/ParentCategoryManagementPage";
 import { UserManagementPage } from "./pages/UserManagementPage";
+import { SheetsRowsPage } from "./pages/SheetsRowsPage";
 import { MediaManagementPage } from "./pages/MediaManagementPage";
 import { NewPage } from "./pages/NewPage";
 import { TemplateDashboardPage } from "./pages/TemplateDashboardPage";
@@ -32,6 +33,7 @@ function App() {
       <Route element={<CategoryManagementPage />} path="/categories" />
       <Route element={<ParentCategoryManagementPage />} path="/parent-categories" />
       <Route element={<UserManagementPage />} path="/users" />
+      <Route element={<SheetsRowsPage />} path="/sheets" />
       <Route element={<MediaManagementPage />} path="/media" />
       <Route element={<TemplateDashboardPage />} path="/template-dashboard" />
       <Route element={<TemplateEditorPage />} path="/template-editor/new" />
