@@ -38,6 +38,7 @@ export function DashboardPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [limit, setLimit] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [viewSort, setViewSort] = useState('');
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const navigate = useNavigate();
@@ -66,7 +67,8 @@ export function DashboardPage() {
                     startDate,
                     endDate,
                     page,
-                    limit
+                    limit,
+                    sort: viewSort ? `view_count:${viewSort}` : undefined
                 }
             });
             setPosts(response.data.posts);
@@ -89,7 +91,7 @@ export function DashboardPage() {
 
     useEffect(() => {
         fetchPosts();
-    }, [search, selectedCategory, selectedParentCategory, startDate, endDate, page, limit]);
+    }, [search, selectedCategory, selectedParentCategory, startDate, endDate, page, limit, viewSort]);
 
     const handleApprove = async (id: number) => {
         try {
@@ -217,6 +219,21 @@ export function DashboardPage() {
                                     ))}
                             </select>
                         </div>
+                        <div className="w-full md:w-48">
+                            <select
+                                value={viewSort}
+                                onChange={(e) => {
+                                    setViewSort(e.target.value);
+                                    setPage(1);
+                                }}
+                                className="w-full h-11 px-4 rounded-lg bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#21294a] appearance-none transition-all cursor-pointer text-sm"
+                                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
+                            >
+                                <option value="">Sắp xếp lượt xem</option>
+                                <option value="DESC">Lượt xem giảm dần</option>
+                                <option value="ASC">Lượt xem tăng dần</option>
+                            </select>
+                        </div>
                         <div className="flex flex-col md:flex-row gap-3 items-center">
                             <div className="flex items-center gap-3 bg-white px-4 h-11 border border-slate-200 rounded-lg shadow-sm flex-1 w-full">
                                 <Calendar size={18} className="text-slate-400" />
@@ -242,7 +259,7 @@ export function DashboardPage() {
                                         }}
                                     />
                                 </div>
-                                {(search || startDate || endDate || selectedCategory || selectedParentCategory) && (
+                                {(search || startDate || endDate || selectedCategory || selectedParentCategory || viewSort) && (
                                     <button
                                         onClick={() => {
                                             setSearch('');
@@ -250,6 +267,7 @@ export function DashboardPage() {
                                             setEndDate('');
                                             setSelectedCategory('');
                                             setSelectedParentCategory('');
+                                            setViewSort('');
                                             setPage(1);
                                         }}
                                         className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors px-3 py-1 bg-rose-50 rounded-lg border border-rose-100 whitespace-nowrap"
