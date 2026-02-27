@@ -15,6 +15,7 @@ import { TemplateEditorPage } from "./components/Editor/TemplateEditorPage";
 import { PublicTemplatePage } from "./pages/PublicTemplatePage";
 import { ClientCategoryPage } from "./pages/ClientCategoryPage";
 import { PreviewPage } from "./pages/PreviewPage";
+import { FooterManagementPage } from "./pages/FooterManagementPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
       <Route element={<UserManagementPage />} path="/users" />
       <Route element={<SheetsRowsPage />} path="/sheets" />
       <Route element={<MediaManagementPage />} path="/media" />
+      <Route element={<FooterManagementPage />} path="/footer-links" />
       <Route element={<TemplateDashboardPage />} path="/template-dashboard" />
       <Route element={<TemplateEditorPage />} path="/template-editor/new" />
       <Route element={<TemplateEditorPage />} path="/template-editor/:id" />

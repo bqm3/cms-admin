@@ -11,6 +11,7 @@ import {
   X,
   Image as ImageIcon,
   LayoutTemplate,
+  Layout,
 } from "lucide-react";
 import { Button } from "@heroui/button";
 import { useNavigate } from "react-router-dom";
@@ -105,6 +106,16 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             icon: ImageIcon,
             label: "Thư viện ảnh",
             path: "/media",
+            activeBg: "bg-[#21294a]/5",
+            activeBorder: "border-[#21294a]/20",
+            activeText: "text-[#21294a]",
+            iconBg: "bg-[#21294a]/10",
+            iconText: "text-[#21294a]",
+          },
+          {
+            icon: Layout,
+            label: "Quản lý Footer",
+            path: "/footer-links",
             activeBg: "bg-[#21294a]/5",
             activeBorder: "border-[#21294a]/20",
             activeText: "text-[#21294a]",
