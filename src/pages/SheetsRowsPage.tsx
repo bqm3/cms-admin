@@ -30,6 +30,45 @@ type RowItem = {
   updated_at: string;
 };
 
+function formatCellValue(value: any, col?: { data_type?: string }) {
+  if (value === null || value === undefined) return "-";
+
+  // giữ nguyên nếu là object/array
+  if (typeof value === "object") return JSON.stringify(value);
+
+  // chuẩn hoá string
+  if (typeof value === "string") {
+    const s = value.trim();
+    if (!s) return "-";
+
+    // TH1: dạng 95.00 / 6.00 => bỏ .00
+    if (/^-?\d+(\.0+)$/.test(s)) return String(parseInt(s, 10));
+
+    // TH2: dạng số có dấu phẩy nghìn + đuôi .00: 1,234.00
+    if (/^-?\d{1,3}(,\d{3})*(\.\d+)?$/.test(s)) {
+      const n = Number(s.replace(/,/g, ""));
+      if (!Number.isNaN(n)) {
+        // nếu là số nguyên thì bỏ .00
+        if (Number.isInteger(n)) return String(n);
+        return String(n);
+      }
+    }
+
+    // còn lại giữ nguyên (vd: "18,442đ", "271,57 $")
+    return s;
+  }
+
+  // number
+  if (typeof value === "number") {
+    if (Number.isInteger(value)) return String(value);
+    // ví dụ 12.0 => 12
+    if (Math.abs(value - Math.round(value)) < 1e-9) return String(Math.round(value));
+    return String(value);
+  }
+
+  return String(value);
+}
+
 export function SheetsRowsPage() {
   const [sheets, setSheets] = useState<Sheet[]>([]);
   const [sheetId, setSheetId] = useState<number | null>(null);
@@ -320,7 +359,7 @@ export function SheetsRowsPage() {
                     <tr className="border-b border-black/10">
                       <th className="text-left p-3 w-[80px]">ID</th>
                       {columns?.map((c) => (
-                        <th key={c.id} className="text-left p-3 min-w-[180px]">
+                        <th key={c.id} className="text-left p-3 min-w-[120px]">
                           {c.title}
                         </th>
                       ))}
@@ -337,7 +376,7 @@ export function SheetsRowsPage() {
                         <td className="p-3">{r.id}</td>
                         {columns?.map((c) => (
                           <td key={c.id} className="p-3">
-                            {r.values?.[c.id] ?? "-"}
+                            {formatCellValue(r.values?.[c.id], c)}
                           </td>
                         ))}
                         <td className="p-3">
