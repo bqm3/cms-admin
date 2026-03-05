@@ -199,24 +199,6 @@ export function SheetsRowsPage() {
     await loadRows(sheetId);
   }
 
-  {
-    (!sheets || sheets.length === 0) && (
-      <Card className="rounded-2xl">
-        <CardBody className="p-8 text-center space-y-3">
-          <div className="text-lg font-semibold">Chưa có bảng nào</div>
-          <div className="opacity-70">
-            Hãy tạo 1 bảng (Sheet) trước, sau đó mới thêm cột và thêm dữ liệu.
-          </div>
-          <div>
-            <Button color="primary" onPress={() => setOpenCreateSheet(true)}>
-              Tạo bảng mới
-            </Button>
-          </div>
-        </CardBody>
-      </Card>
-    );
-  }
-
   return (
     <AdminLayout>
       <div className="container mx-auto p-4 space-y-4">
@@ -254,13 +236,16 @@ export function SheetsRowsPage() {
                 <Select
                   className="min-w-[260px]"
                   label="Chọn bảng"
+                  disallowEmptySelection
                   selectedKeys={
                     sheetId ? new Set([String(sheetId)]) : new Set([])
                   }
                   onSelectionChange={(keys) => {
                     const id = Array.from(keys)[0];
-                    setPage(1);
-                    setSheetId(id ? Number(id) : null);
+                    if (id) {
+                      setPage(1);
+                      setSheetId(Number(id));
+                    }
                   }}
                 >
                   {sheets?.map((s) => (
@@ -295,10 +280,14 @@ export function SheetsRowsPage() {
                   <Select
                     className="min-w-[220px]"
                     label="Sắp xếp theo"
+                    disallowEmptySelection
                     selectedKeys={new Set([sortBy])}
                     onSelectionChange={(keys) => {
-                      setPage(1);
-                      setSortBy(String(Array.from(keys)[0] || "updated_at"));
+                      const id = Array.from(keys)[0];
+                      if (id) {
+                        setPage(1);
+                        setSortBy(String(id));
+                      }
                     }}
                   >
                     {sortOptions?.map((o) => (
@@ -309,12 +298,14 @@ export function SheetsRowsPage() {
                   <Select
                     className="min-w-[140px]"
                     label="Chiều"
+                    disallowEmptySelection
                     selectedKeys={new Set([sortDir])}
                     onSelectionChange={(keys) => {
-                      setPage(1);
-                      setSortDir(
-                        (String(Array.from(keys)[0]) as any) || "desc",
-                      );
+                      const id = Array.from(keys)[0];
+                      if (id) {
+                        setPage(1);
+                        setSortDir(String(id) as any);
+                      }
                     }}
                   >
                     <SelectItem key="desc">Giảm dần</SelectItem>
