@@ -29,7 +29,7 @@ export function ClientHomePage() {
         parents.map((pc) =>
           api.get(`/posts/public/catalog/${pc.slug || pc.id}`, {
             params: {
-              limit: 8,
+              limit: 12,
               sort: "sequence_number:ASC",
             },
           }),
@@ -117,7 +117,7 @@ export function ClientHomePage() {
         categories={categories}
       />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 mt-12">
+      <main className="max-w-[1500px] mx-auto px-4 md:px-6 mt-12">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
             <div className="w-12 h-12 border-4 border-[#21294a]/20 border-t-[#21294a] rounded-full animate-spin"></div>

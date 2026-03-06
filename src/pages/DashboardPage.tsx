@@ -16,11 +16,13 @@ import {
     LayoutDashboard,
     Plus,
     Calendar,
-    Copy
+    Copy,
+    Link as LinkIcon
 } from 'lucide-react';
 import api, { SERVER_URL } from '../services/api';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { DataTable } from '../components/Common/DataTable';
+import { PostLinkDialog } from '../components/Common/PostLinkDialog';
 
 export function DashboardPage() {
     const [posts, setPosts] = useState<any[]>([]);
@@ -39,6 +41,11 @@ export function DashboardPage() {
     const [limit, setLimit] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
     const [viewSort, setViewSort] = useState('');
+
+    // PostLink dialog state
+    const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
+    const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+    const [selectedPostTitle, setSelectedPostTitle] = useState('');
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const navigate = useNavigate();
@@ -134,6 +141,12 @@ export function DashboardPage() {
         } catch (err) {
             alert('Thao tác thất bại');
         }
+    };
+
+    const openLinkDialog = (post: any) => {
+        setSelectedPostId(post.id);
+        setSelectedPostTitle(post.title);
+        setIsLinkDialogOpen(true);
     };
 
     return (
@@ -355,6 +368,19 @@ export function DashboardPage() {
                         )
                     },
                     {
+                        header: 'Link phụ',
+                        align: 'center',
+                        render: (post) => (
+                            <div 
+                                className="group/link cursor-pointer inline-flex items-center gap-1.5 text-blue-600 font-bold text-[10px] bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md hover:bg-blue-600 hover:text-white transition-all"
+                                onClick={() => openLinkDialog(post)}
+                                title="Click để quản lý link phụ"
+                            >
+                                <LinkIcon size={12} /> {post.links?.length || 0}
+                            </div>
+                        )
+                    },
+                    {
                         header: 'Lượt xem',
                         align: 'center',
                         render: (post) => (
@@ -398,6 +424,16 @@ export function DashboardPage() {
                                     title="Nhân bản bài viết"
                                 >
                                     <Copy size={16} />
+                                </Button>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="flat"
+                                    className="bg-blue-50 text-blue-600 rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-blue-100"
+                                    onClick={() => openLinkDialog(post)}
+                                    title="Quản lý link phụ"
+                                >
+                                    <LinkIcon size={16} />
                                 </Button>
                                 {user.role === 'admin' && (
                                     <Button
@@ -453,6 +489,13 @@ export function DashboardPage() {
                     },
                     unitName: 'dự án'
                 }}
+            />
+
+            <PostLinkDialog
+                isOpen={isLinkDialogOpen}
+                onClose={() => setIsLinkDialogOpen(false)}
+                postId={selectedPostId}
+                postTitle={selectedPostTitle}
             />
         </AdminLayout>
     );

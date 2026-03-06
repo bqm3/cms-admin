@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unknown-property */
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardBody } from "@heroui/card";
-import { Clock, ChevronRight } from "lucide-react";
+import { Clock, ChevronRight, ExternalLink } from "lucide-react";
 import { SERVER_URL } from "../../services/api";
 import { formatDate } from "../../utils/formatDate";
 
@@ -54,31 +54,27 @@ export function PostCard({ post }: PostCardProps) {
               {post.title}
             </h3>
 
-            {/* Category Badges Below Title */}
-            <div className="flex flex-wrap gap-2 mb-5">
-              {post.category?.parent && (
-                <Link
-                  to={`/category/${post.category.parent.slug}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className="bg-slate-50 text-[#21294a] px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider border border-slate-200/50 hover:bg-[#21294a] hover:text-white transition-all z-20 relative"
-                >
-                  {post.category.parent.name}
-                </Link>
-              )}
-              {post.category && (
-                <Link
-                  to={`/category/${post.category?.parent?.slug || "all"}/${post.category.slug}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className="bg-slate-50 text-[#666666] px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider border border-slate-200/50 hover:bg-slate-200 transition-all z-20 relative"
-                >
-                  {post.category.name}
-                </Link>
+            {/* Sub-links (Vertical) */}
+            <div className="flex flex-col gap-2 mb-5">
+              {post.links && post.links.length > 0 ? (
+                post.links.slice(0, 4).map((link: any) => (
+                  <button
+                    key={link.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(link.href, "_blank");
+                    }}
+                    className="w-full flex items-center justify-between bg-slate-50 hover:bg-[#21294a] text-slate-700 hover:text-white px-5 py-3.5 rounded-[8px] text-[13px] font-bold border border-slate-200 hover:border-[#21294a] transition-all duration-200 group/link relative z-20 shadow-sm active:scale-[0.98]"
+                  >
+                    <span className="truncate pr-2">{link.title}</span>
+                    <ExternalLink size={14} className="opacity-40 group-hover/link:opacity-100 flex-shrink-0" />
+                  </button>
+                ))
+              ) : null}
+              {post.links && post.links.length > 4 && (
+                <div className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-widest mt-1">
+                  View {post.links.length - 4} more links in detail
+                </div>
               )}
             </div>
 
