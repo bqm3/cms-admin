@@ -494,6 +494,7 @@ export function DashboardPage() {
             <PostLinkDialog
                 isOpen={isLinkDialogOpen}
                 onClose={() => setIsLinkDialogOpen(false)}
+                onSuccess={fetchPosts}
                 postId={selectedPostId}
                 postTitle={selectedPostTitle}
             />

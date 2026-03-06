@@ -24,9 +24,10 @@ interface PostLinkDialogProps {
     postTitle: string;
     isOpen: boolean;
     onClose: () => void;
+    onSuccess?: () => void;
 }
 
-export function PostLinkDialog({ postId, postTitle, isOpen, onClose }: PostLinkDialogProps) {
+export function PostLinkDialog({ postId, postTitle, isOpen, onClose, onSuccess }: PostLinkDialogProps) {
     const [links, setLinks] = useState<PostLink[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -117,6 +118,7 @@ export function PostLinkDialog({ postId, postTitle, isOpen, onClose }: PostLinkD
             setSaving(true);
             await api.post(`/post-links/bulk/${postId}`, { links });
             alert('Cập nhật link thành công! ✨');
+            if (onSuccess) onSuccess();
             onClose();
         } catch (err: any) {
             console.error('Error saving links:', err);
@@ -162,7 +164,7 @@ export function PostLinkDialog({ postId, postTitle, isOpen, onClose }: PostLinkD
                                     size="sm" 
                                     variant="flat"
                                     className="bg-slate-100 text-slate-600 font-bold rounded-xl h-9 px-4 hover:bg-slate-200 transition-all"
-                                    onClick={() => setShowBulk(!showBulk)}
+                                    onPress={() => setShowBulk(!showBulk)}
                                     // startContent={<Layers size={16} />}
                                 >
                                     {showBulk ? "Hủy thêm nhanh" : "Thêm nhanh"}
@@ -170,7 +172,7 @@ export function PostLinkDialog({ postId, postTitle, isOpen, onClose }: PostLinkD
                                 <Button 
                                     size="sm" 
                                     className="bg-[#21294a] text-white font-bold rounded-xl h-9 px-4 shadow-lg shadow-[#21294a]/10 hover:scale-105 transition-all"
-                                    onClick={handleAddLink}
+                                    onPress={handleAddLink}
                                     startContent={<Plus size={16} />}
                                 >
                                     Thêm dòng
@@ -193,7 +195,7 @@ Hoặc chỉ dán Link`}
                                     <Button 
                                         size="sm"
                                         className="bg-[#21294a] text-white font-bold rounded-xl px-6 h-9"
-                                        onClick={handleAddBulk}
+                                        onPress={handleAddBulk}
                                     >
                                         Xác nhận thêm ({bulkText.split('\n').filter(l => l.trim()).length})
                                     </Button>
@@ -216,7 +218,7 @@ Hoặc chỉ dán Link`}
                         ) : (
                             <div className="space-y-3">
                                 {links.map((link, index) => (
-                                    <div key={index} className="group p-4 bg-white border border-slate-200 rounded-2xl hover:border-[#21294a]/30 hover:shadow-xl hover:shadow-[#21294a]/5 transition-all flex flex-col md:flex-row gap-4 items-end md:items-center">
+                                    <div key={link.id || `new-${index}`} className="group p-4 bg-white border border-slate-200 rounded-2xl hover:border-[#21294a]/30 hover:shadow-xl hover:shadow-[#21294a]/5 transition-all flex flex-col md:flex-row gap-4 items-end md:items-center">
                                         <div className="w-full md:w-20">
                                             <Input
                                                 label="STT"
@@ -267,8 +269,9 @@ Hoặc chỉ dán Link`}
                                             isIconOnly
                                             size="sm"
                                             variant="flat"
-                                            className="bg-rose-50 text-rose-500 rounded-xl h-10 w-10 hover:bg-rose-500 hover:text-white transition-all active:scale-90"
-                                            onClick={() => handleRemoveLink(index)}
+                                            color="danger"
+                                            className="rounded-xl h-10 w-10 active:scale-90 transition-all"
+                                            onPress={() => handleRemoveLink(index)}
                                         >
                                             <Trash size={16} />
                                         </Button>
