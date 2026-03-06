@@ -142,7 +142,7 @@ export function ClientCategoryPage() {
         categories={categories}
       />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 mt-8">
+      <main className="max-w-[1500px] mx-auto px-4 md:px-6 mt-8">
         <section>
           {/* Header Section */}
           <div className="flex flex-col gap-8 mb-12">
@@ -242,7 +242,7 @@ export function ClientCategoryPage() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
                 {posts.map((post) => (
                   <PostCard key={post.id} post={post} />
                 ))}
