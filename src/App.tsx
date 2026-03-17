@@ -16,12 +16,18 @@ import { PublicTemplatePage } from "./pages/PublicTemplatePage";
 import { ClientCategoryPage } from "./pages/ClientCategoryPage";
 import { PreviewPage } from "./pages/PreviewPage";
 import { FooterManagementPage } from "./pages/FooterManagementPage";
+import { PrivacyPolicy } from "./pages/Public/PrivacyPolicy";
+import { AboutUs } from "./pages/Public/AboutUs";
+
 
 function App() {
   return (
     <Routes>
       <Route element={<ClientHomePage />} path="/" />
+      <Route element={<PrivacyPolicy />} path="/privacy-policy" />
+      <Route element={<AboutUs />} path="/about-us" />
       <Route element={<ClientCategoryPage />} path="/category" />
+
       <Route element={<ClientCategoryPage />} path="/category/:parentSlug" />
       <Route element={<ClientCategoryPage />} path="/category/:parentSlug/:categorySlug" />
       <Route element={<LoginPage />} path="/login" />

@@ -45,17 +45,27 @@ export function PublicFooter({
         }
 
         // Bottom links
-        const bottoms = allLinks.filter((l: any) => l.type === "bottom");
+        const bottoms = allLinks.filter((l: any) => l.type === "bottom").map((link: any) => {
+          if (link.label.toLowerCase() === "about us" && (link.href === "/#" || link.href === "/")) {
+            return { ...link, href: "/about-us" };
+          }
+          if (link.label.toLowerCase() === "privacy" && (link.href === "/#" || link.href === "/")) {
+            return { ...link, href: "/privacy-policy" };
+          }
+          return link;
+        });
+
         if (bottoms.length > 0) {
           setBottomLinks(bottoms);
         } else {
           setBottomLinks([
-            { label: "About us", href: "/#" },
+            { label: "About us", href: "/about-us" },
             { label: "Terms", href: "/#" },
-            { label: "Privacy", href: "/#" },
+            { label: "Privacy", href: "/privacy-policy" },
             { label: "Contact", href: "/#" },
           ]);
         }
+
       } catch (error) {
         console.error("Error fetching footer links:", error);
         // Fallbacks
@@ -66,12 +76,13 @@ export function PublicFooter({
           { label: "TikTok", href: "https://www.tiktok.com/@globalpromotionllc" },
         ]);
         setBottomLinks([
-          { label: "About us", href: "/#" },
+          { label: "About us", href: "/about-us" },
           { label: "Terms", href: "/#" },
-          { label: "Privacy", href: "/#" },
+          { label: "Privacy", href: "/privacy-policy" },
           { label: "Contact", href: "/#" },
         ]);
       }
+
     };
     fetchFooterLinks();
   }, []);
@@ -395,6 +406,7 @@ export function PublicFooter({
                 <Link
                   key={item.label}
                   to={item.href}
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                   className="text-xs font-semibold text-gray-700 uppercase tracking-wide transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded"
                 >
                   {item.label}
