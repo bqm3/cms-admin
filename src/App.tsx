@@ -18,6 +18,8 @@ import { PreviewPage } from "./pages/PreviewPage";
 import { FooterManagementPage } from "./pages/FooterManagementPage";
 import { PrivacyPolicy } from "./pages/Public/PrivacyPolicy";
 import { AboutUs } from "./pages/Public/AboutUs";
+import { Term } from "./pages/Public/Term";
+import { Contact } from "./pages/Public/Contact";
 
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
     <Routes>
       <Route element={<ClientHomePage />} path="/" />
       <Route element={<PrivacyPolicy />} path="/privacy-policy" />
+      <Route element={<Contact />} path="/contact" />
+      <Route element={<Term />} path="/terms" />
       <Route element={<AboutUs />} path="/about-us" />
       <Route element={<ClientCategoryPage />} path="/category" />
 

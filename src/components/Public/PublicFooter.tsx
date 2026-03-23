@@ -52,6 +52,12 @@ export function PublicFooter({
           if (link.label.toLowerCase() === "privacy" && (link.href === "/#" || link.href === "/")) {
             return { ...link, href: "/privacy-policy" };
           }
+          if (link.label.toLowerCase() === "terms" && (link.href === "/#" || link.href === "/")) {
+            return { ...link, href: "/terms" };
+          }
+          if (link.label.toLowerCase() === "contact" && (link.href === "/#" || link.href === "/")) {
+            return { ...link, href: "/contact" };
+          }
           return link;
         });
 
@@ -60,14 +66,13 @@ export function PublicFooter({
         } else {
           setBottomLinks([
             { label: "About us", href: "/about-us" },
-            { label: "Terms", href: "/#" },
+            { label: "Terms", href: "/terms" },
             { label: "Privacy", href: "/privacy-policy" },
-            { label: "Contact", href: "/#" },
+            { label: "Contact", href: "/contact" },
           ]);
         }
 
       } catch (error) {
-        console.error("Error fetching footer links:", error);
         // Fallbacks
         setSocialLinks([
           { label: "Facebook", href: "https://facebook.com/profile.php?id=61586819626148" },
@@ -77,9 +82,9 @@ export function PublicFooter({
         ]);
         setBottomLinks([
           { label: "About us", href: "/about-us" },
-          { label: "Terms", href: "/#" },
+          { label: "Terms", href: "/terms" },
           { label: "Privacy", href: "/privacy-policy" },
-          { label: "Contact", href: "/#" },
+          { label: "Contact", href: "/contact" },
         ]);
       }
 

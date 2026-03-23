@@ -78,14 +78,14 @@ export function PostCard({ post }: PostCardProps) {
               )}
             </div>
 
-            <div className="mt-auto pt-4 border-t border-[#e6e6e6] flex items-center justify-between">
+            {/* <div className="mt-auto pt-4 border-t border-[#e6e6e6] flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-black group-hover:text-[#21294a] transition-colors">
                 <Clock size={20} />
                 <span className="text-[15px] font-medium uppercase tracking-wider">
                   {formatDate(post.created_at)}
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
         </CardBody>
       </Card>
