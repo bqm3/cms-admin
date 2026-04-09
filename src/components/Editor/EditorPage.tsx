@@ -55,6 +55,8 @@ import { ContactTemplate } from "./ContactTemplate";
 import { ProductTemplate } from "./ProductTemplate";
 import { StoreCouponTemplate } from "./StoreCouponTemplate";
 
+import { DynamicApiListComponent } from "@/components/Editor/Craft/Components/DynamicApiListComponent";
+import { DynamicNavTreeComponent } from "@/components/Editor/Craft/Components/DynamicNavTreeComponent";
 
 import {
   Modal,
@@ -113,6 +115,10 @@ const CRAFT_RESOLVER = {
   PresetOffersGrid,
   PresetFAQ,
   PresetFooter,
+
+  // Dynamic components
+  DynamicApiListComponent, // ✅ Add new components here
+  DynamicNavTreeComponent
 };
 
 // --- Sub Components ---

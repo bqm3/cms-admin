@@ -49,6 +49,8 @@ import { InputComponent } from "@/components/Editor/Craft/Components/InputCompon
 import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
 import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
 
+import { DynamicApiListComponent } from "@/components/Editor/Craft/Components/DynamicApiListComponent";
+import { DynamicNavTreeComponent } from "@/components/Editor/Craft/Components/DynamicNavTreeComponent";
 function stripHtmlToText(html: string) {
   if (!html) return "";
   const tmp = document.createElement("div");
@@ -342,6 +344,9 @@ export function PublicPostPage() {
           PresetOffersGrid,
           PresetFAQ,
           PresetFooter,
+          //
+          DynamicApiListComponent,
+          DynamicNavTreeComponent
         }}
       >
         <Frame data={frameData} />

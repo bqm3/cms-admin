@@ -36,6 +36,8 @@ import { PresetOffersGrid } from "./presets/PresetOffersGrid";
 import { PresetFAQ } from "./presets/PresetFAQ";
 import { PresetFooter } from "./presets/PresetFooter";
 import { ScriptComponent } from "./Components/ScriptComponent";
+import { DynamicApiListComponent } from "./Components/DynamicApiListComponent";
+import { DynamicNavTreeComponent } from "./Components/DynamicNavTreeComponent";
 
 const PresetItem = ({ label, comp }: any) => {
   const { connectors } = useEditor();
@@ -162,7 +164,7 @@ export const Toolbox = () => {
         <PopupOfferComponent delayMs={5000} teaserText="GET DISCOUNT!" />
       ),
     },
-     {
+    {
       name: "Khoảng cách",
       icon: "︽",
       component: <SpacerComponent size={20} direction={"vertical"} />,
@@ -171,6 +173,16 @@ export const Toolbox = () => {
       name: "Script",
       icon: "</>",
       component: <ScriptComponent />,
+    },
+    {
+      name: "API List",
+      icon: "[]",
+      component: <DynamicApiListComponent url={""} method={"GET"} />,
+    },
+    {
+      name: "Navigation Tree",
+      icon: "📁",
+      component: <DynamicNavTreeComponent url={""} />,
     },
   ];
 
