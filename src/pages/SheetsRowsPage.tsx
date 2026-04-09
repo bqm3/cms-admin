@@ -11,7 +11,7 @@ import {
 } from "@heroui/modal";
 import { Pagination } from "@heroui/pagination";
 import { Select, SelectItem } from "@heroui/select";
-import { Trash2, Pencil, Plus } from "lucide-react";
+import { Trash2, Pencil, Plus, ShieldCheck, CheckSquare, Square } from "lucide-react";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import api from "../services/api";
 
@@ -89,6 +89,22 @@ export function SheetsRowsPage() {
   const [newSheetName, setNewSheetName] = useState("");
   const [newSheetDesc, setNewSheetDesc] = useState("");
 
+  const [openPerms, setOpenPerms] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [selectedUserForPerm, setSelectedUserForPerm] = useState<string | null>(null);
+  const [userPerms, setUserPerms] = useState<number[]>([]);
+  const [syncingPerms, setSyncingPerms] = useState(false);
+
+  const currentUser = useMemo(() => {
+    try {
+      const u = localStorage.getItem("user");
+      return u ? JSON.parse(u) : null;
+    } catch {
+      return null;
+    }
+  }, []);
+  const isAdmin = currentUser?.role === "admin";
+
   // modal state
   const [open, setOpen] = useState(false);
   const [editingRow, setEditingRow] = useState<RowItem | null>(null);
@@ -117,6 +133,49 @@ export function SheetsRowsPage() {
     if (!sheetId && list.length) setSheetId(list[0].id);
   }
 
+  async function loadUsers() {
+    if (!isAdmin) return;
+    try {
+      const res = await api.get("/users?limit=100");
+      setUsers(res.data?.users || []);
+    } catch (err) {
+      console.error("Load users error:", err);
+    }
+  }
+
+  async function loadUserPermissions(uid: number) {
+    try {
+      const res = await api.get(`/sheets/permissions/${uid}`);
+      const ids = (res.data?.data || []).map((p: any) => p.sheet_id);
+      setUserPerms(ids);
+    } catch (err) {
+      console.error("Load perms error:", err);
+    }
+  }
+
+  async function syncPermissions() {
+    if (!selectedUserForPerm) return;
+    setSyncingPerms(true);
+    try {
+      await api.post("/sheets/permissions/sync", {
+        userId: Number(selectedUserForPerm),
+        sheetIds: userPerms,
+      });
+      alert("Cập nhật quyền thành công!");
+    } catch (err) {
+      console.error("Sync perms error:", err);
+      alert("Lỗi cập nhật quyền");
+    } finally {
+      setSyncingPerms(false);
+    }
+  }
+
+  function openPermissions() {
+    setSelectedUserForPerm(null);
+    setUserPerms([]);
+    setOpenPerms(true);
+  }
+
   async function loadRows(currentSheetId: number) {
     const res = await api.get(`/sheets/${currentSheetId}/rows/list`, {
       params: { q, sortBy, sortDir, page, limit },
@@ -130,6 +189,7 @@ export function SheetsRowsPage() {
 
   useEffect(() => {
     loadSheets();
+    loadUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -246,17 +306,20 @@ export function SheetsRowsPage() {
             <CardBody className="p-8 text-center space-y-3">
               <div className="text-lg font-semibold">Chưa có bảng nào</div>
               <div className="opacity-70">
-                Hãy tạo 1 bảng (Sheet) trước, sau đó mới thêm cột và thêm dữ
-                liệu.
+                {isAdmin
+                  ? "Hãy tạo 1 bảng (Sheet) trước, sau đó mới thêm cột và thêm dữ liệu."
+                  : "Bạn hiện chưa có quyền xem bảng nào. Vui lòng liên hệ Admin."}
               </div>
-              <div>
-                <Button
-                  color="primary"
-                  onPress={() => setOpenCreateSheet(true)}
-                >
-                  Tạo bảng mới
-                </Button>
-              </div>
+              {isAdmin && (
+                <div>
+                  <Button
+                    color="primary"
+                    onPress={() => setOpenCreateSheet(true)}
+                  >
+                    Tạo bảng mới
+                  </Button>
+                </div>
+              )}
             </CardBody>
           </Card>
         )}
@@ -291,12 +354,22 @@ export function SheetsRowsPage() {
                     <SelectItem key={String(s.id)}>{s.name}</SelectItem>
                   ))}
                 </Select>
-                <Button variant="flat" onPress={() => setOpenCreateSheet(true)}>
-                  Tạo bảng
-                </Button>
-                <Button variant="flat" onPress={() => setOpenCols(true)}>
-                  Quản lý cột
-                </Button>
+                {isAdmin && (
+                  <>
+                    <Button variant="flat" onPress={() => setOpenCreateSheet(true)}>
+                      Tạo bảng
+                    </Button>
+                    <Button variant="flat" onPress={() => setOpenCols(true)}>
+                      Quản lý cột
+                    </Button>
+                    <Button
+                      startContent={<ShieldCheck size={18} />}
+                      onPress={openPermissions}
+                    >
+                      Cấp quyền
+                    </Button>
+                  </>
+                )}
                 <Button startContent={<Plus size={18} />} onPress={openCreate}>
                   Thêm dòng
                 </Button>
@@ -448,9 +521,6 @@ export function SheetsRowsPage() {
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button variant="flat" onPress={() => setOpen(false)}>
-                Hủy
-              </Button>
               <Button color="primary" onPress={saveRow}>
                 Lưu
               </Button>
@@ -528,6 +598,113 @@ export function SheetsRowsPage() {
               </Button>
               <Button color="primary" onPress={createSheet}>
                 Tạo
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        {/* Modal Cấp Quyền */}
+        <Modal
+          isOpen={openPerms}
+          onOpenChange={setOpenPerms}
+          size="2xl"
+          isDismissable={false} 
+          isKeyboardDismissDisabled={true}
+        >
+          <ModalContent>
+            <ModalHeader>Quản lý quyền xem bảng (Sheet)</ModalHeader>
+            <ModalBody className="space-y-4">
+              <div className="space-y-2">
+                <div className="text-sm font-semibold">1. Chọn User</div>
+                <Select
+                  label="Chọn nhân viên"
+                  placeholder="Chọn một user để thiết lập quyền"
+                  selectedKeys={
+                    selectedUserForPerm
+                      ? new Set([selectedUserForPerm])
+                      : new Set([])
+                  }
+                  onSelectionChange={(keys) => {
+                    const val = Array.from(keys)[0] as string;
+                    setSelectedUserForPerm(val);
+                    if (val) loadUserPermissions(Number(val));
+                    else setUserPerms([]);
+                  }}
+                >
+                  {users.map((u) => (
+                    <SelectItem key={String(u.id)} textValue={u.username}>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">{u.username}</span>
+                        <span className="text-xs opacity-60">
+                          {u.fullName || u.email || "No details"}
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
+
+              {selectedUserForPerm && (
+                <div className="space-y-2 pt-2">
+                  <div className="text-sm font-semibold">
+                    2. Chọn các bảng được phép xem
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[300px] overflow-auto p-2 border rounded-xl">
+                    {sheets.map((s) => {
+                      const isChecked = userPerms.includes(s.id);
+                      return (
+                        <div
+                          key={s.id}
+                          className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                            isChecked
+                              ? "bg-primary/5 border-primary"
+                              : "bg-white border-black/5 hover:border-black/20"
+                          }`}
+                          onClick={() => {
+                            if (isChecked) {
+                              setUserPerms((prev) =>
+                                prev.filter((id) => id !== s.id),
+                              );
+                            } else {
+                              setUserPerms((prev) => [...prev, s.id]);
+                            }
+                          }}
+                        >
+                          {isChecked ? (
+                            <CheckSquare className="text-primary" size={20} />
+                          ) : (
+                            <Square size={20} className="opacity-30" />
+                          )}
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold">{s.name}</span>
+                            {s.description && (
+                              <span className="text-[10px] opacity-50 truncate max-w-[150px]">
+                                {s.description}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[11px] opacity-50 italic">
+                    * Quyền này chỉ áp dụng cho tài khoản có role là 'user'.
+                    Admin luôn xem được tất cả các bảng.
+                  </p>
+                </div>
+              )}
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="flat" onPress={() => setOpenPerms(false)}>
+                Hủy
+              </Button>
+              <Button
+                color="primary"
+                isLoading={syncingPerms}
+                isDisabled={!selectedUserForPerm}
+                onPress={syncPermissions}
+              >
+                Lưu quyền hạn
               </Button>
             </ModalFooter>
           </ModalContent>
