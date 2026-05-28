@@ -1,19 +1,15 @@
-/* eslint-disable prettier/prettier */
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useNode } from "@craftjs/core";
 import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
+import api, { SERVER_URL } from "../../../../services/api";
 
 interface ImageProps {
   src?: string;
   width?: string;
   height?: string;
-
-  // user override
   alt?: string;
-
-  // ✅ default alt (từ title bài)
   defaultAlt?: string;
-
   objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
   radius?: "none" | "sm" | "md" | "lg" | "xl" | "2xl";
 }
@@ -27,10 +23,6 @@ const radiusClassMap: Record<string, string> = {
   "2xl": "rounded-2xl",
 };
 
-/**
- * ✅ Placeholder nội bộ (không phụ thuộc mạng/DNS)
- * - Dùng SVG data URI: luôn load được
- */
 function svgPlaceholder(text = "No image", w = 1200, h = 800) {
   const t = encodeURIComponent(text);
   const svg = `
@@ -58,6 +50,12 @@ function svgPlaceholder(text = "No image", w = 1200, h = 800) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
+function resolveAssetUrl(url?: string) {
+  if (!url) return "";
+  if (url.startsWith("http") || url.startsWith("data:")) return url;
+  return `${SERVER_URL}${url}`;
+}
+
 const FALLBACK_SRC = svgPlaceholder("Image");
 
 export const ImageComponent = ({
@@ -77,17 +75,19 @@ export const ImageComponent = ({
   }));
 
   const wrapStyle: React.CSSProperties = { width };
-
   const imgStyle: React.CSSProperties = {
     width: "100%",
     height: height === "auto" ? "auto" : height,
     objectFit,
   };
 
-  // ✅ alt hiển thị: ưu tiên alt user, nếu rỗng thì dùng defaultAlt (title)
   const computedAlt = useMemo(() => {
     return (alt || "").trim() || (defaultAlt || "").trim() || "";
   }, [alt, defaultAlt]);
+
+  const resolvedSrc = useMemo(() => {
+    return resolveAssetUrl(src) || FALLBACK_SRC;
+  }, [src]);
 
   return (
     <div
@@ -97,22 +97,20 @@ export const ImageComponent = ({
     >
       <img
         alt={computedAlt}
-        src={src || FALLBACK_SRC}
+        src={resolvedSrc}
         style={imgStyle}
         decoding="async"
         className={`${radiusClassMap[radius] || "rounded-lg"} shadow-sm`}
         onError={(e) => {
-          // ✅ Tránh loop: chỉ fallback 1 lần
           const img = e.currentTarget;
           if (img.dataset.fallbackApplied === "1") return;
-
           img.dataset.fallbackApplied = "1";
           img.src = FALLBACK_SRC;
         }}
       />
 
       {selected && (
-        <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+        <div className="absolute top-2 right-2 rounded bg-black/50 px-2 py-1 text-xs text-white">
           Image
         </div>
       )}
@@ -140,8 +138,34 @@ const ImageSettings = () => {
     radius: node.data.props.radius,
   }));
 
-  // ✅ UI hiển thị alt: nếu user chưa nhập thì show defaultAlt
+  const [uploading, setUploading] = useState(false);
   const displayAlt = (alt || "").trim() || (defaultAlt || "").trim() || "";
+  const previewSrc = resolveAssetUrl(src);
+
+  const handleUpload = async (file?: File | null) => {
+    if (!file) return;
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("files", file);
+      formData.append("name", file.name);
+      const res = await api.post("/media", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const media = Array.isArray(res.data) ? res.data[0] : res.data;
+      setProp((props: any) => {
+        props.src = media.url;
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Upload ảnh thất bại");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div className="space-y-3">
@@ -150,13 +174,28 @@ const ImageSettings = () => {
         size="sm"
         value={src || ""}
         variant="bordered"
-        placeholder="https://... hoặc để trống sẽ dùng placeholder"
+        placeholder="https://... hoặc /uploads/images/..."
         onChange={(e) =>
           setProp((props: any) => {
             props.src = e.target.value;
           })
         }
       />
+
+      <div className="space-y-2 rounded-xl border border-white/10 bg-white/5 p-3">
+        <label className="text-xs font-bold uppercase tracking-widest text-zinc-400">Upload ảnh</label>
+        <input
+          type="file"
+          accept="image/*"
+          className="block w-full text-xs text-zinc-300 file:mr-3 file:rounded-lg file:border-0 file:bg-[#21294a] file:px-3 file:py-2 file:font-bold file:text-white"
+          onChange={(e) => handleUpload(e.target.files?.[0] || null)}
+          disabled={uploading}
+        />
+        <Button size="sm" className="w-full bg-[#21294a] text-white" isLoading={uploading} isDisabled={uploading}>
+          {uploading ? "Đang upload..." : "Upload vào hệ thống"}
+        </Button>
+        {previewSrc ? <img src={previewSrc} alt="Preview" className="h-28 w-full rounded-lg object-cover" /> : null}
+      </div>
 
       <Input
         label="Alt text (SEO & accessibility)"
@@ -166,16 +205,14 @@ const ImageSettings = () => {
         placeholder="Mô tả nội dung hình ảnh"
         onChange={(e) =>
           setProp((props: any) => {
-            // ✅ khi user nhập -> alt chính thức
             props.alt = e.target.value;
           })
         }
       />
 
-      {/* ✅ optional: nút reset alt về mặc định (title) */}
       <button
         type="button"
-        className="w-full text-xs font-bold h-9 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300"
+        className="h-9 w-full rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-zinc-300 hover:bg-white/10"
         onClick={() =>
           setProp((props: any) => {
             props.alt = "";
@@ -213,7 +250,7 @@ const ImageSettings = () => {
       <div>
         <label className="text-xs text-zinc-400">Object fit</label>
         <select
-          className="w-full bg-zinc-800 border border-white/10 rounded text-xs p-2 text-white"
+          className="w-full rounded border border-white/10 bg-zinc-800 p-2 text-xs text-white"
           value={objectFit || "cover"}
           onChange={(e) =>
             setProp((props: any) => {
@@ -232,7 +269,7 @@ const ImageSettings = () => {
       <div>
         <label className="text-xs text-zinc-400">Radius</label>
         <select
-          className="w-full bg-zinc-800 border border-white/10 rounded text-xs p-2 text-white"
+          className="w-full rounded border border-white/10 bg-zinc-800 p-2 text-xs text-white"
           value={radius || "lg"}
           onChange={(e) =>
             setProp((props: any) => {
@@ -254,15 +291,11 @@ const ImageSettings = () => {
 ImageComponent.craft = {
   displayName: "Image",
   props: {
-    // ✅ Không dùng via.placeholder nữa để tránh DNS lỗi
     src: FALLBACK_SRC,
     width: "100%",
     height: "auto",
     alt: "",
-
-    // ✅ NEW: default alt từ title
     defaultAlt: "",
-
     objectFit: "cover",
     radius: "lg",
   },

@@ -21,6 +21,9 @@ import { SpacerComponent } from "./Components/SpacerComponent";
 import { SliderComponent } from "./Components/SliderComponent";
 // import { PopupOfferComponent } from "./Components/PopupOfferComponent";
 import { DynamicNavTreeComponent } from "./Components/DynamicNavTreeComponent";
+import { SupersetDashboardComponent } from "./Components/SupersetDashboardComponent";
+import { GovernanceTableComponent } from "./Components/GovernanceTableComponent";
+import { GoogleChartsComponent } from "./Components/GoogleChartsComponent";
 
 export const CRAFT_RESOLVER = {
   Container,
@@ -46,4 +49,7 @@ export const CRAFT_RESOLVER = {
   SliderComponent,
   // PopupOfferComponent,
   DynamicNavTreeComponent,
+  SupersetDashboardComponent,
+  GovernanceTableComponent,
+  GoogleChartsComponent,
 };

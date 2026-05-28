@@ -184,6 +184,7 @@ const TreeNode: React.FC<{
         onClick={() => {
           if (hasChildren) onToggle(node.CODE);
           onSelect(node.CODE);
+          window.dispatchEvent(new CustomEvent("ON_CRAFT_TREE_NODE_SELECT", { detail: node }));
         }}
       >
         {/* expand/collapse icon */}
@@ -266,7 +267,7 @@ export const DynamicNavTreeComponent: React.FC<DynamicNavTreeProps> & { craft?: 
   token = "",
   payload = "",
   title = "Danh mục",
-  width = 280,
+  width = "100%",
   background = "#1e1e2e",
   textColor = "#e2e8f0",
   activeColor = "#6366f1",
@@ -768,7 +769,7 @@ const DynamicNavTreeSettings = () => {
     token: "",
     payload: '{"STATUS":1,"IS_ACTIVE":1,"IS_DELETE":0}',
     title: "Danh mục",
-    width: 280,
+    width: "100%",
     background: "#1e1e2e",
     textColor: "#e2e8f0",
     activeColor: "#6366f1",

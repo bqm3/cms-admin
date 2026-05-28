@@ -44,6 +44,7 @@ import { PresetFAQ } from "@/components/Editor/Craft/presets/PresetFAQ";
 import { PresetFooter } from "@/components/Editor/Craft/presets/PresetFooter";
 import { PresetHeader } from "@/components/Editor/Craft/presets/PresetHeader";
 import { PresetHero } from "@/components/Editor/Craft/presets/PresetHero";
+import { PresetGovernanceCatalog } from "@/components/Editor/Craft/presets/PresetGovernanceCatalog";
 import { PresetOffersGrid } from "@/components/Editor/Craft/presets/PresetOffersGrid";
 import { InputComponent } from "@/components/Editor/Craft/Components/InputComponent";
 import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
@@ -51,6 +52,10 @@ import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupO
 
 import { DynamicApiListComponent } from "@/components/Editor/Craft/Components/DynamicApiListComponent";
 import { DynamicNavTreeComponent } from "@/components/Editor/Craft/Components/DynamicNavTreeComponent";
+import { SupersetDashboardComponent } from "@/components/Editor/Craft/Components/SupersetDashboardComponent";
+import { GovernanceTableComponent } from "@/components/Editor/Craft/Components/GovernanceTableComponent";
+import { GoogleChartsComponent } from "@/components/Editor/Craft/Components/GoogleChartsComponent";
+
 function stripHtmlToText(html: string) {
   if (!html) return "";
   const tmp = document.createElement("div");
@@ -344,9 +349,13 @@ export function PublicPostPage() {
           PresetOffersGrid,
           PresetFAQ,
           PresetFooter,
+          PresetGovernanceCatalog,
           //
           DynamicApiListComponent,
-          DynamicNavTreeComponent
+          DynamicNavTreeComponent,
+          SupersetDashboardComponent,
+          GovernanceTableComponent,
+          GoogleChartsComponent
         }}
       >
         <Frame data={frameData} />

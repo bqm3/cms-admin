@@ -38,6 +38,10 @@ import { PresetFooter } from "./presets/PresetFooter";
 import { ScriptComponent } from "./Components/ScriptComponent";
 import { DynamicApiListComponent } from "./Components/DynamicApiListComponent";
 import { DynamicNavTreeComponent } from "./Components/DynamicNavTreeComponent";
+import { SupersetDashboardComponent } from "./Components/SupersetDashboardComponent";
+import { GovernanceTableComponent } from "./Components/GovernanceTableComponent";
+import { GoogleChartsComponent } from "./Components/GoogleChartsComponent";
+import { PresetGovernanceCatalog } from "./presets/PresetGovernanceCatalog";
 
 const PresetItem = ({ label, comp }: any) => {
   const { connectors } = useEditor();
@@ -184,6 +188,46 @@ export const Toolbox = () => {
       icon: "📁",
       component: <DynamicNavTreeComponent url={""} />,
     },
+    {
+      name: "Superset Dashboard",
+      icon: "📊",
+      component: <SupersetDashboardComponent dashboardUrl={""} authorUrl={""} guestTokenUrl={""} supersetDomain={""} />,
+    },
+    {
+      name: "Governance Table",
+      icon: "📋",
+      component: <GovernanceTableComponent />,
+    },
+    {
+      name: "Bar Chart",
+      icon: "📊",
+      component: <GoogleChartsComponent chartType="BarChart" title="Bar Chart" height="320px" colors="#4f86f7,#34d399" legendPosition="top" />,
+    },
+    {
+      name: "Column Chart",
+      icon: "📈",
+      component: <GoogleChartsComponent chartType="ColumnChart" title="Column Chart" height="320px" colors="#6366f1,#f59e0b" legendPosition="top" />,
+    },
+    {
+      name: "Line Chart",
+      icon: "📉",
+      component: <GoogleChartsComponent chartType="LineChart" title="Line Chart" height="320px" colors="#10b981,#f87171" legendPosition="top" />,
+    },
+    {
+      name: "Pie Chart",
+      icon: "🥧",
+      component: <GoogleChartsComponent chartType="PieChart" title="Pie Chart" height="320px" pieHole={0.4} legendPosition="right" />,
+    },
+    {
+      name: "Area Chart",
+      icon: "🌊",
+      component: <GoogleChartsComponent chartType="AreaChart" title="Area Chart" height="320px" colors="#6366f1,#10b981" legendPosition="top" />,
+    },
+    {
+      name: "Scatter Chart",
+      icon: "🔵",
+      component: <GoogleChartsComponent chartType="ScatterChart" title="Scatter Chart" height="320px" colors="#f59e0b" legendPosition="none" />,
+    }
   ];
 
   const shapeTools = [
@@ -350,33 +394,62 @@ export const Toolbox = () => {
       label: "2 Col 6/6",
     },
     {
-      name: "Row 2 Col (8/4)",
+      name: "Row 2 Col (3/9)",
       icon: "⅙",
       component: (
         <Element
           is={RowComponent}
           canvas
           padding={8}
-          gap={6}
+          gap={12}
           background="transparent"
         >
           <Element
             is={ColumnComponent}
             canvas
             span={3}
-            padding={4}
+            padding={10}
             background="white"
           />
           <Element
             is={ColumnComponent}
             canvas
             span={9}
-            padding={4}
+            padding={10}
             background="white"
           />
         </Element>
       ),
       label: "2 Col 3/9",
+    },
+    {
+      name: "Row 2 Col (4/8)",
+      icon: "⅓",
+      component: (
+        <Element
+          is={RowComponent}
+          canvas
+          padding={8}
+          gap={12}
+          background="transparent"
+        >
+          <Element
+            is={ColumnComponent}
+            canvas
+            span={4}
+            padding={10}
+            background="white"
+          />
+          <Element
+            is={ColumnComponent}
+            canvas
+            span={8}
+            padding={10}
+            background="white"
+          />
+        </Element>
+      ),
+      label: "2 Col 4/8",
     },
     {
       name: "Row 2 Col (9/3)",
@@ -546,6 +619,7 @@ export const Toolbox = () => {
           <PresetItem label="Offer Cards" comp={PresetOffersGrid} />
           <PresetItem label="FAQ" comp={PresetFAQ} />
           <PresetItem label="Footer" comp={PresetFooter} />
+          <PresetItem label="Governance Catalog" comp={PresetGovernanceCatalog} />
         </div>
       </div>
     </div>
