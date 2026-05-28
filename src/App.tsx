@@ -20,6 +20,9 @@ import { PrivacyPolicy } from "./pages/Public/PrivacyPolicy";
 import { AboutUs } from "./pages/Public/AboutUs";
 import { Term } from "./pages/Public/Term";
 import { Contact } from "./pages/Public/Contact";
+import { ReviewManagementPage } from "./pages/ReviewManagementPage";
+import { PublicReviewListPage } from "./pages/PublicReviewListPage";
+import { PublicReviewDetailPage } from "./pages/PublicReviewDetailPage";
 
 
 function App() {
@@ -28,6 +31,8 @@ function App() {
       <Route element={<ClientHomePage />} path="/" />
       <Route element={<PrivacyPolicy />} path="/privacy-policy" />
       <Route element={<Contact />} path="/contact" />
+      <Route element={<PublicReviewListPage />} path="/review" />
+      <Route element={<PublicReviewDetailPage />} path="/review/:slug" />
       <Route element={<Term />} path="/terms" />
       <Route element={<AboutUs />} path="/about-us" />
       <Route element={<ClientCategoryPage />} path="/category" />
@@ -47,6 +52,7 @@ function App() {
       <Route element={<SheetsRowsPage />} path="/sheets" />
       <Route element={<MediaManagementPage />} path="/media" />
       <Route element={<FooterManagementPage />} path="/footer-links" />
+      <Route element={<ReviewManagementPage />} path="/reviews" />
       <Route element={<TemplateDashboardPage />} path="/template-dashboard" />
       <Route element={<TemplateEditorPage />} path="/template-editor/new" />
       <Route element={<TemplateEditorPage />} path="/template-editor/:id" />

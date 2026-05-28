@@ -1,20 +1,19 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  BookOpen,
+  Image as ImageIcon,
+  Layout,
   LayoutDashboard,
-  Users,
-  Tag,
-  Sheet,
+  LayoutTemplate,
   Layers,
-  Plus,
   LogOut,
   Shield,
+  Sheet,
+  Tag,
+  Users,
   X,
-  Image as ImageIcon,
-  LayoutTemplate,
-  Layout,
 } from "lucide-react";
 import { Button } from "@heroui/button";
-import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
 interface SidebarProps {
@@ -44,176 +43,87 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       icon: LayoutDashboard,
       label: "Quản lý bài viết",
       path: "/dashboard",
-      activeBg: "bg-[#21294a]/5",
-      activeBorder: "border-[#21294a]/20",
-      activeText: "text-[#21294a]",
-      iconBg: "bg-[#21294a]/10",
-      iconText: "text-[#21294a]",
     },
     {
       icon: LayoutTemplate,
       label: "Quản lý Template",
       path: "/template-dashboard",
-      activeBg: "bg-[#21294a]/5",
-      activeBorder: "border-[#21294a]/20",
-      activeText: "text-[#21294a]",
-      iconBg: "bg-[#21294a]/10",
-      iconText: "text-[#21294a]",
     },
     {
       icon: Sheet,
       label: "Quản lý bảng dữ liệu",
       path: "/sheets",
-      activeBg: "bg-[#21294a]/5",
-      activeBorder: "border-[#21294a]/20",
-      activeText: "text-[#21294a]",
-      iconBg: "bg-[#21294a]/10",
-      iconText: "text-[#21294a]",
     },
     ...(user.role === "admin"
       ? [
-          {
-            icon: Users,
-            label: "Quản lý người dùng",
-            path: "/users",
-            activeBg: "bg-[#21294a]/5",
-            activeBorder: "border-[#21294a]/20",
-            activeText: "text-[#21294a]",
-            iconBg: "bg-[#21294a]/10",
-            iconText: "text-[#21294a]",
-          },
-          {
-            icon: Tag,
-            label: "Danh mục",
-            path: "/categories",
-            activeBg: "bg-[#21294a]/5",
-            activeBorder: "border-[#21294a]/20",
-            activeText: "text-[#21294a]",
-            iconBg: "bg-[#21294a]/10",
-            iconText: "text-[#21294a]",
-          },
-          {
-            icon: Layers,
-            label: "Danh mục cha",
-            path: "/parent-categories",
-            activeBg: "bg-[#21294a]/5",
-            activeBorder: "border-[#21294a]/20",
-            activeText: "text-[#21294a]",
-            iconBg: "bg-[#21294a]/10",
-            iconText: "text-[#21294a]",
-          },
-          {
-            icon: ImageIcon,
-            label: "Thư viện ảnh",
-            path: "/media",
-            activeBg: "bg-[#21294a]/5",
-            activeBorder: "border-[#21294a]/20",
-            activeText: "text-[#21294a]",
-            iconBg: "bg-[#21294a]/10",
-            iconText: "text-[#21294a]",
-          },
-          {
-            icon: Layout,
-            label: "Quản lý Footer",
-            path: "/footer-links",
-            activeBg: "bg-[#21294a]/5",
-            activeBorder: "border-[#21294a]/20",
-            activeText: "text-[#21294a]",
-            iconBg: "bg-[#21294a]/10",
-            iconText: "text-[#21294a]",
-          },
+          { icon: Users, label: "Quản lý người dùng", path: "/users" },
+          { icon: Tag, label: "Danh mục", path: "/categories" },
+          { icon: Layers, label: "Danh mục cha", path: "/parent-categories" },
+          { icon: ImageIcon, label: "Thư viện ảnh", path: "/media" },
+          { icon: Layout, label: "Quản lý Footer", path: "/footer-links" },
+          { icon: BookOpen, label: "Quản lý Review", path: "/reviews" },
         ]
       : []),
   ];
 
-  const isActive = (path: string) => {
-    if (path === "/dashboard") {
-      return location.pathname === "/dashboard";
-    }
-    return location.pathname.startsWith(path);
-  };
+  const isActive = (path: string) => (path === "/dashboard" ? location.pathname === path : location.pathname.startsWith(path));
+
+  const linkClasses = (active: boolean) =>
+    `flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 ${
+      active ? "bg-[#21294a]/5 border border-[#21294a]/20 shadow-sm" : "hover:bg-slate-50"
+    }`;
+
+  const iconClasses = (active: boolean) =>
+    `p-2 rounded-md flex-shrink-0 ${
+      active ? "bg-[#21294a]/10 text-[#21294a]" : "bg-slate-100 text-slate-400"
+    }`;
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full bg-white border-r border-slate-200/80 shadow-md z-50 transition-all duration-300 ${
+        className={`fixed left-0 top-0 z-50 hidden h-full flex-col border-r border-slate-200/80 bg-white shadow-md transition-all duration-300 ${
           isOpen ? "w-64" : "w-20"
-        } hidden lg:flex flex-col`}
+        } lg:flex`}
       >
-        {/* Logo Section */}
-        <div className="p-5 border-b border-slate-200/80">
+        <div className="border-b border-slate-200/80 p-5">
           <div className="flex items-center gap-3">
-            <div className="bg-[#21294a] p-2.5 rounded-lg shadow-lg shadow-[#21294a]/10 flex-shrink-0">
+            <div className="rounded-lg bg-[#21294a] p-2.5 shadow-lg shadow-[#21294a]/10">
               <Shield className="text-white" size={20} />
             </div>
-            {isOpen && (
-              <div className="flex-1">
-                <h1 className="text-lg font-bold text-slate-800 tracking-tight">
-                  Quản trị hệ thống
-                </h1>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mt-1">
-                  Trung tâm điều khiển
-                </p>
+            {isOpen ? (
+              <div>
+                <h1 className="text-lg font-bold text-slate-800">Quản trị hệ thống</h1>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Trung tâm điều khiển</p>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
 
-        {/* Navigation Menu */}
-        <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 space-y-1.5 overflow-y-auto p-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
-
             return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
-                  active
-                    ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
-                    : "hover:bg-slate-50"
-                }`}
-              >
-                <div
-                  className={`p-2 rounded-md flex-shrink-0 transition-all ${
-                    active
-                      ? `${item.iconBg} ${item.iconText}`
-                      : "bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-600"
-                  }`}
-                >
+              <Link key={item.path} to={item.path} className={linkClasses(active)}>
+                <div className={iconClasses(active)}>
                   <Icon size={20} />
                 </div>
-                {isOpen && (
-                  <span
-                    className={`font-semibold text-sm flex-1 ${
-                      active
-                        ? item.activeText
-                        : "text-slate-600 group-hover:text-slate-800"
-                    }`}
-                  >
-                    {item.label}
-                  </span>
-                )}
+                {isOpen ? <span className={`text-sm font-semibold ${active ? "text-[#21294a]" : "text-slate-600"}`}>{item.label}</span> : null}
               </Link>
             );
           })}
         </nav>
 
-        {/* User Info & Logout */}
-        {isOpen && (
-          <div className="p-4 border-t border-slate-200/80">
-            <div className="bg-slate-50 p-3 rounded-lg mb-3 border border-slate-100 shadow-sm">
+        {isOpen ? (
+          <div className="border-t border-slate-200/80 p-4">
+            <div className="mb-3 rounded-lg border border-slate-100 bg-slate-50 p-3 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#21294a] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#21294a]/10 flex-shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#21294a] text-sm font-bold text-white shadow-md shadow-[#21294a]/10">
                   {user.username?.substring(0, 1).toUpperCase() || "A"}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-slate-800 text-sm truncate">
-                    {user.username || "Admin"}
-                  </p>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-bold text-slate-800">{user.username || "Admin"}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     {user.role === "admin" ? "Quản trị viên" : "Thành viên"}
                   </p>
                 </div>
@@ -222,97 +132,59 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             <Button
               onClick={handleLogout}
               size="sm"
-              className="w-full bg-white border border-slate-200 text-slate-700 font-bold rounded-lg h-10 hover:bg-slate-50 transition-colors shadow-sm"
+              className="h-10 w-full rounded-lg border border-slate-200 bg-white font-bold text-slate-700 shadow-sm"
               startContent={<LogOut size={18} />}
             >
               Đăng xuất
             </Button>
           </div>
-        )}
+        ) : null}
       </aside>
 
-      {/* Mobile Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full bg-white border-r border-slate-200 shadow-2xl z-50 transition-transform duration-300 w-64 ${
+        className={`fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-slate-200 bg-white shadow-2xl transition-transform duration-300 lg:hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:hidden flex flex-col`}
+        }`}
       >
-        {/* Mobile Header */}
-        <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-slate-200 p-5">
           <div className="flex items-center gap-3">
-            <div className="bg-[#21294a] p-2.5 rounded-lg shadow-lg shadow-[#21294a]/10">
+            <div className="rounded-lg bg-[#21294a] p-2.5 shadow-lg shadow-[#21294a]/10">
               <Shield className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-800 tracking-tight">
-                Quản trị hệ thống
-              </h1>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                Trung tâm điều khiển
-              </p>
+              <h1 className="text-lg font-bold text-slate-800">Quản trị hệ thống</h1>
+              <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Trung tâm điều khiển</p>
             </div>
           </div>
-          <Button
-            isIconOnly
-            variant="flat"
-            size="sm"
-            onClick={onClose}
-            className="bg-slate-100 text-slate-600 rounded-md"
-          >
+          <Button isIconOnly variant="flat" size="sm" onClick={onClose} className="rounded-md bg-slate-100 text-slate-600">
             <X size={18} />
           </Button>
         </div>
 
-        {/* Mobile Navigation */}
-        <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 space-y-1.5 overflow-y-auto p-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
-
             return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 ${
-                  active
-                    ? `${item.activeBg} border ${item.activeBorder} shadow-sm`
-                    : "hover:bg-slate-50"
-                }`}
-              >
-                <div
-                  className={`p-2 rounded-md flex-shrink-0 ${
-                    active
-                      ? `${item.iconBg} ${item.iconText}`
-                      : "bg-slate-100 text-slate-400"
-                  }`}
-                >
+              <Link key={item.path} to={item.path} onClick={onClose} className={linkClasses(active)}>
+                <div className={iconClasses(active)}>
                   <Icon size={20} />
                 </div>
-                <span
-                  className={`font-semibold text-sm ${
-                    active ? item.activeText : "text-slate-600"
-                  }`}
-                >
-                  {item.label}
-                </span>
+                <span className={`text-sm font-semibold ${active ? "text-[#21294a]" : "text-slate-600"}`}>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Mobile User Info & Logout */}
-        <div className="p-4 border-t border-slate-200">
-          <div className="bg-slate-50 p-3 rounded-lg mb-3 border border-slate-100">
+        <div className="border-t border-slate-200 p-4">
+          <div className="mb-3 rounded-lg border border-slate-100 bg-slate-50 p-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#21294a] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#21294a]/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#21294a] text-sm font-bold text-white shadow-md shadow-[#21294a]/10">
                 {user.username?.substring(0, 1).toUpperCase() || "A"}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-slate-800 text-sm truncate">
-                  {user.username || "Admin"}
-                </p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-slate-800">{user.username || "Admin"}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   {user.role === "admin" ? "Quản trị viên" : "Thành viên"}
                 </p>
               </div>
@@ -321,7 +193,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <Button
             onClick={handleLogout}
             size="sm"
-            className="w-full bg-white border border-slate-200 text-slate-700 font-bold rounded-lg h-11 hover:bg-slate-50 transition-all shadow-sm"
+            className="h-11 w-full rounded-lg border border-slate-200 bg-white font-bold text-slate-700 shadow-sm"
             startContent={<LogOut size={18} />}
           >
             Đăng xuất

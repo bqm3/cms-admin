@@ -58,9 +58,15 @@ export function FooterManagementPage() {
           { label: "Terms", href: "/#", order: 1, type: 'bottom' },
           { label: "Privacy", href: "/#", order: 2, type: 'bottom' },
           { label: "Contact", href: "/#", order: 3, type: 'bottom' },
+          { label: "Review", href: "/review", order: 4, type: 'bottom' },
         ]);
       } else {
-        setBottomLinks(bottomRes.data);
+        const hasReview = bottomRes.data.some((item: FooterLink) => item.label.toLowerCase() === "review");
+        setBottomLinks(
+          hasReview
+            ? bottomRes.data
+            : [...bottomRes.data, { label: "Review", href: "/review", order: bottomRes.data.length, type: "bottom" }],
+        );
       }
     } catch (error) {
       console.error("Error fetching links:", error);

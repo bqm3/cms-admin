@@ -61,14 +61,18 @@ export function PublicFooter({
           return link;
         });
 
-        if (bottoms.length > 0) {
-          setBottomLinks(bottoms);
+        const reviewLink = bottoms.find((item: any) => item.label?.toLowerCase() === "review");
+        const normalizedBottoms = reviewLink ? bottoms : [...bottoms, { label: "Review", href: "/review" }];
+
+        if (normalizedBottoms.length > 0) {
+          setBottomLinks(normalizedBottoms);
         } else {
           setBottomLinks([
             { label: "About us", href: "/about-us" },
             { label: "Terms", href: "/terms" },
             { label: "Privacy", href: "/privacy-policy" },
             { label: "Contact", href: "/contact" },
+            { label: "Review", href: "/review" },
           ]);
         }
 
@@ -85,6 +89,7 @@ export function PublicFooter({
           { label: "Terms", href: "/terms" },
           { label: "Privacy", href: "/privacy-policy" },
           { label: "Contact", href: "/contact" },
+          { label: "Review", href: "/review" },
         ]);
       }
 
