@@ -40,21 +40,16 @@ import { BadgeComponent } from "../components/Editor/Craft/Components/BadgeCompo
 import { AccordionComponent } from "../components/Editor/Craft/Components/AccordionComponent";
 import { SpacerComponent } from "../components/Editor/Craft/Components/SpacerComponent";
 import { SliderComponent } from "@/components/Editor/Craft/Components/SliderComponent";
+import { TiptapComponent } from "../components/Editor/Craft/Components/TiptapComponent";
 import { PresetFAQ } from "@/components/Editor/Craft/presets/PresetFAQ";
 import { PresetFooter } from "@/components/Editor/Craft/presets/PresetFooter";
 import { PresetHeader } from "@/components/Editor/Craft/presets/PresetHeader";
 import { PresetHero } from "@/components/Editor/Craft/presets/PresetHero";
-import { PresetGovernanceCatalog } from "@/components/Editor/Craft/presets/PresetGovernanceCatalog";
 import { PresetOffersGrid } from "@/components/Editor/Craft/presets/PresetOffersGrid";
 import { InputComponent } from "@/components/Editor/Craft/Components/InputComponent";
 import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
 import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
 
-import { DynamicApiListComponent } from "@/components/Editor/Craft/Components/DynamicApiListComponent";
-import { DynamicNavTreeComponent } from "@/components/Editor/Craft/Components/DynamicNavTreeComponent";
-import { SupersetDashboardComponent } from "@/components/Editor/Craft/Components/SupersetDashboardComponent";
-import { GovernanceTableComponent } from "@/components/Editor/Craft/Components/GovernanceTableComponent";
-import { GoogleChartsComponent } from "@/components/Editor/Craft/Components/GoogleChartsComponent";
 
 function stripHtmlToText(html: string) {
   if (!html) return "";
@@ -339,6 +334,7 @@ export function PublicPostPage() {
           AccordionComponent,
           SpacerComponent,
           SliderComponent,
+          TiptapComponent,
           InputComponent,
           PopupModalComponent,
           PopupOfferComponent,
@@ -349,13 +345,7 @@ export function PublicPostPage() {
           PresetOffersGrid,
           PresetFAQ,
           PresetFooter,
-          PresetGovernanceCatalog,
           //
-          DynamicApiListComponent,
-          DynamicNavTreeComponent,
-          SupersetDashboardComponent,
-          GovernanceTableComponent,
-          GoogleChartsComponent
         }}
       >
         <Frame data={frameData} />

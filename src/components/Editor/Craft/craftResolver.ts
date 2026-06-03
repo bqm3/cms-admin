@@ -19,11 +19,8 @@ import { BadgeComponent } from "./Components/BadgeComponent";
 import { AccordionComponent } from "./Components/AccordionComponent";
 import { SpacerComponent } from "./Components/SpacerComponent";
 import { SliderComponent } from "./Components/SliderComponent";
-// import { PopupOfferComponent } from "./Components/PopupOfferComponent";
-import { DynamicNavTreeComponent } from "./Components/DynamicNavTreeComponent";
+import { TiptapComponent } from "./Components/TiptapComponent";
 import { SupersetDashboardComponent } from "./Components/SupersetDashboardComponent";
-import { GovernanceTableComponent } from "./Components/GovernanceTableComponent";
-import { GoogleChartsComponent } from "./Components/GoogleChartsComponent";
 
 export const CRAFT_RESOLVER = {
   Container,
@@ -47,9 +44,6 @@ export const CRAFT_RESOLVER = {
   AccordionComponent,
   SpacerComponent,
   SliderComponent,
-  // PopupOfferComponent,
-  DynamicNavTreeComponent,
+  TiptapComponent,
   SupersetDashboardComponent,
-  GovernanceTableComponent,
-  GoogleChartsComponent,
 };

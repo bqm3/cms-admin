@@ -18,6 +18,7 @@ import { RowComponent } from "./Components/RowComponent";
 import { ColumnComponent } from "./Components/ColumnComponent";
 import { InputComponent } from "./Components/InputComponent";
 import { PopupModalComponent } from "./Components/PopupModalComponent";
+import { TiptapComponent } from "./Components/TiptapComponent";
 
 // ✅ NEW (5 cái)
 import { NavbarComponent } from "./Components/NavbarComponent";
@@ -36,12 +37,6 @@ import { PresetOffersGrid } from "./presets/PresetOffersGrid";
 import { PresetFAQ } from "./presets/PresetFAQ";
 import { PresetFooter } from "./presets/PresetFooter";
 import { ScriptComponent } from "./Components/ScriptComponent";
-import { DynamicApiListComponent } from "./Components/DynamicApiListComponent";
-import { DynamicNavTreeComponent } from "./Components/DynamicNavTreeComponent";
-import { SupersetDashboardComponent } from "./Components/SupersetDashboardComponent";
-import { GovernanceTableComponent } from "./Components/GovernanceTableComponent";
-import { GoogleChartsComponent } from "./Components/GoogleChartsComponent";
-import { PresetGovernanceCatalog } from "./presets/PresetGovernanceCatalog";
 
 const PresetItem = ({ label, comp }: any) => {
   const { connectors } = useEditor();
@@ -162,6 +157,17 @@ export const Toolbox = () => {
       component: <InputComponent placeholder="Email" type="email" />,
     },
     {
+      name: "About Us",
+      icon: "✎",
+      component: (
+        <TiptapComponent
+          content=""
+          placeholder="Nhập nội dung..."
+          minHeight={280}
+        />
+      ),
+    },
+    {
       name: "Popup Offer",
       icon: "🪟",
       component: (
@@ -178,56 +184,6 @@ export const Toolbox = () => {
       icon: "</>",
       component: <ScriptComponent />,
     },
-    {
-      name: "API List",
-      icon: "[]",
-      component: <DynamicApiListComponent url={""} method={"GET"} />,
-    },
-    {
-      name: "Navigation Tree",
-      icon: "📁",
-      component: <DynamicNavTreeComponent url={""} />,
-    },
-    {
-      name: "Superset Dashboard",
-      icon: "📊",
-      component: <SupersetDashboardComponent dashboardUrl={""} authorUrl={""} guestTokenUrl={""} supersetDomain={""} />,
-    },
-    {
-      name: "Governance Table",
-      icon: "📋",
-      component: <GovernanceTableComponent />,
-    },
-    {
-      name: "Bar Chart",
-      icon: "📊",
-      component: <GoogleChartsComponent chartType="BarChart" title="Bar Chart" height="320px" colors="#4f86f7,#34d399" legendPosition="top" />,
-    },
-    {
-      name: "Column Chart",
-      icon: "📈",
-      component: <GoogleChartsComponent chartType="ColumnChart" title="Column Chart" height="320px" colors="#6366f1,#f59e0b" legendPosition="top" />,
-    },
-    {
-      name: "Line Chart",
-      icon: "📉",
-      component: <GoogleChartsComponent chartType="LineChart" title="Line Chart" height="320px" colors="#10b981,#f87171" legendPosition="top" />,
-    },
-    {
-      name: "Pie Chart",
-      icon: "🥧",
-      component: <GoogleChartsComponent chartType="PieChart" title="Pie Chart" height="320px" pieHole={0.4} legendPosition="right" />,
-    },
-    {
-      name: "Area Chart",
-      icon: "🌊",
-      component: <GoogleChartsComponent chartType="AreaChart" title="Area Chart" height="320px" colors="#6366f1,#10b981" legendPosition="top" />,
-    },
-    {
-      name: "Scatter Chart",
-      icon: "🔵",
-      component: <GoogleChartsComponent chartType="ScatterChart" title="Scatter Chart" height="320px" colors="#f59e0b" legendPosition="none" />,
-    }
   ];
 
   const shapeTools = [
@@ -619,7 +575,6 @@ export const Toolbox = () => {
           <PresetItem label="Offer Cards" comp={PresetOffersGrid} />
           <PresetItem label="FAQ" comp={PresetFAQ} />
           <PresetItem label="Footer" comp={PresetFooter} />
-          <PresetItem label="Governance Catalog" comp={PresetGovernanceCatalog} />
         </div>
       </div>
     </div>

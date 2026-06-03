@@ -36,6 +36,7 @@ import { BadgeComponent } from "../components/Editor/Craft/Components/BadgeCompo
 import { AccordionComponent } from "../components/Editor/Craft/Components/AccordionComponent";
 import { SpacerComponent } from "../components/Editor/Craft/Components/SpacerComponent";
 import { SliderComponent } from "../components/Editor/Craft/Components/SliderComponent";
+import { TiptapComponent } from "../components/Editor/Craft/Components/TiptapComponent";
 import { PresetFAQ } from "../components/Editor/Craft/presets/PresetFAQ";
 import { PresetFooter } from "../components/Editor/Craft/presets/PresetFooter";
 import { PresetHeader } from "../components/Editor/Craft/presets/PresetHeader";
@@ -139,6 +140,7 @@ export function PreviewPage() {
           AccordionComponent,
           SpacerComponent,
           SliderComponent,
+          TiptapComponent,
           ScriptComponent,
           InputComponent,
           PopupModalComponent,

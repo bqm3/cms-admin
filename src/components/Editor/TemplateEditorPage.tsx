@@ -69,6 +69,7 @@ import { PresetFAQ } from "./Craft/presets/PresetFAQ";
 import { PresetFooter } from "./Craft/presets/PresetFooter";
 import { SliderComponent } from "./Craft/Components/SliderComponent";
 import { PopupOfferComponent } from "./Craft/Components/PopupOfferComponent";
+import { TiptapComponent } from "./Craft/Components/TiptapComponent";
 
 // --- Sub Components ---
 const SaveButton = ({ templateInfo, isNew }: any) => {
@@ -443,8 +444,9 @@ export function TemplateEditorPage() {
           BadgeComponent,
           AccordionComponent,
           SpacerComponent,
-          SliderComponent,
-          InputComponent,
+  SliderComponent,
+  TiptapComponent,
+  InputComponent,
           PopupModalComponent,
           PopupOfferComponent,
 

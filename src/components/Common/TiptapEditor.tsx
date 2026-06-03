@@ -35,6 +35,7 @@ interface TiptapEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  editable?: boolean;
 }
 
 const TextColor = Extension.create({
@@ -46,7 +47,7 @@ const TextColor = Extension.create({
         attributes: {
           color: {
             default: null,
-            parseHTML: (element) => element.style.color || null,
+            parseHTML: (element) => (element as HTMLElement).style.color || null,
             renderHTML: (attributes) => {
               if (!attributes.color) return {};
               return { style: `color: ${attributes.color}` };
@@ -79,7 +80,7 @@ const FontSize = Extension.create({
         attributes: {
           fontSize: {
             default: null,
-            parseHTML: (element) => element.style.fontSize || null,
+            parseHTML: (element) => (element as HTMLElement).style.fontSize || null,
             renderHTML: (attributes) => {
               if (!attributes.fontSize) return {};
               return { style: `font-size: ${attributes.fontSize}` };
@@ -148,11 +149,17 @@ function ToolbarDivider() {
   return <div className="mx-1 h-6 w-px bg-slate-200" />;
 }
 
-export function TiptapEditor({ value, onChange, placeholder = "Nhập nội dung..." }: TiptapEditorProps) {
+export function TiptapEditor({
+  value,
+  onChange,
+  placeholder = "Nhập nội dung...",
+  editable = true,
+}: TiptapEditorProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const editor = useEditor({
+    editable,
     extensions: [
       StarterKit,
       TextStyle,
@@ -246,128 +253,162 @@ export function TiptapEditor({ value, onChange, placeholder = "Nhập nội dung
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 bg-[#f8f9fb] px-3 py-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <ToolbarButton title="Paragraph" active={editor.isActive("paragraph")} onPress={() => editor.chain().focus().setParagraph().run()}>
-            <Pilcrow size={16} />
-            <span className="hidden sm:inline">P</span>
-          </ToolbarButton>
-          <ToolbarButton title="Heading 2" active={editor.isActive("heading", { level: 2 })} onPress={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
-            <Heading2 size={16} />
-            <span className="hidden sm:inline">H2</span>
-          </ToolbarButton>
-          <ToolbarButton title="Heading 3" active={editor.isActive("heading", { level: 3 })} onPress={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
-            <Heading3 size={16} />
-            <span className="hidden sm:inline">H3</span>
-          </ToolbarButton>
+      {editable && (
+        <>
+          <div className="border-b border-slate-200 bg-[#f8f9fb] px-3 py-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <ToolbarButton
+                title="Paragraph"
+                active={editor.isActive("paragraph")}
+                onPress={() => editor.chain().focus().setParagraph().run()}
+              >
+                <Pilcrow size={16} />
+                <span className="hidden sm:inline">P</span>
+              </ToolbarButton>
+              <ToolbarButton
+                title="Heading 2"
+                active={editor.isActive("heading", { level: 2 })}
+                onPress={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              >
+                <Heading2 size={16} />
+                <span className="hidden sm:inline">H2</span>
+              </ToolbarButton>
+              <ToolbarButton
+                title="Heading 3"
+                active={editor.isActive("heading", { level: 3 })}
+                onPress={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+              >
+                <Heading3 size={16} />
+                <span className="hidden sm:inline">H3</span>
+              </ToolbarButton>
 
-          <ToolbarDivider />
+              <ToolbarDivider />
 
-          <ToolbarButton title="Bold" active={editor.isActive("bold")} onPress={() => editor.chain().focus().toggleBold().run()}>
-            <Bold size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Italic" active={editor.isActive("italic")} onPress={() => editor.chain().focus().toggleItalic().run()}>
-            <Italic size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Underline" active={editor.isActive("underline")} onPress={() => editor.chain().focus().toggleUnderline().run()}>
-            <UnderlineIcon size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Strike" active={editor.isActive("strike")} onPress={() => editor.chain().focus().toggleStrike().run()}>
-            <Strikethrough size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Code" active={editor.isActive("code")} onPress={() => editor.chain().focus().toggleCode().run()}>
-            <Code2 size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Quote" active={editor.isActive("blockquote")} onPress={() => editor.chain().focus().toggleBlockquote().run()}>
-            <Quote size={16} />
-          </ToolbarButton>
+              <ToolbarButton title="Bold" active={editor.isActive("bold")} onPress={() => editor.chain().focus().toggleBold().run()}>
+                <Bold size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Italic" active={editor.isActive("italic")} onPress={() => editor.chain().focus().toggleItalic().run()}>
+                <Italic size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Underline" active={editor.isActive("underline")} onPress={() => editor.chain().focus().toggleUnderline().run()}>
+                <UnderlineIcon size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Strike" active={editor.isActive("strike")} onPress={() => editor.chain().focus().toggleStrike().run()}>
+                <Strikethrough size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Code" active={editor.isActive("code")} onPress={() => editor.chain().focus().toggleCode().run()}>
+                <Code2 size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Quote" active={editor.isActive("blockquote")} onPress={() => editor.chain().focus().toggleBlockquote().run()}>
+                <Quote size={16} />
+              </ToolbarButton>
 
-          <ToolbarDivider />
+              <ToolbarDivider />
 
-          <ToolbarButton title="Bullet List" active={editor.isActive("bulletList")} onPress={() => editor.chain().focus().toggleBulletList().run()}>
-            <List size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Ordered List" active={editor.isActive("orderedList")} onPress={() => editor.chain().focus().toggleOrderedList().run()}>
-            <ListOrdered size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Link" active={editor.isActive("link")} onPress={setLink}>
-            <Link2 size={16} />
-          </ToolbarButton>
+              <ToolbarButton title="Bullet List" active={editor.isActive("bulletList")} onPress={() => editor.chain().focus().toggleBulletList().run()}>
+                <List size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Ordered List" active={editor.isActive("orderedList")} onPress={() => editor.chain().focus().toggleOrderedList().run()}>
+                <ListOrdered size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Link" active={editor.isActive("link")} onPress={setLink}>
+                <Link2 size={16} />
+              </ToolbarButton>
 
-          <ToolbarDivider />
+              <ToolbarDivider />
 
-          <div className="inline-flex h-9 items-center gap-2 rounded-md border border-slate-200 bg-white px-2">
-            <span className="text-xs font-semibold text-slate-500">Color</span>
-            <input
-              type="color"
-              value={currentColor}
-              onChange={(e) => (editor.commands as any).setColor(e.target.value)}
-              className="h-6 w-8 cursor-pointer rounded border-0 bg-transparent p-0"
-              title="Text color"
-            />
+              <div className="inline-flex h-9 items-center gap-2 rounded-md border border-slate-200 bg-white px-2">
+                <span className="text-xs font-semibold text-slate-500">Color</span>
+                <input
+                  type="color"
+                  value={currentColor}
+                  onChange={(e) => (editor.commands as any).setColor(e.target.value)}
+                  className="h-6 w-8 cursor-pointer rounded border-0 bg-transparent p-0"
+                  title="Text color"
+                />
+              </div>
+
+              <select
+                value={currentFontSize}
+                onChange={(e) => (editor.commands as any).setFontSize(e.target.value)}
+                className="h-9 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 outline-none"
+                title="Font size"
+              >
+                {[12, 14, 16, 18, 20, 24, 28, 32].map((size) => (
+                  <option key={size} value={`${size}px`}>
+                    {size}px
+                  </option>
+                ))}
+              </select>
+
+              <ToolbarDivider />
+
+              <ToolbarButton
+                title="Align left"
+                active={editor.isActive({ textAlign: "left" })}
+                onPress={() => editor.chain().focus().setTextAlign("left").run()}
+              >
+                <AlignLeft size={16} />
+              </ToolbarButton>
+              <ToolbarButton
+                title="Align center"
+                active={editor.isActive({ textAlign: "center" })}
+                onPress={() => editor.chain().focus().setTextAlign("center").run()}
+              >
+                <AlignCenter size={16} />
+              </ToolbarButton>
+              <ToolbarButton
+                title="Align right"
+                active={editor.isActive({ textAlign: "right" })}
+                onPress={() => editor.chain().focus().setTextAlign("right").run()}
+              >
+                <AlignRight size={16} />
+              </ToolbarButton>
+
+              <ToolbarDivider />
+
+              <ToolbarButton title="Undo" onPress={() => editor.chain().focus().undo().run()}>
+                <Undo2 size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Redo" onPress={() => editor.chain().focus().redo().run()}>
+                <Redo2 size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Clear formatting" onPress={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}>
+                <RemoveFormatting size={16} />
+              </ToolbarButton>
+
+              <ToolbarDivider />
+
+              <ToolbarButton title="Insert image by URL" onPress={insertImageByUrl}>
+                <Link2 size={16} />
+                <span className="hidden sm:inline">Img URL</span>
+              </ToolbarButton>
+              <label
+                className={`inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${
+                  uploadingImage
+                    ? "border-slate-200 bg-slate-100 text-slate-400"
+                    : "border-transparent bg-[#21294a] text-white hover:bg-[#1b2340]"
+                }`}
+              >
+                <ImagePlus size={16} />
+                <span>{uploadingImage ? "Đang upload..." : "Tải ảnh"}</span>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploadingImage}
+                  onChange={(e) => handleUploadImage(e.target.files?.[0] || null)}
+                />
+              </label>
+            </div>
           </div>
 
-          <select
-            value={currentFontSize}
-            onChange={(e) => (editor.commands as any).setFontSize(e.target.value)}
-            className="h-9 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 outline-none"
-            title="Font size"
-          >
-            {[12, 14, 16, 18, 20, 24, 28, 32].map((size) => (
-              <option key={size} value={`${size}px`}>
-                {size}px
-              </option>
-            ))}
-          </select>
-
-          <ToolbarDivider />
-
-          <ToolbarButton title="Align left" active={editor.isActive({ textAlign: "left" })} onPress={() => editor.chain().focus().setTextAlign("left").run()}>
-            <AlignLeft size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Align center" active={editor.isActive({ textAlign: "center" })} onPress={() => editor.chain().focus().setTextAlign("center").run()}>
-            <AlignCenter size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Align right" active={editor.isActive({ textAlign: "right" })} onPress={() => editor.chain().focus().setTextAlign("right").run()}>
-            <AlignRight size={16} />
-          </ToolbarButton>
-
-          <ToolbarDivider />
-
-          <ToolbarButton title="Undo" onPress={() => editor.chain().focus().undo().run()}>
-            <Undo2 size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Redo" onPress={() => editor.chain().focus().redo().run()}>
-            <Redo2 size={16} />
-          </ToolbarButton>
-          <ToolbarButton title="Clear formatting" onPress={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}>
-            <RemoveFormatting size={16} />
-          </ToolbarButton>
-
-          <ToolbarDivider />
-
-          <ToolbarButton title="Insert image by URL" onPress={insertImageByUrl}>
-            <Link2 size={16} />
-            <span className="hidden sm:inline">Img URL</span>
-          </ToolbarButton>
-          <label className={`inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${uploadingImage ? "border-slate-200 bg-slate-100 text-slate-400" : "border-transparent bg-[#21294a] text-white hover:bg-[#1b2340]"}`}>
-            <ImagePlus size={16} />
-            <span>{uploadingImage ? "Đang upload..." : "Tải ảnh"}</span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              disabled={uploadingImage}
-              onChange={(e) => handleUploadImage(e.target.files?.[0] || null)}
-            />
-          </label>
-        </div>
-      </div>
-
-      <div className="border-b border-slate-200 bg-slate-50/60 px-5 py-2 text-xs text-slate-500">
-        Chọn text rồi bấm công cụ để format. Có thể đổi màu, cỡ chữ, tải ảnh trực tiếp hoặc chèn bằng URL.
-      </div>
+          <div className="border-b border-slate-200 bg-slate-50/60 px-5 py-2 text-xs text-slate-500">
+            Chọn text rồi bấm công cụ để format. Có thể đổi màu, cỡ chữ, tải ảnh trực tiếp hoặc chèn bằng URL.
+          </div>
+        </>
+      )}
 
       <EditorContent editor={editor} />
     </div>

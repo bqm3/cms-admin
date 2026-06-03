@@ -55,10 +55,6 @@ import { ContactTemplate } from "./ContactTemplate";
 import { ProductTemplate } from "./ProductTemplate";
 import { StoreCouponTemplate } from "./StoreCouponTemplate";
 
-import { DynamicApiListComponent } from "@/components/Editor/Craft/Components/DynamicApiListComponent";
-import { DynamicNavTreeComponent } from "@/components/Editor/Craft/Components/DynamicNavTreeComponent";
-import { SupersetDashboardComponent } from "@/components/Editor/Craft/Components/SupersetDashboardComponent";
-
 import {
   Modal,
   ModalContent,
@@ -75,9 +71,7 @@ import { PresetFAQ } from "./Craft/presets/PresetFAQ";
 import { PresetFooter } from "./Craft/presets/PresetFooter";
 import { SliderComponent } from "./Craft/Components/SliderComponent";
 import { PopupOfferComponent } from "./Craft/Components/PopupOfferComponent";
-import { GovernanceTableComponent } from "./Craft/Components/GovernanceTableComponent";
-import { GoogleChartsComponent } from "./Craft/Components/GoogleChartsComponent";
-import { PresetGovernanceCatalog } from "./Craft/presets/PresetGovernanceCatalog";
+import { TiptapComponent } from "./Craft/Components/TiptapComponent";
 
 // ✅ Move resolver outside to keep it stable
 const CRAFT_RESOLVER = {
@@ -109,6 +103,7 @@ const CRAFT_RESOLVER = {
   AccordionComponent,
   SpacerComponent,
   SliderComponent,
+  TiptapComponent,
   InputComponent,
   PopupModalComponent,
   PopupOfferComponent,
@@ -120,13 +115,6 @@ const CRAFT_RESOLVER = {
   PresetFAQ,
   PresetFooter,
 
-  // Dynamic components
-  DynamicApiListComponent, // ✅ Add new components here
-  DynamicNavTreeComponent,
-  SupersetDashboardComponent,
-  GovernanceTableComponent,
-  GoogleChartsComponent,
-  PresetGovernanceCatalog,
 };
 
 // --- Sub Components ---
