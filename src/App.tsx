@@ -3,6 +3,7 @@ import { EditorPage } from "./components/Editor/EditorPage";
 import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { PublicPostPage } from "./pages/PublicPostPage";
+import { ModuleEditorPage } from "./components/Editor/ModuleEditorPage";
 import { ClientHomePage } from "./pages/ClientHomePage";
 import { CategoryManagementPage } from "./pages/CategoryManagementPage";
 import { ParentCategoryManagementPage } from "./pages/ParentCategoryManagementPage";
@@ -43,6 +44,8 @@ function App() {
       <Route element={<DashboardPage />} path="/dashboard" />
       <Route element={<EditorPage />} path="/editor/new" />
       <Route element={<EditorPage />} path="/editor/:id" />
+      <Route element={<ModuleEditorPage />} path="/module/new" />
+      <Route element={<ModuleEditorPage />} path="/module/:id" />
       <Route element={<PreviewPage />} path="/preview" />
       <Route element={<NewPage />} path="/new-page-test" />
       <Route element={<PublicPostPage />} path="/site/:slug" />

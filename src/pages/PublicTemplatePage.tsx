@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { Editor, Frame } from "@craftjs/core";
 import { Helmet } from "react-helmet-async";
 import api from "../services/api";
+import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
 
 import { DefaultNewPostFrame } from "../components/Editor/DefaultNewPostFrame";
 import { MimicPCLandingFrame } from "../components/Editor/MimicPCLandingFrame";
@@ -186,47 +187,7 @@ export function PublicTemplatePage() {
 
       <Editor
         enabled={false}
-        resolver={{
-          // Default frame
-          MimicPCLandingFrame,
-          DefaultNewPostFrame,
-          PortfolioTemplate,
-          BlogTemplate,
-          ServiceTemplate,
-          ContactTemplate,
-          ProductTemplate,
-          StoreCouponTemplate,
-          // Component
-          TextComponent,
-          Container,
-          ButtonComponent,
-          ImageComponent,
-          HeadingComponent,
-          CardComponent,
-          VideoComponent,
-          TableComponent,
-          ShapeComponent,
-          RowComponent,
-          ColumnComponent,
-          NavbarComponent,
-          SectionComponent,
-          GridComponent,
-          BadgeComponent,
-          AccordionComponent,
-          SpacerComponent,
-          SliderComponent,
-          TiptapComponent,
-          InputComponent,
-          PopupModalComponent,
-          PopupOfferComponent,
-          // Preset
-          PresetHeader,
-          PresetHero,
-          PresetOffersGrid,
-          PresetFAQ,
-          PresetFooter,
-          //
-        }}
+        resolver={CRAFT_RESOLVER}
       >
         <Frame data={frameData} />
       </Editor>

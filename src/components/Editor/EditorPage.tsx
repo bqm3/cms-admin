@@ -69,54 +69,22 @@ import { PresetHero } from "./Craft/presets/PresetHero";
 import { PresetOffersGrid } from "./Craft/presets/PresetOffersGrid";
 import { PresetFAQ } from "./Craft/presets/PresetFAQ";
 import { PresetFooter } from "./Craft/presets/PresetFooter";
+import { CRAFT_RESOLVER } from "./Craft/craftResolver";
 import { SliderComponent } from "./Craft/Components/SliderComponent";
 import { PopupOfferComponent } from "./Craft/Components/PopupOfferComponent";
 import { TiptapComponent } from "./Craft/Components/TiptapComponent";
 
+function isStoreCouponModuleContent(content: string | null | undefined) {
+  if (!content) return false;
+  try {
+    const parsed = typeof content === "string" ? JSON.parse(content) : content;
+    return parsed?.pageType === "store_coupon_module_v1";
+  } catch {
+    return false;
+  }
+}
+
 // ✅ Move resolver outside to keep it stable
-const CRAFT_RESOLVER = {
-  // Default frame
-  MimicPCLandingFrame,
-  DefaultNewPostFrame,
-  PortfolioTemplate,
-  BlogTemplate,
-  ServiceTemplate,
-  ContactTemplate,
-  ProductTemplate,
-  StoreCouponTemplate,
-  // Component
-  TextComponent,
-  Container,
-  ButtonComponent,
-  ImageComponent,
-  HeadingComponent,
-  CardComponent,
-  VideoComponent,
-  TableComponent,
-  ShapeComponent,
-  RowComponent,
-  ColumnComponent,
-  NavbarComponent,
-  SectionComponent,
-  GridComponent,
-  BadgeComponent,
-  AccordionComponent,
-  SpacerComponent,
-  SliderComponent,
-  TiptapComponent,
-  InputComponent,
-  PopupModalComponent,
-  PopupOfferComponent,
-  ScriptComponent,
-  // Preset
-  PresetHeader,
-  PresetHero,
-  PresetOffersGrid,
-  PresetFAQ,
-  PresetFooter,
-
-};
-
 // --- Sub Components ---
 const SaveButton = ({ postInfo, isNew }: any) => {
   const { query } = useEditor();
@@ -594,7 +562,7 @@ export function EditorPage() {
           preview: tmpl.logo
             ? `${SERVER_URL}${tmpl.logo}`
             : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=300",
-          description: tmpl.content ? "Template từ database" : "Mẫu thiết kế tùy chỉnh",
+          description: tmpl.content ? "Template t? database" : "M?u thi?t k? tu? ch?nh",
         }));
 
         setTemplates(templatesFromDB);
@@ -617,6 +585,11 @@ export function EditorPage() {
             params: { is_editor: "true" }
           });
           const post = res.data;
+
+          if (post?.topic_name === "store-coupon-module" || isStoreCouponModuleContent(post?.content)) {
+            navigate(`/module/${post.id}`, { replace: true });
+            return;
+          }
 
           setPostInfo({
             title: post.title || "",

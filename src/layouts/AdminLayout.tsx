@@ -7,9 +7,10 @@ import { Menu } from 'lucide-react';
 
 interface AdminLayoutProps {
     children: ReactNode;
+    fluid?: boolean;
 }
 
-export function AdminLayout({ children }: AdminLayoutProps) {
+export function AdminLayout({ children, fluid = false }: AdminLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     return (
@@ -31,8 +32,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
                 {/* Page Content */}
-                <main className="p-2 md:p-3 lg:p-4">
-                    <div className="max-w-[90rem] mx-auto">
+                <main className={fluid ? "p-0 md:p-0 lg:p-0" : "p-2 md:p-3 lg:p-4"}>
+                    <div className={fluid ? "w-full" : "max-w-[90rem] mx-auto"}>
                         {children}
                     </div>
                 </main>

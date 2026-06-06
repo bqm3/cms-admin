@@ -15,6 +15,7 @@ import {
   EyeOff,
   Globe,
   LayoutDashboard,
+  LayoutTemplate,
   Link as LinkIcon,
   Plus,
   Search,
@@ -155,6 +156,12 @@ export function DashboardPage() {
     setIsLinkDialogOpen(true);
   };
 
+  const resolveImageUrl = (url?: string) => {
+    if (!url) return "";
+    if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("blob:")) return url;
+    return `${SERVER_URL}${url}`;
+  };
+
   return (
     <AdminLayout>
       <div className="mb-6">
@@ -168,9 +175,19 @@ export function DashboardPage() {
               <p className="text-sm font-medium text-slate-400">Tổng quan và quản lý nội dung hệ thống</p>
             </div>
           </div>
-          <Button as={Link} to="/editor/new" className="h-11 rounded-lg bg-[#21294a] px-6 font-bold text-white" startContent={<Plus size={18} />}>
-            Viết bài mới
-          </Button>
+          <div className="flex flex-wrap gap-3">
+            <Button as={Link} to="/editor/new" className="h-11 rounded-lg bg-[#21294a] px-6 font-bold text-white" startContent={<Plus size={18} />}>
+              Viết bài mới
+            </Button>
+            <Button
+              as={Link}
+              to="/module/new"
+              className="h-11 rounded-lg border border-[#21294a]/15 bg-white px-6 font-bold text-[#21294a] shadow-sm"
+              startContent={<LayoutTemplate size={18} />}
+            >
+              Tạo page cố định
+            </Button>
+          </div>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -274,7 +291,7 @@ export function DashboardPage() {
               <div className="flex items-center gap-4">
                 <div className="h-10 w-14 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
                   {post.logo ? (
-                    <img src={`${SERVER_URL}${post.logo}`} alt={post.title} className="h-full w-full object-cover" />
+                    <img src={resolveImageUrl(post.logo)} alt={post.title} className="h-full w-full object-cover" />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-[#21294a]/5">
                       <Globe size={16} className="text-[#21294a]/30" />
@@ -344,7 +361,14 @@ export function DashboardPage() {
                     Duyệt
                   </Button>
                 ) : null}
-                <Button as={Link} to={`/editor/${post.id}`} isIconOnly size="sm" variant="flat" className="bg-[#21294a]/5 text-[#21294a]">
+                <Button
+                  as={Link}
+                  to={post.topic_name === "store-coupon-module" ? `/module/${post.id}` : `/editor/${post.id}`}
+                  isIconOnly
+                  size="sm"
+                  variant="flat"
+                  className="bg-[#21294a]/5 text-[#21294a]"
+                >
                   <Edit size={16} />
                 </Button>
                 <Button isIconOnly size="sm" variant="flat" className="bg-purple-50 text-purple-600" onClick={() => openCopyDialog(post)}>

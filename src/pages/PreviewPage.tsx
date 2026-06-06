@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Editor, Frame } from "@craftjs/core";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
 import { LayoutGrid } from "lucide-react";
 import { usePublicData } from "../hooks/usePublicData";
 import { PublicHeader } from "../components/Public/PublicHeader";
@@ -113,44 +114,7 @@ export function PreviewPage() {
       </div>
       <Editor
         enabled={false}
-        resolver={{
-          MimicPCLandingFrame,
-          DefaultNewPostFrame,
-          PortfolioTemplate,
-          BlogTemplate,
-          ServiceTemplate,
-          ContactTemplate,
-          ProductTemplate,
-          StoreCouponTemplate,
-          TextComponent,
-          Container,
-          ButtonComponent,
-          ImageComponent,
-          HeadingComponent,
-          CardComponent,
-          VideoComponent,
-          TableComponent,
-          ShapeComponent,
-          RowComponent,
-          ColumnComponent,
-          NavbarComponent,
-          SectionComponent,
-          GridComponent,
-          BadgeComponent,
-          AccordionComponent,
-          SpacerComponent,
-          SliderComponent,
-          TiptapComponent,
-          ScriptComponent,
-          InputComponent,
-          PopupModalComponent,
-          PopupOfferComponent,
-          PresetHeader,
-          PresetHero,
-          PresetOffersGrid,
-          PresetFAQ,
-          PresetFooter,
-        }}
+        resolver={CRAFT_RESOLVER}
       >
         <Frame data={frameData} />
       </Editor>

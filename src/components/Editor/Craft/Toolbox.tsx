@@ -36,6 +36,7 @@ import { PresetHero } from "./presets/PresetHero";
 import { PresetOffersGrid } from "./presets/PresetOffersGrid";
 import { PresetFAQ } from "./presets/PresetFAQ";
 import { PresetFooter } from "./presets/PresetFooter";
+import { PresetModuleLanding } from "./presets/PresetModuleLanding";
 import { ScriptComponent } from "./Components/ScriptComponent";
 
 const PresetItem = ({ label, comp }: any) => {
@@ -573,6 +574,7 @@ export const Toolbox = () => {
           <PresetItem label="Header (MimicPC)" comp={PresetHeader} />
           <PresetItem label="Hero (MimicPC)" comp={PresetHero} />
           <PresetItem label="Offer Cards" comp={PresetOffersGrid} />
+          <PresetItem label="Module Landing" comp={PresetModuleLanding} />
           <PresetItem label="FAQ" comp={PresetFAQ} />
           <PresetItem label="Footer" comp={PresetFooter} />
         </div>

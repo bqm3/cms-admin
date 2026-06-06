@@ -67,6 +67,8 @@ import { PresetHero } from "./Craft/presets/PresetHero";
 import { PresetOffersGrid } from "./Craft/presets/PresetOffersGrid";
 import { PresetFAQ } from "./Craft/presets/PresetFAQ";
 import { PresetFooter } from "./Craft/presets/PresetFooter";
+import { PresetModuleLanding } from "./Craft/presets/PresetModuleLanding";
+import { CRAFT_RESOLVER } from "./Craft/craftResolver";
 import { SliderComponent } from "./Craft/Components/SliderComponent";
 import { PopupOfferComponent } from "./Craft/Components/PopupOfferComponent";
 import { TiptapComponent } from "./Craft/Components/TiptapComponent";
@@ -314,6 +316,13 @@ const TEMPLATES = [
     description: "Giới thiệu các gói dịch vụ với bảng giá và FAQ.",
     preview: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400&h=300"
   },
+  {
+    id: "module-landing",
+    name: "Module Landing",
+    component: PresetModuleLanding,
+    description: "Module c? s?n Tiptap, image, button v? popup. D?ng ?? t?o landing page ??ng b? v?i PublicPostPage.",
+    preview: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=400&h=300"
+  },
   // {
   //   id: "contact",
   //   name: "Liên hệ",
@@ -416,47 +425,7 @@ export function TemplateEditorPage() {
     <div className="h-screen text-white font-sans overflow-hidden">
       <Editor
         enabled={true}
-        resolver={{
-          // Default frame
-          MimicPCLandingFrame,
-          DefaultNewPostFrame,
-          PortfolioTemplate,
-          BlogTemplate,
-          ServiceTemplate,
-          ContactTemplate,
-          ProductTemplate,
-          StoreCouponTemplate,
-          // Component
-          TextComponent,
-          Container,
-          ButtonComponent,
-          ImageComponent,
-          HeadingComponent,
-          CardComponent,
-          VideoComponent,
-          TableComponent,
-          ShapeComponent,
-          RowComponent,
-          ColumnComponent,
-          NavbarComponent,
-          SectionComponent,
-          GridComponent,
-          BadgeComponent,
-          AccordionComponent,
-          SpacerComponent,
-  SliderComponent,
-  TiptapComponent,
-  InputComponent,
-          PopupModalComponent,
-          PopupOfferComponent,
-
-          // Preset
-          PresetHeader,
-          PresetHero,
-          PresetOffersGrid,
-          PresetFAQ,
-          PresetFooter,
-        }}
+        resolver={CRAFT_RESOLVER}
       >
         <ContentLoader content={loadedContent} />
 

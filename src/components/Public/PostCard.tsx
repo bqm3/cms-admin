@@ -12,6 +12,12 @@ interface PostCardProps {
 export function PostCard({ post }: PostCardProps) {
   const navigate = useNavigate();
 
+  const imageUrl = post.logo
+    ? post.logo.startsWith("http") || post.logo.startsWith("data:") || post.logo.startsWith("blob:")
+      ? post.logo
+      : `${SERVER_URL}${post.logo}`
+    : "";
+
   return (
     <div
       className="font-sans block group h-full focus:outline-none relative cursor-pointer"
@@ -21,9 +27,9 @@ export function PostCard({ post }: PostCardProps) {
         <CardBody className="p-0 flex-1 flex flex-col relative">
           {/* Image Container */}
           <div className="aspect-[16/10] bg-slate-50 overflow-hidden relative">
-            {post.logo ? (
+            {imageUrl ? (
               <img
-                src={`${SERVER_URL}${post.logo}`}
+                src={imageUrl}
                 alt={post.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 width="288"

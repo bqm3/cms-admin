@@ -4,6 +4,7 @@ import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Editor, Frame } from "@craftjs/core";
 import { Helmet } from "react-helmet-async";
 import api, { SERVER_URL } from "../services/api";
+import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
 import { usePublicData } from "../hooks/usePublicData";
 import { PublicFooter } from "../components/Public/PublicFooter";
 import { PublicHeader } from "../components/Public/PublicHeader";
@@ -49,6 +50,8 @@ import { PresetOffersGrid } from "@/components/Editor/Craft/presets/PresetOffers
 import { InputComponent } from "@/components/Editor/Craft/Components/InputComponent";
 import { PopupModalComponent } from "@/components/Editor/Craft/Components/PopupModalComponent";
 import { PopupOfferComponent } from "@/components/Editor/Craft/Components/PopupOfferComponent";
+import { StoreCouponModuleView } from "../components/Public/StoreCouponModuleView";
+import type { StoreCouponModuleData } from "../components/Public/StoreCouponModuleView";
 
 
 function stripHtmlToText(html: string) {
@@ -68,14 +71,25 @@ function toBool(v: any) {
   return v === true || v === "true" || v === "1" || v === 1;
 }
 
+function parseStoreCouponModule(content: string | null | undefined) {
+  if (!content) return null;
+  try {
+    const parsed = typeof content === "string" ? JSON.parse(content) : content;
+    if (parsed?.pageType !== "store_coupon_module_v1") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 // ✅ Auto meta giống backend
 function buildAutoMetaFromTitle(titleRaw: string) {
   const t = String(titleRaw || "").trim();
   if (!t) {
     return {
-      meta_title: "Website",
-      meta_description: "Website",
-      meta_keyword: "Website",
+      meta_title: "Store",
+      meta_description: "Store",
+      meta_keyword: "Store",
     };
   }
 
@@ -88,6 +102,81 @@ function buildAutoMetaFromTitle(titleRaw: string) {
   const meta_keyword = `${t}, ${t} promotion, ${t} promotion newest`;
 
   return { meta_title, meta_description, meta_keyword };
+}
+
+function PublicCouponGuideBlocks() {
+  return (
+    <div className="mx-auto max-w-[1180px] px-4 pb-6 md:px-6 md:pb-8">
+      <div className="grid gap-4">
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-600">Intro</p>
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
+            Royalclips Coupon Codes & Promo Codes - Complete Savings Guide
+          </h2>
+          <div className="prose prose-slate mt-4 max-w-none text-sm leading-7 text-slate-700">
+            <p>
+              Royalclips is a trusted online retailer offering a wide selection of quality products at competitive prices.
+              Whether you are a first-time visitor or a returning customer, using verified Royalclips coupon codes and promo
+              codes is the smartest way to get more value from every order. At CouponSpeaks, we track and verify the latest
+              Royalclips discount codes daily so you always find working deals before you checkout.
+            </p>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+          <h2 className="text-xs font-black uppercase tracking-[0.22em] text-blue-600">How to use a coupon code</h2>
+          <ol className="mt-4 space-y-3 pl-5 text-sm leading-7 text-slate-700">
+            <li>Select a coupon from the list above.</li>
+            <li>Click Shop Now to visit the store page.</li>
+            <li>Add products to your cart as usual.</li>
+            <li>Paste the coupon code at checkout and apply.</li>
+          </ol>
+        </section>
+
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+          <h2 className="text-xs font-black uppercase tracking-[0.22em] text-blue-600">Questions & Answers</h2>
+          <div className="mt-4 space-y-3">
+            {[
+              {
+                q: "How do I use this coupon code?",
+                a: 'Simply click "Shop Now", copy the coupon code, then apply it at checkout on the store page.',
+              },
+              {
+                q: "Why doesn't my coupon work?",
+                a: "Some coupons require a minimum order value, specific products, or may have expired. Please double-check the terms before checkout.",
+              },
+              {
+                q: "Can I use more than one coupon?",
+                a: "Most stores allow only one coupon per order. Combining multiple offers is usually not supported.",
+              },
+              {
+                q: "Do you earn a commission from these deals?",
+                a: "Yes, we may earn a small commission when you make a purchase through our links, at no extra cost to you.",
+              },
+            ].map((item) => (
+              <details key={item.q} className="group rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-sm font-bold text-slate-900">
+                  <span>{item.q}</span>
+                  <span className="text-lg font-black text-slate-600 transition group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 pr-6 text-sm leading-7 text-slate-600">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+          <h2 className="text-xs font-black uppercase tracking-[0.22em] text-blue-600">Policies & notes</h2>
+          <ul className="mt-4 space-y-3 pl-5 text-sm leading-7 text-slate-700">
+            <li>Some coupons may require a minimum order value.</li>
+            <li>Validity and conditions may change without notice.</li>
+            <li>Please double-check your discount before checkout.</li>
+            <li>We may earn a commission when you shop through our links.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  );
 }
 
 export function PublicPostPage() {
@@ -110,12 +199,14 @@ export function PublicPostPage() {
     ogImage?: string;
     robots: string;
   }>({
-    title: "Website",
-    description: "Website",
-    keywords: "Website",
+    title: "Store",
+    description: "Store",
+    keywords: "Store",
     canonical: typeof window !== "undefined" ? window.location.href : "",
     robots: "index,follow",
   });
+
+  const moduleData = useMemo(() => parseStoreCouponModule(content), [content]);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -129,8 +220,9 @@ export function PublicPostPage() {
         });
 
         const post = response.data;
+        const moduleContent = parseStoreCouponModule(post.content);
 
-        const titleRaw = post.title ?? "Website";
+        const titleRaw = post.title ?? "Store";
         const override = toBool(post.meta_override);
 
         // ✅ SEO meta: override => dùng DB, không override => auto theo title
@@ -150,12 +242,17 @@ export function PublicPostPage() {
 
         // ✅ fallback nếu metaDesc trống quá: dùng text content
         const rawContent = post.content ?? "";
-        const contentText =
-          typeof rawContent === "string" ? stripHtmlToText(rawContent) : "";
+        const contentText = moduleContent
+          ? stripHtmlToText(
+              moduleContent.aboutHtml || moduleContent.heroSubtitle || moduleContent.aboutSubtitle || "",
+            )
+          : typeof rawContent === "string"
+            ? stripHtmlToText(rawContent)
+            : "";
         const finalDesc = truncate(metaDesc || contentText || metaTitle, 160);
 
         // OG Image
-        const ogImageRaw = post.logo || "";
+        const ogImageRaw = moduleContent?.logoUrl || moduleContent?.projectImageUrl || moduleContent?.heroImageUrl || post.logo || "";
         const ogImage = ogImageRaw
           ? ogImageRaw.startsWith("http")
             ? ogImageRaw
@@ -192,7 +289,7 @@ export function PublicPostPage() {
 
 
   const frameData = useMemo(() => {
-    if (!content) return null;
+    if (!content || moduleData) return null;
 
     let parsed: any = content;
     if (typeof content === "string") {
@@ -205,10 +302,10 @@ export function PublicPostPage() {
 
     if (parsed?.nodes && typeof parsed.nodes === "object") return parsed.nodes;
     return parsed;
-  }, [content]);
+  }, [content, moduleData]);
 
   useEffect(() => {
-    if (!loading && !frameData) {
+    if (!loading && !frameData && !moduleData) {
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -221,7 +318,7 @@ export function PublicPostPage() {
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [loading, frameData, navigate]);
+  }, [loading, frameData, moduleData, navigate]);
 
   const navigateToCategory = (parentId: string, categoryId: string) => {
     let url = `/category/${parentId}`;
@@ -236,6 +333,38 @@ export function PublicPostPage() {
       navigate(`/category?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
+
+  if (moduleData) {
+    return (
+      <div className="min-h-screen bg-[#f4f4f6]">
+        <Helmet>
+          <title>{seo.title}</title>
+          <meta name="description" content={seo.description} />
+          <meta name="keywords" content={seo.keywords} />
+          <meta name="robots" content={seo.robots} />
+          <link rel="canonical" href={seo.canonical} />
+          {seo.ogImage ? <meta property="og:image" content={seo.ogImage} /> : null}
+        </Helmet>
+
+        <PublicHeader
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onSearchSubmit={handleSearch}
+          parentCategories={parentCategories}
+          categories={categories}
+        />
+
+        <StoreCouponModuleView data={moduleData as StoreCouponModuleData} />
+        <PublicCouponGuideBlocks />
+
+        <PublicFooter
+          parentCategories={parentCategories}
+          categories={categories}
+          onCategoryClick={navigateToCategory}
+        />
+      </div>
+    );
+  }
 
   if (loading)
     return (
@@ -305,48 +434,7 @@ export function PublicPostPage() {
 
       <Editor
         enabled={false}
-        resolver={{
-          // Default frame
-          MimicPCLandingFrame,
-          DefaultNewPostFrame,
-          PortfolioTemplate,
-          BlogTemplate,
-          ServiceTemplate,
-          ContactTemplate,
-          ProductTemplate,
-          StoreCouponTemplate,
-          // Component
-          TextComponent,
-          Container,
-          ButtonComponent,
-          ImageComponent,
-          HeadingComponent,
-          CardComponent,
-          VideoComponent,
-          TableComponent,
-          ShapeComponent,
-          RowComponent,
-          ColumnComponent,
-          NavbarComponent,
-          SectionComponent,
-          GridComponent,
-          BadgeComponent,
-          AccordionComponent,
-          SpacerComponent,
-          SliderComponent,
-          TiptapComponent,
-          InputComponent,
-          PopupModalComponent,
-          PopupOfferComponent,
-          ScriptComponent,
-          // Preset
-          PresetHeader,
-          PresetHero,
-          PresetOffersGrid,
-          PresetFAQ,
-          PresetFooter,
-          //
-        }}
+        resolver={CRAFT_RESOLVER}
       >
         <Frame data={frameData} />
       </Editor>
