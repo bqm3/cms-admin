@@ -439,6 +439,8 @@ export function PublicPostPage() {
         <Frame data={frameData} />
       </Editor>
 
+      <PublicCouponGuideBlocks />
+
       <PublicFooter
         parentCategories={parentCategories}
         categories={categories}

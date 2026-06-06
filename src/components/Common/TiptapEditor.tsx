@@ -8,6 +8,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
 import TextStyle from "@tiptap/extension-text-style";
 import { Extension } from "@tiptap/core";
+import { Fragment, Node as ProseMirrorNode, Slice } from "@tiptap/pm/model";
 import {
   AlignCenter,
   AlignLeft,
@@ -36,6 +37,7 @@ interface TiptapEditorProps {
   onChange: (value: string) => void;
   placeholder?: string;
   editable?: boolean;
+  pasteTextAlign?: "left" | "center" | "right" | "justify";
 }
 
 const TextColor = Extension.create({
@@ -149,11 +151,48 @@ function ToolbarDivider() {
   return <div className="mx-1 h-6 w-px bg-slate-200" />;
 }
 
+function alignPastedNode(
+  node: ProseMirrorNode,
+  textAlign: TiptapEditorProps["pasteTextAlign"],
+): ProseMirrorNode {
+  if (!textAlign || node.isText) return node;
+
+  const nextContent: Fragment = node.content.size
+    ? Fragment.fromArray(
+        (node.content.content as ProseMirrorNode[]).map((child) => alignPastedNode(child, textAlign)),
+      )
+    : node.content;
+
+  if (node.type.name === "paragraph" || node.type.name === "heading") {
+    return node.type.create(
+      {
+        ...node.attrs,
+        textAlign,
+      },
+      nextContent,
+      node.marks,
+    );
+  }
+
+  return node.copy(nextContent);
+}
+
+function alignPastedSlice(slice: Slice, textAlign: TiptapEditorProps["pasteTextAlign"]): Slice {
+  if (!textAlign) return slice;
+
+  const content = Fragment.fromArray(
+    (slice.content.content as ProseMirrorNode[]).map((node) => alignPastedNode(node, textAlign)),
+  );
+
+  return new Slice(content, slice.openStart, slice.openEnd);
+}
+
 export function TiptapEditor({
   value,
   onChange,
   placeholder = "Nhập nội dung...",
   editable = true,
+  pasteTextAlign = "center",
 }: TiptapEditorProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -189,6 +228,7 @@ export function TiptapEditor({
         class:
           "min-h-[280px] max-w-none px-5 py-4 text-[15px] leading-7 text-slate-700 outline-none prose prose-slate prose-sm md:prose-base prose-headings:tracking-tight prose-p:my-3 prose-ul:my-3 prose-ol:my-3 prose-img:rounded-xl prose-img:shadow-sm",
       },
+      transformPasted: (slice) => alignPastedSlice(slice, pasteTextAlign),
     },
     onUpdate: ({ editor: currentEditor }) => {
       onChange(currentEditor.getHTML());
