@@ -27,7 +27,7 @@ pnpm-lock.yaml
 yarn.lock
 package-lock.json
 bun.lockb
-
+public
 .agent
 
 .env

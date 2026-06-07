@@ -30,7 +30,7 @@ export function ClientHomePage() {
           api.get(`/posts/public/catalog/${pc.slug || pc.id}`, {
             params: {
               limit: 12,
-              sort: "sequence_number:ASC",
+              sort: "created_at:DESC",
             },
           }),
         ),

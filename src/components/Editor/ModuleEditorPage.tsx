@@ -6,7 +6,7 @@ import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure
 import { CheckCircle2, ImagePlus, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import api, { SERVER_URL } from "../../services/api";
 import { AdminLayout } from "../../layouts/AdminLayout";
-import { TiptapEditor } from "../Common/TiptapEditor";
+import { TinyMceEditor } from "../Common/TinyMceEditor";
 import type { StoreCouponModuleCoupon, StoreCouponModuleData } from "../Public/StoreCouponModuleView";
 
 type CategoryOption = {
@@ -34,6 +34,21 @@ function resolveAssetUrl(url?: string) {
   if (!url) return "";
   if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("blob:")) return url;
   return `${SERVER_URL}${url}`;
+}
+
+function getSharedCouponUrl(coupons: StoreCouponModuleCoupon[], fallbackUrl = "") {
+  const firstCouponWithUrl = coupons.find((coupon) => (coupon.url || coupon.buttonHref || "").trim());
+  return firstCouponWithUrl?.url || firstCouponWithUrl?.buttonHref || fallbackUrl;
+}
+
+function applyAffiliateUrlToCoupons(coupons: StoreCouponModuleCoupon[], affiliateUrl: string) {
+  const nextAffiliateUrl = affiliateUrl.trim();
+  if (!nextAffiliateUrl) return coupons;
+  return coupons.map((coupon) => ({
+    ...coupon,
+    url: nextAffiliateUrl,
+    buttonHref: nextAffiliateUrl,
+  }));
 }
 
 function createDefaultData(): ModuleFormData {
@@ -234,7 +249,10 @@ export function ModuleEditorPage() {
         popup: parsed.popup || createDefaultData().popup,
       };
 
-      setData(merged);
+      setData({
+        ...merged,
+        coupons: applyAffiliateUrlToCoupons(merged.coupons, merged.affiliateUrl),
+      });
       setLogoPreview(merged.logoUrl ? resolveAssetUrl(merged.logoUrl) : "");
       setProjectPreview(merged.projectImageUrl ? resolveAssetUrl(merged.projectImageUrl) : "");
     } catch (error) {
@@ -291,7 +309,9 @@ export function ModuleEditorPage() {
   };
 
   const openCreateCoupon = () => {
-    setCouponDraft(emptyCoupon);
+    setCouponDraft({
+      ...emptyCoupon,
+    });
     setEditingCouponIndex(null);
     couponModal.onOpen();
   };
@@ -309,13 +329,22 @@ export function ModuleEditorPage() {
     }
 
     setData((prev) => {
+      const sharedAffiliateUrl = prev.affiliateUrl.trim();
       const nextCoupons = [...prev.coupons];
+      const normalizedCoupon = {
+        ...couponDraft,
+        url: sharedAffiliateUrl || (couponDraft.url || "").trim(),
+        buttonHref: sharedAffiliateUrl || (couponDraft.buttonHref || couponDraft.url || "").trim(),
+      };
       if (editingCouponIndex === null) {
-        nextCoupons.push({ ...couponDraft });
+        nextCoupons.push(normalizedCoupon);
       } else {
-        nextCoupons[editingCouponIndex] = { ...couponDraft };
+        nextCoupons[editingCouponIndex] = normalizedCoupon;
       }
-      return { ...prev, coupons: nextCoupons };
+      return {
+        ...prev,
+        coupons: applyAffiliateUrlToCoupons(nextCoupons, sharedAffiliateUrl),
+      };
     });
 
     setCouponDraft(emptyCoupon);
@@ -370,7 +399,7 @@ export function ModuleEditorPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <SectionTitle
                 title="Coupons"
-                subtitle="Coupons được quản lý bằng modal. Mỗi coupon gồm title, content, code, button text và URL."
+                subtitle="Coupons được quản lý bằng modal. Mỗi coupon gồm title, content, code, button text và URL. URL đầu tiên sẽ được dùng làm mặc định cho các coupon sau nếu để trống."
               />
               <Button onClick={openCreateCoupon} className="bg-[#21294a] font-bold text-white" startContent={<Plus size={16} />}>
                 Manage coupons
@@ -470,7 +499,13 @@ export function ModuleEditorPage() {
                 label="Affiliate URL"
                 placeholder="https://..."
                 value={data.affiliateUrl}
-                onChange={(e) => setData((prev) => ({ ...prev, affiliateUrl: e.target.value }))}
+                onChange={(e) =>
+                  setData((prev) => ({
+                    ...prev,
+                    affiliateUrl: e.target.value,
+                    coupons: applyAffiliateUrlToCoupons(prev.coupons, e.target.value),
+                  }))
+                }
                 classNames={{
                   inputWrapper: "bg-white border border-slate-200 shadow-sm rounded-2xl h-12",
                   input: "text-sm font-medium",
@@ -522,7 +557,7 @@ export function ModuleEditorPage() {
 
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
             <SectionTitle title="Description" subtitle="Chỉ cần một trình soạn thảo mô tả. Public page sẽ hiển thị đúng đoạn này." />
-            <TiptapEditor
+            <TinyMceEditor
               value={data.aboutHtml}
               onChange={(value) => setData((prev) => ({ ...prev, aboutHtml: value }))}
               placeholder="Write description..."
@@ -623,10 +658,7 @@ export function ModuleEditorPage() {
                 <Button
                   className="bg-[#21294a] font-bold text-white"
                   startContent={<Plus size={14} />}
-                  onClick={() => {
-                    setCouponDraft(emptyCoupon);
-                    setEditingCouponIndex(null);
-                  }}
+                  onClick={openCreateCoupon}
                 >
                   New coupon
                 </Button>
@@ -728,9 +760,10 @@ export function ModuleEditorPage() {
                   />
                   <Input
                     label="URL"
-                    placeholder="https://..."
-                    value={couponDraft.url}
-                    onChange={(e) => setCouponDraft((prev) => ({ ...prev, url: e.target.value }))}
+                    placeholder="Lấy từ Affiliate URL"
+                    value={data.affiliateUrl || couponDraft.url}
+                    isReadOnly
+                    isDisabled
                     classNames={{
                       inputWrapper: "bg-white border border-slate-200 shadow-sm rounded-2xl h-12",
                       input: "text-sm font-medium",

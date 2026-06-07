@@ -43,7 +43,7 @@ export function ClientCategoryPage() {
 
       const response = await api.get(url, {
         params: {
-          sort: "sequence_number:ASC",
+          sort: "created_at:DESC",
           search,
           page,
           limit,

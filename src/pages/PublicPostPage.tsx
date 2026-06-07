@@ -104,21 +104,33 @@ function buildAutoMetaFromTitle(titleRaw: string) {
   return { meta_title, meta_description, meta_keyword };
 }
 
-function PublicCouponGuideBlocks() {
+function getSiteBrandFromHostname(hostname: string) {
+  const cleanHost = hostname.replace(/^www\./i, "").trim();
+  if (!cleanHost) return "site";
+  return cleanHost.split(".")[0] || cleanHost;
+}
+
+function PublicCouponGuideBlocks({
+  brandName,
+  siteBrand,
+}: {
+  brandName: string;
+  siteBrand: string;
+}) {
   return (
-    <div className="mx-auto max-w-[1180px] px-4 pb-6 md:px-6 md:pb-8">
+    <div className="mx-auto max-w-[1180px] px-4 mt-6 pb-6 md:px-6 md:pb-8">
       <div className="grid gap-4">
         <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-600">Intro</p>
           <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
-            Royalclips Coupon Codes & Promo Codes - Complete Savings Guide
+            {brandName} Coupon Codes & Promo Codes - Complete Savings Guide
           </h2>
           <div className="prose prose-slate mt-4 max-w-none text-sm leading-7 text-slate-700">
             <p>
-              Royalclips is a trusted online retailer offering a wide selection of quality products at competitive prices.
-              Whether you are a first-time visitor or a returning customer, using verified Royalclips coupon codes and promo
-              codes is the smartest way to get more value from every order. At CouponSpeaks, we track and verify the latest
-              Royalclips discount codes daily so you always find working deals before you checkout.
+              {brandName} is a trusted online retailer offering a wide selection of quality products at competitive prices.
+              Whether you are a first-time visitor or a returning customer, using verified {brandName} coupon codes and promo
+              codes is the smartest way to get more value from every order. At {siteBrand}, we track and verify the latest{" "}
+              {brandName} discount codes daily so you always find working deals before you checkout.
             </p>
           </div>
         </section>
@@ -190,6 +202,7 @@ export function PublicPostPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [countdown, setCountdown] = useState(5);
   const hasFetched = useRef(false);
+  const [articleTitle, setArticleTitle] = useState("Store");
 
   const [seo, setSeo] = useState<{
     title: string;
@@ -223,6 +236,7 @@ export function PublicPostPage() {
         const moduleContent = parseStoreCouponModule(post.content);
 
         const titleRaw = post.title ?? "Store";
+        setArticleTitle(titleRaw);
         const override = toBool(post.meta_override);
 
         // ✅ SEO meta: override => dùng DB, không override => auto theo title
@@ -355,7 +369,10 @@ export function PublicPostPage() {
         />
 
         <StoreCouponModuleView data={moduleData as StoreCouponModuleData} />
-        <PublicCouponGuideBlocks />
+        <PublicCouponGuideBlocks
+          brandName={articleTitle}
+          siteBrand={getSiteBrandFromHostname(window.location.hostname)}
+        />
 
         <PublicFooter
           parentCategories={parentCategories}
@@ -439,7 +456,10 @@ export function PublicPostPage() {
         <Frame data={frameData} />
       </Editor>
 
-      <PublicCouponGuideBlocks />
+      <PublicCouponGuideBlocks
+        brandName={articleTitle}
+        siteBrand={getSiteBrandFromHostname(window.location.hostname)}
+      />
 
       <PublicFooter
         parentCategories={parentCategories}

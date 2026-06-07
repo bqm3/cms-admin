@@ -7,6 +7,17 @@ import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
 import TextStyle from "@tiptap/extension-text-style";
+import FontFamily from "@tiptap/extension-font-family";
+import Highlight from "@tiptap/extension-highlight";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import Table from "@tiptap/extension-table";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import TableRow from "@tiptap/extension-table-row";
+import Typography from "@tiptap/extension-typography";
 import { Extension } from "@tiptap/core";
 import { Fragment, Node as ProseMirrorNode, Slice } from "@tiptap/pm/model";
 import {
@@ -15,6 +26,10 @@ import {
   AlignRight,
   Bold,
   Code2,
+  Heading1,
+  Heading4,
+  Heading5,
+  Heading6,
   Heading2,
   Heading3,
   ImagePlus,
@@ -22,11 +37,18 @@ import {
   Link2,
   List,
   ListOrdered,
+  Highlighter,
   Pilcrow,
   Quote,
+  Plus,
   Redo2,
   RemoveFormatting,
+  Minus,
   Strikethrough,
+  Subscript as SubscriptIcon,
+  Superscript as SuperscriptIcon,
+  Table2,
+  Trash2,
   Underline as UnderlineIcon,
   Undo2,
 } from "lucide-react";
@@ -39,6 +61,15 @@ interface TiptapEditorProps {
   editable?: boolean;
   pasteTextAlign?: "left" | "center" | "right" | "justify";
 }
+
+const FONT_FAMILIES = [
+  { label: "Default", value: "" },
+  { label: "Inter", value: "Inter, sans-serif" },
+  { label: "Arial", value: "Arial, sans-serif" },
+  { label: "Georgia", value: "Georgia, serif" },
+  { label: "Times", value: '"Times New Roman", serif' },
+  { label: "Courier", value: '"Courier New", monospace' },
+];
 
 const TextColor = Extension.create({
   name: "textColor",
@@ -106,6 +137,59 @@ const FontSize = Extension.create({
   },
 });
 
+const TextFormatting = Extension.create({
+  name: "textFormatting",
+  addGlobalAttributes() {
+    return [
+      {
+        types: ["textStyle"],
+        attributes: {
+          backgroundColor: {
+            default: null,
+            parseHTML: (element) => (element as HTMLElement).style.backgroundColor || null,
+            renderHTML: (attributes) => {
+              if (!attributes.backgroundColor) return {};
+              return { style: `background-color: ${attributes.backgroundColor}` };
+            },
+          },
+          fontWeight: {
+            default: null,
+            parseHTML: (element) => (element as HTMLElement).style.fontWeight || null,
+            renderHTML: (attributes) => {
+              if (!attributes.fontWeight) return {};
+              return { style: `font-weight: ${attributes.fontWeight}` };
+            },
+          },
+          fontStyle: {
+            default: null,
+            parseHTML: (element) => (element as HTMLElement).style.fontStyle || null,
+            renderHTML: (attributes) => {
+              if (!attributes.fontStyle) return {};
+              return { style: `font-style: ${attributes.fontStyle}` };
+            },
+          },
+          textDecoration: {
+            default: null,
+            parseHTML: (element) => (element as HTMLElement).style.textDecoration || null,
+            renderHTML: (attributes) => {
+              if (!attributes.textDecoration) return {};
+              return { style: `text-decoration: ${attributes.textDecoration}` };
+            },
+          },
+          lineHeight: {
+            default: null,
+            parseHTML: (element) => (element as HTMLElement).style.lineHeight || null,
+            renderHTML: (attributes) => {
+              if (!attributes.lineHeight) return {};
+              return { style: `line-height: ${attributes.lineHeight}` };
+            },
+          },
+        },
+      },
+    ];
+  },
+});
+
 function resolveAssetUrl(url: string) {
   if (!url) return "";
   if (url.startsWith("http") || url.startsWith("data:")) return url;
@@ -151,6 +235,20 @@ function ToolbarDivider() {
   return <div className="mx-1 h-6 w-px bg-slate-200" />;
 }
 
+function ToolbarGroupLabel({ children }: { children: React.ReactNode }) {
+  return <span className="px-1 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{children}</span>;
+}
+
+function sanitizePastedHtml(html: string) {
+  if (!html) return html;
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  doc.querySelectorAll("script,style,noscript,iframe,object,embed,meta,link").forEach((node) => node.remove());
+
+  return doc.body.innerHTML;
+}
+
 function alignPastedNode(
   node: ProseMirrorNode,
   textAlign: TiptapEditorProps["pasteTextAlign"],
@@ -192,7 +290,7 @@ export function TiptapEditor({
   onChange,
   placeholder = "Nhập nội dung...",
   editable = true,
-  pasteTextAlign = "center",
+  pasteTextAlign,
 }: TiptapEditorProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -200,11 +298,39 @@ export function TiptapEditor({
   const editor = useEditor({
     editable,
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3, 4, 5, 6],
+        },
+        bulletList: {
+          keepMarks: true,
+          keepAttributes: true,
+        },
+        orderedList: {
+          keepMarks: true,
+          keepAttributes: true,
+        },
+        codeBlock: {
+          HTMLAttributes: {
+            class: "rounded-xl bg-slate-900 px-4 py-3 font-mono text-sm text-slate-100",
+          },
+        },
+      }),
       TextStyle,
       TextColor,
       FontSize,
+      TextFormatting,
+      FontFamily,
+      Highlight.configure({ multicolor: true }),
       Underline,
+      Subscript,
+      Superscript,
+      TaskList,
+      TaskItem.configure({ nested: true }),
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableHeader,
+      TableCell,
       Image.configure({
         inline: false,
         allowBase64: true,
@@ -212,11 +338,13 @@ export function TiptapEditor({
       Link.configure({
         openOnClick: false,
         autolink: true,
+        linkOnPaste: true,
         defaultProtocol: "https",
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
+      Typography,
       Placeholder.configure({
         placeholder,
       }),
@@ -226,8 +354,9 @@ export function TiptapEditor({
     editorProps: {
       attributes: {
         class:
-          "min-h-[280px] max-w-none px-5 py-4 text-[15px] leading-7 text-slate-700 outline-none prose prose-slate prose-sm md:prose-base prose-headings:tracking-tight prose-p:my-3 prose-ul:my-3 prose-ol:my-3 prose-img:rounded-xl prose-img:shadow-sm",
+          "min-h-[280px] max-w-none px-5 py-4 text-[15px] leading-7 text-slate-700 outline-none prose prose-slate prose-sm md:prose-base prose-headings:tracking-tight prose-p:my-3 prose-ul:my-3 prose-ol:my-3 prose-img:rounded-xl prose-img:shadow-sm prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-slate-200 prose-th:bg-slate-100 prose-th:px-3 prose-th:py-2 prose-td:border prose-td:border-slate-200 prose-td:px-3 prose-td:py-2",
       },
+      transformPastedHTML: sanitizePastedHtml,
       transformPasted: (slice) => alignPastedSlice(slice, pasteTextAlign),
     },
     onUpdate: ({ editor: currentEditor }) => {
@@ -245,6 +374,7 @@ export function TiptapEditor({
 
   const currentColor = editor.getAttributes("textStyle").color || "#1e293b";
   const currentFontSize = editor.getAttributes("textStyle").fontSize || "16px";
+  const currentFontFamily = editor.getAttributes("textStyle").fontFamily || "";
 
   const setLink = () => {
     const previousUrl = editor.getAttributes("link").href;
@@ -261,6 +391,10 @@ export function TiptapEditor({
     const url = window.prompt("Nhập đường dẫn ảnh", "https://");
     if (!url || !url.trim()) return;
     editor.chain().focus().setImage({ src: url.trim() }).run();
+  };
+
+  const insertTable = () => {
+    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
   };
 
   const handleUploadImage = async (file?: File | null) => {
@@ -297,6 +431,7 @@ export function TiptapEditor({
         <>
           <div className="border-b border-slate-200 bg-[#f8f9fb] px-3 py-3">
             <div className="flex flex-wrap items-center gap-2">
+              <ToolbarGroupLabel>Block</ToolbarGroupLabel>
               <ToolbarButton
                 title="Paragraph"
                 active={editor.isActive("paragraph")}
@@ -304,6 +439,14 @@ export function TiptapEditor({
               >
                 <Pilcrow size={16} />
                 <span className="hidden sm:inline">P</span>
+              </ToolbarButton>
+              <ToolbarButton
+                title="Heading 1"
+                active={editor.isActive("heading", { level: 1 })}
+                onPress={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+              >
+                <Heading1 size={16} />
+                <span className="hidden sm:inline">H1</span>
               </ToolbarButton>
               <ToolbarButton
                 title="Heading 2"
@@ -320,6 +463,30 @@ export function TiptapEditor({
               >
                 <Heading3 size={16} />
                 <span className="hidden sm:inline">H3</span>
+              </ToolbarButton>
+              <ToolbarButton
+                title="Heading 4"
+                active={editor.isActive("heading", { level: 4 })}
+                onPress={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+              >
+                <Heading4 size={16} />
+                <span className="hidden sm:inline">H4</span>
+              </ToolbarButton>
+              <ToolbarButton
+                title="Heading 5"
+                active={editor.isActive("heading", { level: 5 })}
+                onPress={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
+              >
+                <Heading5 size={16} />
+                <span className="hidden sm:inline">H5</span>
+              </ToolbarButton>
+              <ToolbarButton
+                title="Heading 6"
+                active={editor.isActive("heading", { level: 6 })}
+                onPress={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
+              >
+                <Heading6 size={16} />
+                <span className="hidden sm:inline">H6</span>
               </ToolbarButton>
 
               <ToolbarDivider />
@@ -339,8 +506,23 @@ export function TiptapEditor({
               <ToolbarButton title="Code" active={editor.isActive("code")} onPress={() => editor.chain().focus().toggleCode().run()}>
                 <Code2 size={16} />
               </ToolbarButton>
+              <ToolbarButton title="Highlight" active={editor.isActive("highlight")} onPress={() => editor.chain().focus().toggleHighlight().run()}>
+                <Highlighter size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Subscript" active={editor.isActive("subscript")} onPress={() => editor.chain().focus().toggleSubscript().run()}>
+                <SubscriptIcon size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Superscript" active={editor.isActive("superscript")} onPress={() => editor.chain().focus().toggleSuperscript().run()}>
+                <SuperscriptIcon size={16} />
+              </ToolbarButton>
               <ToolbarButton title="Quote" active={editor.isActive("blockquote")} onPress={() => editor.chain().focus().toggleBlockquote().run()}>
                 <Quote size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Horizontal rule" onPress={() => editor.chain().focus().setHorizontalRule().run()}>
+                <Minus size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Hard break" onPress={() => editor.chain().focus().setHardBreak().run()}>
+                <span className="text-xs font-black">↵</span>
               </ToolbarButton>
 
               <ToolbarDivider />
@@ -350,6 +532,9 @@ export function TiptapEditor({
               </ToolbarButton>
               <ToolbarButton title="Ordered List" active={editor.isActive("orderedList")} onPress={() => editor.chain().focus().toggleOrderedList().run()}>
                 <ListOrdered size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Task List" active={editor.isActive("taskList")} onPress={() => editor.chain().focus().toggleTaskList().run()}>
+                <span className="text-xs font-black">☑</span>
               </ToolbarButton>
               <ToolbarButton title="Link" active={editor.isActive("link")} onPress={setLink}>
                 <Link2 size={16} />
@@ -367,6 +552,26 @@ export function TiptapEditor({
                   title="Text color"
                 />
               </div>
+
+              <select
+                value={currentFontFamily}
+                onChange={(e) => {
+                  const fontFamily = e.target.value;
+                  if (!fontFamily) {
+                    (editor.commands as any).unsetFontFamily();
+                    return;
+                  }
+                  (editor.commands as any).setFontFamily(fontFamily);
+                }}
+                className="h-9 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 outline-none"
+                title="Font family"
+              >
+                {FONT_FAMILIES.map((font) => (
+                  <option key={font.label} value={font.value}>
+                    {font.label}
+                  </option>
+                ))}
+              </select>
 
               <select
                 value={currentFontSize}
@@ -403,6 +608,19 @@ export function TiptapEditor({
                 onPress={() => editor.chain().focus().setTextAlign("right").run()}
               >
                 <AlignRight size={16} />
+              </ToolbarButton>
+
+              <ToolbarButton title="Insert table" onPress={insertTable}>
+                <Table2 size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Add row" onPress={() => editor.chain().focus().addRowAfter().run()}>
+                <Plus size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Add column" onPress={() => editor.chain().focus().addColumnAfter().run()}>
+                <Plus size={16} />
+              </ToolbarButton>
+              <ToolbarButton title="Delete table" onPress={() => editor.chain().focus().deleteTable().run()}>
+                <Trash2 size={16} />
               </ToolbarButton>
 
               <ToolbarDivider />
