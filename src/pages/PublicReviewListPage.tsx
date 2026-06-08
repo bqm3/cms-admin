@@ -61,8 +61,8 @@ export function PublicReviewListPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Helmet>
-        <title>Review</title>
-        <meta name="description" content="Danh sách review" />
+        <title>Reviews</title>
+        <meta name="description" content="Review list" />
       </Helmet>
 
       <PublicHeader
@@ -80,12 +80,12 @@ export function PublicReviewListPage() {
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.3em] text-[#21294a]">Review</p>
-            <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-900">Danh sách bài review</h1>
-            <p className="mt-3 max-w-2xl text-sm font-medium text-slate-500">Hiển thị theo dạng card và phân trang công khai.</p>
+            <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-900">Review List</h1>
+            <p className="mt-3 max-w-2xl text-sm font-medium text-slate-500">Displayed in cards with public pagination.</p>
           </div>
           <div className="w-full md:w-[360px]">
             <Input
-              placeholder="Tìm kiếm review..."
+              placeholder="Search reviews..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
@@ -124,13 +124,13 @@ export function PublicReviewListPage() {
                     <div className="space-y-4 p-6">
                       <div>
                         <p className="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">
-                          {new Date(review.created_at).toLocaleDateString("vi-VN")}
+                          {new Date(review.created_at).toLocaleDateString("en-US")}
                         </p>
                         <h2 className="mt-2 line-clamp-2 text-2xl font-black text-slate-900">{review.title}</h2>
                       </div>
                       <p className="line-clamp-4 text-sm leading-7 text-slate-600">{contentText}</p>
                       <Link to={`/review/${review.slug}`} className="inline-flex rounded-xl bg-[#21294a] px-5 py-3 text-sm font-bold text-white">
-                        Xem chi tiết
+                        View details
                       </Link>
                     </div>
                   </article>

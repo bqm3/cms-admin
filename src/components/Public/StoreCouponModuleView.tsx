@@ -114,7 +114,7 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
                   onClick={() => handleOpen(data.ratingButtonHref || data.affiliateUrl)}
                   className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-emerald-500 px-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-600"
                 >
-                  {data.ratingButtonText || "Shop Now"}
+                  {data.ratingButtonText || "Get code"}
                 </button>
               </div>
             </div>
@@ -155,7 +155,7 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
                             onClick={() => handleOpen(actionUrl)}
                             className="inline-flex h-10 items-center justify-center rounded-xl bg-emerald-500 px-4 text-sm font-bold text-white transition hover:bg-emerald-600"
                           >
-                            {coupon.buttonText || "Shop Now"}
+                            {coupon.buttonText || "Get code"}
                           </button>
                         </div>
                       </div>

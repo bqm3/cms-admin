@@ -139,7 +139,7 @@ function PublicCouponGuideBlocks({
           <h2 className="text-xs font-black uppercase tracking-[0.22em] text-blue-600">How to use a coupon code</h2>
           <ol className="mt-4 space-y-3 pl-5 text-sm leading-7 text-slate-700">
             <li>Select a coupon from the list above.</li>
-            <li>Click Shop Now to visit the store page.</li>
+            <li>Click Get code to visit the store page.</li>
             <li>Add products to your cart as usual.</li>
             <li>Paste the coupon code at checkout and apply.</li>
           </ol>
@@ -151,7 +151,7 @@ function PublicCouponGuideBlocks({
             {[
               {
                 q: "How do I use this coupon code?",
-                a: 'Simply click "Shop Now", copy the coupon code, then apply it at checkout on the store page.',
+                a: 'Simply click "Get code", copy the coupon code, then apply it at checkout on the store page.',
               },
               {
                 q: "Why doesn't my coupon work?",

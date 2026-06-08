@@ -25,7 +25,7 @@ type ModuleFormData = Omit<StoreCouponModuleData, "slug"> & {
 const emptyCoupon: StoreCouponModuleCoupon = {
   title: "",
   content: "",
-  buttonText: "Shop Now",
+  buttonText: "Get code",
   code: "",
   url: "",
 };
@@ -46,8 +46,8 @@ function applyAffiliateUrlToCoupons(coupons: StoreCouponModuleCoupon[], affiliat
   if (!nextAffiliateUrl) return coupons;
   return coupons.map((coupon) => ({
     ...coupon,
-    url: nextAffiliateUrl,
-    buttonHref: nextAffiliateUrl,
+    url: (coupon.url || "").trim() || nextAffiliateUrl,
+    buttonHref: (coupon.buttonHref || coupon.url || "").trim() || nextAffiliateUrl,
   }));
 }
 
@@ -65,7 +65,7 @@ function createDefaultData(): ModuleFormData {
     heroTitle: "",
     heroSubtitle: "",
     ratingText: "Popular choice with our visitors",
-    ratingButtonText: "Shop Now",
+    ratingButtonText: "Get code",
     ratingButtonHref: "",
     aboutTitle: "",
     aboutSubtitle: "",
@@ -78,7 +78,7 @@ function createDefaultData(): ModuleFormData {
       title: "",
       description: "",
       imageUrl: "",
-      buttonText: "Shop Now",
+      buttonText: "Get code",
       buttonHref: "",
     },
   };
@@ -602,7 +602,7 @@ export function ModuleEditorPage() {
               />
               <Input
                 label="CTA button text"
-                placeholder="Shop Now"
+                placeholder="Get code"
                 value={data.ratingButtonText}
                 onChange={(e) => setData((prev) => ({ ...prev, ratingButtonText: e.target.value }))}
                 classNames={{
@@ -740,7 +740,7 @@ export function ModuleEditorPage() {
                   />
                   <Input
                     label="Button text"
-                    placeholder="Shop Now"
+                    placeholder="Get code"
                     value={couponDraft.buttonText}
                     onChange={(e) => setCouponDraft((prev) => ({ ...prev, buttonText: e.target.value }))}
                     classNames={{
@@ -760,10 +760,9 @@ export function ModuleEditorPage() {
                   />
                   <Input
                     label="URL"
-                    placeholder="Lấy từ Affiliate URL"
-                    value={data.affiliateUrl || couponDraft.url}
-                    isReadOnly
-                    isDisabled
+                    placeholder="Lấy từ Affiliate URL nếu trống"
+                    value={couponDraft.url || ""}
+                    onChange={(e) => setCouponDraft((prev) => ({ ...prev, url: e.target.value, buttonHref: e.target.value }))}
                     classNames={{
                       inputWrapper: "bg-white border border-slate-200 shadow-sm rounded-2xl h-12",
                       input: "text-sm font-medium",
