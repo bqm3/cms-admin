@@ -59,6 +59,21 @@ function resolveAssetUrl(url?: string) {
 
 export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData }) {
   const [popupOpen, setPopupOpen] = useState(false);
+  const [clickedPopupData, setClickedPopupData] = useState<{
+    title: string;
+    description: string;
+    imageUrl?: string;
+    buttonText: string;
+    buttonHref: string;
+  } | null>(null);
+
+  const currentPopup = clickedPopupData || {
+    title: data.popup?.title || "",
+    description: data.popup?.description || "",
+    imageUrl: data.popup?.imageUrl || "",
+    buttonText: data.popup?.buttonText || "Open offer",
+    buttonHref: data.popup?.buttonHref || "",
+  };
 
   useEffect(() => {
     if (!data.popup?.enabled) return;
@@ -152,7 +167,20 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
                         <div className="flex justify-start md:justify-end">
                           <button
                             type="button"
-                            onClick={() => handleOpen(actionUrl)}
+                            onClick={() => {
+                              if (coupon.code) {
+                                setClickedPopupData({
+                                  title: `Code: ${coupon.code}`,
+                                  description: contentText,
+                                  imageUrl: data.logoUrl || data.popup?.imageUrl || "",
+                                  buttonText: coupon.buttonText || "Get code",
+                                  buttonHref: actionUrl,
+                                });
+                                setPopupOpen(true);
+                              } else {
+                                handleOpen(actionUrl);
+                              }
+                            }}
                             className="inline-flex h-10 items-center justify-center rounded-xl bg-emerald-500 px-4 text-sm font-bold text-white transition hover:bg-emerald-600"
                           >
                             {coupon.buttonText || "Get code"}
@@ -205,20 +233,20 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
             </button>
             <div className="grid gap-0 md:grid-cols-[240px_1fr]">
               <div className="bg-slate-100">
-                {data.popup.imageUrl ? (
-                  <img src={resolveAssetUrl(data.popup.imageUrl)} alt={data.popup.title} className="h-full w-full object-cover md:min-h-[320px]" />
+                {currentPopup.imageUrl ? (
+                  <img src={resolveAssetUrl(currentPopup.imageUrl)} alt={currentPopup.title} className="h-full w-full object-cover md:min-h-[320px]" />
                 ) : null}
               </div>
               <div className="p-6 md:p-8">
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-600">Special offer</p>
-                <h3 className="mt-3 text-3xl font-black tracking-tight text-slate-900">{data.popup.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-slate-600">{data.popup.description}</p>
+                <h3 className="mt-3 text-3xl font-black tracking-tight text-slate-900">{currentPopup.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-slate-600">{currentPopup.description}</p>
                 <button
                   type="button"
-                  onClick={() => handleOpen(data.popup.buttonHref)}
+                  onClick={() => handleOpen(currentPopup.buttonHref)}
                   className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-[#21294a] px-5 text-sm font-bold text-white transition hover:bg-[#161d36]"
                 >
-                  {data.popup.buttonText || "Open offer"}
+                  {currentPopup.buttonText || "Open offer"}
                 </button>
               </div>
             </div>
