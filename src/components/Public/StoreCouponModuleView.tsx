@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { X, Star } from "lucide-react";
+import { X, Star, Copy, Check } from "lucide-react";
 import { SERVER_URL } from "../../services/api";
 
 export type StoreCouponModuleCoupon = {
@@ -59,12 +59,14 @@ function resolveAssetUrl(url?: string) {
 
 export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData }) {
   const [popupOpen, setPopupOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [clickedPopupData, setClickedPopupData] = useState<{
     title: string;
     description: string;
     imageUrl?: string;
     buttonText: string;
     buttonHref: string;
+    code?: string;
   } | null>(null);
 
   const currentPopup = clickedPopupData || {
@@ -73,6 +75,22 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
     imageUrl: data.popup?.imageUrl || "",
     buttonText: data.popup?.buttonText || "Open offer",
     buttonHref: data.popup?.buttonHref || "",
+    code: "",
+  };
+
+  const handleClosePopup = () => {
+    setPopupOpen(false);
+    setCopied(false);
+  };
+
+  const handleCopyCode = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy code: ", err);
+    }
   };
 
   useEffect(() => {
@@ -175,6 +193,7 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
                                   imageUrl: data.logoUrl || data.popup?.imageUrl || "",
                                   buttonText: coupon.buttonText || "Get code",
                                   buttonHref: actionUrl,
+                                  code: coupon.code,
                                 });
                                 setPopupOpen(true);
                               } else {
@@ -221,12 +240,12 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
             type="button"
             aria-label="Close popup"
             className="absolute inset-0 cursor-default bg-black/55"
-            onClick={() => setPopupOpen(false)}
+            onClick={handleClosePopup}
           />
           <div className="relative z-[101] w-full max-w-xl overflow-hidden rounded-[28px] bg-white shadow-2xl">
             <button
               type="button"
-              onClick={() => setPopupOpen(false)}
+              onClick={handleClosePopup}
               className="absolute right-3 top-3 rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200"
             >
               <X size={18} />
@@ -237,9 +256,26 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
                   <img src={resolveAssetUrl(currentPopup.imageUrl)} alt={currentPopup.title} className="h-full w-full object-cover md:min-h-[320px]" />
                 ) : null}
               </div> */}
-              <div className="p-6  text-center">
+              <div className="p-6 text-center">
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-600">Special offer</p>
-                <h3 className="mt-3 text-3xl font-black tracking-tight text-slate-900">{currentPopup.title}</h3>
+                <div className="mt-3 flex items-center justify-center gap-2">
+                  <h3 className="text-3xl font-black tracking-tight text-slate-900">{currentPopup.title}</h3>
+                  {currentPopup.code ? (
+                    <button
+                      type="button"
+                      onClick={() => handleCopyCode(currentPopup.code!)}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition hover:bg-slate-200"
+                      title="Copy code"
+                    >
+                      {copied ? (
+                        <Check size={16} className="text-emerald-600" />
+                      ) : (
+                        <Copy size={16} />
+                      )}
+                    </button>
+                  ) : null}
+                </div>
+
                 <p className="mt-4 text-sm leading-7 text-slate-600">{currentPopup.description}</p>
                 <button
                   type="button"

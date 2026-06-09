@@ -21,7 +21,7 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <div
       className="font-sans block group h-full focus:outline-none relative cursor-pointer"
-      onClick={() => window.open(`/site/${post.slug || post.id}`, "_blank")}
+      onClick={() => window.open(`/${post.slug || post.id}`, "_blank")}
     >
       <Card className="bg-white border border-[#e6e6e6] hover:border-[#cccccc] transition-all duration-300 overflow-hidden shadow-sm hover:shadow-lg rounded-xl h-full flex flex-col">
         <CardBody className="p-0 flex-1 flex flex-col relative">

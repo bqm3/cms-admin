@@ -41,8 +41,8 @@ function getSharedCouponUrl(coupons: StoreCouponModuleCoupon[], fallbackUrl = ""
   return firstCouponWithUrl?.url || firstCouponWithUrl?.buttonHref || fallbackUrl;
 }
 
-function applyAffiliateUrlToCoupons(coupons: StoreCouponModuleCoupon[], affiliateUrl: string) {
-  const nextAffiliateUrl = affiliateUrl.trim();
+function applyAffiliateUrlToCoupons(coupons: StoreCouponModuleCoupon[], affiliateUrl?: string) {
+  const nextAffiliateUrl = (affiliateUrl || "").trim();
   if (!nextAffiliateUrl) return coupons;
   return coupons.map((coupon) => ({
     ...coupon,
@@ -192,6 +192,7 @@ export function ModuleEditorPage() {
   const [data, setData] = useState<ModuleFormData>(createDefaultData());
   const [couponDraft, setCouponDraft] = useState<StoreCouponModuleCoupon>(emptyCoupon);
   const [editingCouponIndex, setEditingCouponIndex] = useState<number | null>(null);
+  const [initialAffiliateUrl, setInitialAffiliateUrl] = useState("");
 
   const couponModal = useDisclosure();
 
@@ -253,6 +254,7 @@ export function ModuleEditorPage() {
         ...merged,
         coupons: applyAffiliateUrlToCoupons(merged.coupons, merged.affiliateUrl),
       });
+      setInitialAffiliateUrl((merged.affiliateUrl || "").trim());
       setLogoPreview(merged.logoUrl ? resolveAssetUrl(merged.logoUrl) : "");
       setProjectPreview(merged.projectImageUrl ? resolveAssetUrl(merged.projectImageUrl) : "");
     } catch (error) {
@@ -279,18 +281,43 @@ export function ModuleEditorPage() {
   }, [id, isNew, categoriesLoaded]);
 
   const handleSave = async () => {
-    if (!data.title.trim()) {
+    if (!(data.title || "").trim()) {
       alert("Vui lòng nhập title.");
       return;
     }
 
     try {
       setSaving(true);
+
+      const affUrl = (data.affiliateUrl || "").trim();
+      const oldAffUrl = (initialAffiliateUrl || "").trim();
+
+      const updatedCoupons = data.coupons.map((c) => {
+        const cUrl = (c.url || "").trim();
+        const cHref = (c.buttonHref || "").trim();
+
+        // If coupon URL/Href is empty, or matches the old affiliate URL, we overwrite it with the new affiliate URL.
+        // If it's a custom URL (not empty, and not matching the old affiliate URL), we preserve it.
+        const isDefaultUrl = !cUrl || (oldAffUrl && cUrl === oldAffUrl);
+        const isDefaultHref = !cHref || (oldAffUrl && cHref === oldAffUrl) || cHref === cUrl;
+
+        return {
+          ...c,
+          url: isDefaultUrl ? affUrl : cUrl,
+          buttonHref: isDefaultHref ? affUrl : cHref,
+        };
+      });
+
+      const finalData = {
+        ...data,
+        coupons: updatedCoupons,
+      };
+
       const formData = new FormData();
-      formData.append("title", data.title.trim());
-      formData.append("content", JSON.stringify(data));
-      formData.append("category_id", data.categoryId || "");
-      formData.append("logo_url", data.logoUrl || "");
+      formData.append("title", (finalData.title || "").trim());
+      formData.append("content", JSON.stringify(finalData));
+      formData.append("category_id", finalData.categoryId || "");
+      formData.append("logo_url", finalData.logoUrl || "");
       formData.append("topic_name", "store-coupon-module");
       formData.append("sequence_number", "0");
       formData.append("view_count", "0");
@@ -299,6 +326,10 @@ export function ModuleEditorPage() {
 
       const request = isNew ? api.post("/posts", formData) : api.put(`/posts/${id}`, formData);
       const response = await request;
+
+      setData(finalData);
+      setInitialAffiliateUrl(affUrl);
+      alert(isNew ? "🎉 Tạo trang thành công!" : "✅ Cập nhật thành công!");
       navigate(`/module/${response.data.id}`);
     } catch (error: any) {
       console.error(error);
@@ -323,18 +354,18 @@ export function ModuleEditorPage() {
   };
 
   const saveCoupon = () => {
-    if (!couponDraft.title.trim()) {
+    if (!(couponDraft.title || "").trim()) {
       alert("Vui lòng nhập coupon title.");
       return;
     }
 
     setData((prev) => {
-      const sharedAffiliateUrl = prev.affiliateUrl.trim();
+      const sharedAffiliateUrl = (prev.affiliateUrl || "").trim();
       const nextCoupons = [...prev.coupons];
       const normalizedCoupon = {
         ...couponDraft,
-        url: sharedAffiliateUrl || (couponDraft.url || "").trim(),
-        buttonHref: sharedAffiliateUrl || (couponDraft.buttonHref || couponDraft.url || "").trim(),
+        url: (couponDraft.url || "").trim() || sharedAffiliateUrl,
+        buttonHref: (couponDraft.buttonHref || couponDraft.url || "").trim() || sharedAffiliateUrl,
       };
       if (editingCouponIndex === null) {
         nextCoupons.push(normalizedCoupon);
@@ -375,7 +406,7 @@ export function ModuleEditorPage() {
             {data.slug ? (
               <Button
                 as={Link}
-                to={`/site/${data.slug}?preview=true`}
+                to={`/${data.slug}?preview=true`}
                 target="_blank"
                 variant="flat"
                 className="bg-white font-bold text-slate-700"

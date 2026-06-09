@@ -541,7 +541,7 @@ export function EditorPage() {
   const buildViewUrl = () => {
     const slug = (postInfo as any)?.slug?.trim();
     if (!slug) return PUBLIC_SITE_URL;
-    return `${PUBLIC_SITE_URL}/site/${slug}`;
+    return `${PUBLIC_SITE_URL}/${slug}`;
   };
 
   // Fetch Categories, Parent Categories & Templates

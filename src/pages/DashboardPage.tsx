@@ -382,7 +382,7 @@ export function DashboardPage() {
                     {post.is_hidden ? <EyeOff size={16} /> : <Eye size={16} />}
                   </Button>
                 ) : null}
-                <a href={`/site/${post.slug || post.id}`} target="_blank" rel="noreferrer">
+                <a href={`/${post.slug || post.id}`} target="_blank" rel="noreferrer">
                   <Button isIconOnly size="sm" variant="flat" className="border border-slate-200 bg-slate-50 text-slate-600">
                     <ExternalLink size={16} />
                   </Button>

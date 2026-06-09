@@ -48,7 +48,7 @@ function App() {
       <Route element={<ModuleEditorPage />} path="/module/:id" />
       <Route element={<PreviewPage />} path="/preview" />
       <Route element={<NewPage />} path="/new-page-test" />
-      <Route element={<PublicPostPage />} path="/site/:slug" />
+      <Route element={<PublicPostPage />} path="/:slug" />
       <Route element={<CategoryManagementPage />} path="/categories" />
       <Route element={<ParentCategoryManagementPage />} path="/parent-categories" />
       <Route element={<UserManagementPage />} path="/users" />
