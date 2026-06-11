@@ -49,6 +49,11 @@ export function DashboardPage() {
   const [copyPostId, setCopyPostId] = useState<number | null>(null);
   const [copyLoading, setCopyLoading] = useState(false);
 
+  const [slugDialogOpen, setSlugDialogOpen] = useState(false);
+  const [slugPostId, setSlugPostId] = useState<number | null>(null);
+  const [slugValue, setSlugValue] = useState("");
+  const [slugLoading, setSlugLoading] = useState(false);
+
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const navigate = useNavigate();
 
@@ -136,6 +141,29 @@ export function DashboardPage() {
       alert("Nhân bản thất bại");
     } finally {
       setCopyLoading(false);
+    }
+  };
+
+  const openSlugDialog = (post: any) => {
+    setSlugPostId(post.id);
+    setSelectedPostTitle(post.title);
+    setSlugValue(post.slug || "");
+    setSlugDialogOpen(true);
+  };
+
+  const handleSaveSlug = async () => {
+    if (!slugPostId) return;
+    try {
+      setSlugLoading(true);
+      const formData = new FormData();
+      formData.append("slug", slugValue.trim());
+      await api.put(`/posts/${slugPostId}`, formData);
+      setSlugDialogOpen(false);
+      fetchPosts();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Cập nhật slug thất bại");
+    } finally {
+      setSlugLoading(false);
     }
   };
 
@@ -303,7 +331,16 @@ export function DashboardPage() {
                     <h4 className="truncate text-sm font-bold text-slate-800">{post.title}</h4>
                     {post.is_hidden ? <span className="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-600">Ẩn</span> : null}
                   </div>
-                  <p className="mt-1 truncate font-mono text-xs font-medium text-slate-400">/{post.slug || post.id}</p>
+                  <div className="mt-1 flex items-center gap-1.5">
+                    <span className="truncate font-mono text-xs font-medium text-slate-400">/{post.slug || post.id}</span>
+                    <button
+                      onClick={() => openSlugDialog(post)}
+                      className="text-slate-300 hover:text-[#21294a] transition-colors"
+                      title="Sửa slug"
+                    >
+                      <Edit size={12} className="inline" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ),
@@ -414,6 +451,32 @@ export function DashboardPage() {
           <ModalFooter>
             <Button variant="flat" onPress={() => setCopyDialogOpen(false)} isDisabled={copyLoading}>Hủy</Button>
             <Button className="bg-[#21294a] text-white" onPress={handleCopy} isLoading={copyLoading}>Tạo bản copy</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={slugDialogOpen} onClose={() => !slugLoading && setSlugDialogOpen(false)}>
+        <ModalContent>
+          <ModalHeader>Sửa slug bài viết</ModalHeader>
+          <ModalBody>
+            <div className="space-y-3">
+              <p className="text-sm text-slate-500">
+                Nhập slug mới cho bài <span className="font-bold text-slate-800">{selectedPostTitle}</span>.
+              </p>
+              <Input
+                label="Slug"
+                placeholder="vi-du-slug-bai-viet"
+                value={slugValue}
+                onChange={(e) => setSlugValue(e.target.value)}
+              />
+              <p className="text-xs text-amber-600 font-semibold bg-amber-50 p-2.5 rounded-lg border border-amber-100">
+                ⚠️ Lưu ý: Thay đổi slug sẽ thay đổi đường dẫn (URL) của bài viết trên trang công khai. Slug chỉ được chứa chữ cái viết liền không dấu, số và dấu gạch ngang (không chứa khoảng trắng).
+              </p>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="flat" onPress={() => setSlugDialogOpen(false)} isDisabled={slugLoading}>Hủy</Button>
+            <Button className="bg-[#21294a] text-white" onPress={handleSaveSlug} isLoading={slugLoading}>Lưu thay đổi</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

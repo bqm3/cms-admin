@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
-import { CheckCircle2, ImagePlus, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import { CheckCircle2, Copy, ImagePlus, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import api, { SERVER_URL } from "../../services/api";
 import { AdminLayout } from "../../layouts/AdminLayout";
 import { TinyMceEditor } from "../Common/TinyMceEditor";
@@ -382,6 +382,21 @@ export function ModuleEditorPage() {
     setEditingCouponIndex(null);
   };
 
+  const handleDuplicateCoupon = (index: number) => {
+    setData((prev) => {
+      const nextCoupons = [...prev.coupons];
+      const couponToCopy = nextCoupons[index];
+      const duplicatedCoupon = {
+        ...couponToCopy,
+      };
+      nextCoupons.splice(index + 1, 0, duplicatedCoupon);
+      return {
+        ...prev,
+        coupons: nextCoupons,
+      };
+    });
+  };
+
   if (loading) {
     return (
       <AdminLayout fluid>
@@ -466,6 +481,14 @@ export function ModuleEditorPage() {
                           className="rounded-full bg-white p-2 text-slate-600 shadow-sm transition hover:bg-slate-100"
                         >
                           <Pencil size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDuplicateCoupon(index)}
+                          className="rounded-full bg-white p-2 text-blue-600 shadow-sm transition hover:bg-blue-50"
+                          title="Duplicate"
+                        >
+                          <Copy size={14} />
                         </button>
                         <button
                           type="button"
@@ -729,6 +752,14 @@ export function ModuleEditorPage() {
                             className="rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200"
                           >
                             <Pencil size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDuplicateCoupon(index)}
+                            className="rounded-full bg-slate-100 p-2 text-blue-600 transition hover:bg-blue-200"
+                            title="Duplicate"
+                          >
+                            <Copy size={14} />
                           </button>
                           <button
                             type="button"
