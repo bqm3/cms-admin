@@ -2,4 +2,4 @@ User-agent: *
 Disallow:
 
 Sitemap: https://globalpromotionllc.com/sitemap.xml
-Sitemap: https://couponza.com/sitemap.xml
+Sitemap: https://couponzas.com/sitemap.xml
