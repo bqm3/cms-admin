@@ -18,8 +18,8 @@ export function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
-        <title>Privacy Policy - Global Promotion</title>
-        <meta name="title" content="Privacy Policy - Global Promotion" />
+        <title>Privacy Policy - Couponza</title>
+        <meta name="title" content="Privacy Policy - Couponza" />
         <meta name="description" content="View our Privacy Policy. We value your privacy and are committed to protecting your personal data." />
         <meta name="robots" content="index,follow" />
       </Helmet>
@@ -45,7 +45,7 @@ export function PrivacyPolicy() {
             <h1 className="text-4xl font-extrabold text-[#21294a] mb-8 tracking-tight border-b pb-4">Privacy Policy</h1>
             <div className="space-y-6 text-[#4a4a4a] leading-relaxed">
               <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">Statement Information User</h2>
-              <p>While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. Web servers (the computers that "serve up" Web pages) automatically identify your computer by its IP address; when you request a page from globalpromotionllc.com, our servers log your IP address. We collect this information for the purpose of providing the Service and Web traffic analysis and trend.</p>
+              <p>While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. Web servers (the computers that "serve up" Web pages) automatically identify your computer by its IP address; when you request a page from couponza.com, our servers log your IP address. We collect this information for the purpose of providing the Service and Web traffic analysis and trend.</p>
 
               <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">Log Files</h2>
               <p>We may also collect information that your browser sends whenever you visit our Service. This information includes IP addresses, browser type, the time and date of your visit, the time spent on those pages and other statistics.</p>
@@ -63,7 +63,7 @@ export function PrivacyPolicy() {
               <p>We may share some or all your Personal Data with our parent company, subsidiaries, joint ventures, or other companies under a common control ("Affiliates"), in which case we will require our Affiliates to honor this Privacy Statement.</p>
 
               <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">Individuals under 13</h2>
-              <p>No information should be submitted on globalpromotionllc.com by users under the age of 13 years without consent of their parent or guardian. globalpromotionllc.com does not provide any personally-identifying information for users under the age of 13, regardless of its source, to any third party for any purpose whatsoever unless disclosed during collection. We encourage parents and legal guardians to monitor their children's Internet usage and to help enforce our Privacy Policy by instructing their children never to provide Personal Information to us without their parent's or legal guardian's permission.</p>
+              <p>No information should be submitted on couponza.com by users under the age of 13 years without consent of their parent or guardian. couponza.com does not provide any personally-identifying information for users under the age of 13, regardless of its source, to any third party for any purpose whatsoever unless disclosed during collection. We encourage parents and legal guardians to monitor their children's Internet usage and to help enforce our Privacy Policy by instructing their children never to provide Personal Information to us without their parent's or legal guardian's permission.</p>
 
               <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">International Transfer</h2>
 

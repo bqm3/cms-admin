@@ -18,8 +18,8 @@ export function Term() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
-        <title>Terms of Service - Global Promotion</title>
-        <meta name="title" content="Terms of Service - Global Promotion" />
+        <title>Terms of Service - Couponza</title>
+        <meta name="title" content="Terms of Service - Couponza" />
         <meta name="description" content="Read our Terms of Service to understand how you can use our website and services." />
         <meta name="robots" content="index,follow" />
       </Helmet>
@@ -44,12 +44,12 @@ export function Term() {
           <article className="prose prose-slate prose-lg max-w-none">
             <h1 className="text-4xl font-extrabold text-[#21294a] mb-8 tracking-tight border-b pb-4">Terms of Service</h1>
             <div className="space-y-6 text-[#4a4a4a] leading-relaxed">
-              <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use <strong>Global Promotion LLC</strong> if you do not agree to take all of the terms and conditions stated on this page.</p>
+              <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use <strong>Couponza</strong> if you do not agree to take all of the terms and conditions stated on this page.</p>
             <ul className="list-disc pl-6 space-y-2">
-                <li><strong>Content Accuracy:</strong> The coupons, promo codes, and deals provided on this site are sourced from third parties. While we strive to provide the most accurate and up-to-date information, Global Promotion LLC does not warrant that the codes are 100% active or that the descriptions are error-free.</li>
-                <li><strong>Limitation of Liability:</strong> In no event shall Global Promotion LLC be held liable for any expired codes, failed transactions, or dissatisfaction resulting from the use of third-party websites linked from our platform.</li>
+                <li><strong>Content Accuracy:</strong> The coupons, promo codes, and deals provided on this site are sourced from third parties. While we strive to provide the most accurate and up-to-date information, Couponza does not warrant that the codes are 100% active or that the descriptions are error-free.</li>
+                <li><strong>Limitation of Liability:</strong> In no event shall Couponza be held liable for any expired codes, failed transactions, or dissatisfaction resulting from the use of third-party websites linked from our platform.</li>
                 <li><strong>User Responsibility:</strong> It is the user's responsibility to verify the discount at the merchant's checkout page before finalizing a purchase.</li>
-                <li><strong>Intellectual Property:</strong> Unless otherwise stated, Global Promotion LLC owns the intellectual property rights for all material on the website. All rights are reserved.</li>
+                <li><strong>Intellectual Property:</strong> Unless otherwise stated, Couponza owns the intellectual property rights for all material on the website. All rights are reserved.</li>
               </ul>
             </div>
           </article>

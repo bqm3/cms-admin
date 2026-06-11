@@ -9,6 +9,7 @@ import { usePublicData } from "../hooks/usePublicData";
 import { PostCard } from "../components/Public/PostCard";
 import { PublicHeader } from "../components/Public/PublicHeader";
 import { PublicFooter } from "../components/Public/PublicFooter";
+import { PUBLIC_SITE_HOST, PUBLIC_SITE_URL } from "../config/site";
 
 export function ClientHomePage() {
   const navigate = useNavigate();
@@ -76,36 +77,36 @@ export function ClientHomePage() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
-        <title>Global Promotion</title>
+        <title>Couponza</title>
 
-        <meta name="title" content="Global Promotion latest" />
+        <meta name="title" content="Couponza latest" />
         <meta
           name="description"
-          content="Use globalpromotionllc.com to find the latest discount codes..."
+          content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`}
         />
         <meta
           name="keywords"
-          content="Global, Global Promotion, Global Promotion newest"
+          content="Couponza, couponza latest, couponza coupons"
         />
         <meta name="robots" content="index,follow" />
 
-        <link rel="canonical" href="https://globalpromotionllc.com/" />
+        <link rel="canonical" href={`${PUBLIC_SITE_URL}/`} />
 
-        <meta property="og:title" content="Global Promotion latest" />
+        <meta property="og:title" content="Couponza latest" />
         <meta
           property="og:description"
-          content="Use Globalpromotionllc.com to find the latest discount codes..."
+          content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`}
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://globalpromotionllc.com/" />
+        <meta property="og:url" content={`${PUBLIC_SITE_URL}/`} />
         {/* nên có og:image */}
-        {/* <meta property="og:image" content="https://globalpromotionllc.com/og.jpg" /> */}
+        {/* <meta property="og:image" content={`${PUBLIC_SITE_URL}/og.jpg`} /> */}
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Global Promotion latest" />
+        <meta name="twitter:title" content="Couponza latest" />
         <meta
           name="twitter:description"
-          content="Use Globalpromotionllc.com to find the latest discount codes..."
+          content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`}
         />
       </Helmet>
 

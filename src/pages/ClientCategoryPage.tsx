@@ -9,6 +9,7 @@ import { usePublicData } from "../hooks/usePublicData";
 import { PostCard } from "../components/Public/PostCard";
 import { PublicHeader } from "../components/Public/PublicHeader";
 import { PublicFooter } from "../components/Public/PublicFooter";
+import { PUBLIC_SITE_HOST } from "../config/site";
 
 export function ClientCategoryPage() {
   const { parentSlug: pathParentSlug, categorySlug: pathCategorySlug } = useParams();
@@ -111,11 +112,11 @@ export function ClientCategoryPage() {
   const categoryName = categories.find((c) => String(c.slug) === String(selectedCategory))?.name || "";
 
   // Ưu tiên category con > category cha
-  const brandName = categoryName || parentName || "Global Promotion";
+  const brandName = categoryName || parentName || "Couponza";
 
   const pageTitle = `${brandName} promotion latest`;
 
-  const pageDescription = `Use Globalpromotionllc.com to find the latest discount codes and best deals when shopping online at ${brandName} through Globalpromotionllc.com. Save more on every order with our verified discount codes, food coupons, and cashback offers.`;
+  const pageDescription = `Use ${PUBLIC_SITE_HOST} to find the latest discount codes and best deals when shopping online at ${brandName}. Save more on every order with our verified discount codes, food coupons, and cashback offers.`;
 
   const pageKeywords = `${brandName}, ${brandName.toLowerCase()} promotion, ${brandName.toLowerCase()} promotion newest`;
 

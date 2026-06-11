@@ -61,7 +61,7 @@ export const ScriptComponentSettings = () => {
         onChange={(e) => actions.setProp((p: any) => (p.code = e.target.value))}
         placeholder={
           props.mode === "json-ld"
-            ? '{\n  "@context": "https://schema.org",\n  "@type": "WebSite",\n  "name": "Global Promotion"\n}'
+            ? '{\n  "@context": "https://schema.org",\n  "@type": "WebSite",\n  "name": "Couponza"\n}'
             : "/* paste GTM/GA/Pixel script here */"
         }
       />

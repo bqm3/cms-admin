@@ -18,9 +18,9 @@ export function Contact() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
-        <title>Contact - Global Promotion</title>
-        <meta name="title" content="Contact - Global Promotion" />
-        <meta name="description" content="Get in touch with Global Promotion LLC. Have questions or feedback? We'd love to hear from you." />
+        <title>Contact - Couponza</title>
+        <meta name="title" content="Contact - Couponza" />
+        <meta name="description" content="Get in touch with Couponza. Have questions or feedback? We'd love to hear from you." />
         <meta name="robots" content="index,follow" />
       </Helmet>
 
