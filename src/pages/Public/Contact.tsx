@@ -46,7 +46,7 @@ export function Contact() {
             <div className="space-y-6 text-[#4a4a4a] leading-relaxed">
               <p>If you have any questions or feedback, please don't hesitate to contact us. We'd love to hear from you!</p>
               <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">Our Contact Information</h2>
-              <p><strong>Email:</strong> info@globalpromotionllc.com</p>
+              <p><strong>Email:</strong> info@couponzas.com</p>
             </div>
           </article>
         )}

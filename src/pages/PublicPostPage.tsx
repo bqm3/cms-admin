@@ -95,8 +95,8 @@ function buildAutoMetaFromTitle(titleRaw: string) {
 
   const meta_title = `${t} promotion latest`;
   const meta_description =
-    `Use Globalpromotionllc.com to find the latest discount codes and best deals when shopping ` +
-    `online at ${t} through Globalpromotionllc.com. Save more on every order with our verified discount codes, ` +
+    `Use couponzas.com to find the latest discount codes and best deals when shopping ` +
+    `online at ${t} through couponzas.com. Save more on every order with our verified discount codes, ` +
     `food coupons, and cashback offers.`;
 
   const meta_keyword = `${t}, ${t} promotion, ${t} promotion newest`;
@@ -432,7 +432,7 @@ export function PublicPostPage() {
         <meta property="og:url" content={seo.canonical} />
         {seo.ogImage ? <meta property="og:image" content={seo.ogImage} /> : null}
         {/* optional */}
-        <meta property="og:site_name" content="Globalpromotionllc.com" />
+        <meta property="og:site_name" content="couponzas.com" />
 
         {/* Twitter */}
         <meta name="twitter:card" content={seo.ogImage ? "summary_large_image" : "summary"} />

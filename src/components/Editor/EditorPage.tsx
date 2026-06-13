@@ -425,7 +425,7 @@ const MetaModalContent = ({
             </label>
             <textarea
               className="w-full h-36 bg-zinc-900/50 border border-white/10 rounded-xl p-4 text-sm font-medium text-zinc-200 outline-none focus:border-[#21294a]/50 transition-all resize-none custom-scrollbar disabled:opacity-50"
-              placeholder="Ví dụ: Use Globalpromotionllc.com to find the latest discount codes..."
+              placeholder="Ví dụ: Use couponzas.com to find the latest discount codes..."
               value={metaDesc}
               onChange={(e) => setMetaDesc(e.target.value)}
               disabled={!override}
