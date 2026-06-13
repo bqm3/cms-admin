@@ -1,5 +1,13 @@
 {
   "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://api.globalpromotionllc.com/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "https://api.globalpromotionllc.com/robots.txt"
+    },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
