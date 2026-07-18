@@ -297,25 +297,28 @@ export function FeaturedDealManagementPage() {
             {
               header: "Thứ tự",
               align: "center",
-              render: (deal: any, idx: any) => (
-                <div className="flex items-center justify-center gap-1">
-                  <button
-                    onClick={() => handleMoveOrder(deal, "up")}
-                    disabled={idx === 0}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
-                  >
-                    <ArrowUp size={15} />
-                  </button>
-                  <span className="w-6 text-center text-sm font-bold text-slate-500">{idx + 1}</span>
-                  <button
-                    onClick={() => handleMoveOrder(deal, "down")}
-                    disabled={idx === sortedDeals.length - 1}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
-                  >
-                    <ArrowDown size={15} />
-                  </button>
-                </div>
-              ),
+              render: (deal: any) => {
+                const idx = sortedDeals.findIndex((d) => d.id === deal.id);
+                return (
+                  <div className="flex items-center justify-center gap-1">
+                    <button
+                      onClick={() => handleMoveOrder(deal, "up")}
+                      disabled={idx === 0}
+                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
+                    >
+                      <ArrowUp size={15} />
+                    </button>
+                    <span className="w-6 text-center text-sm font-bold text-slate-500">{idx + 1}</span>
+                    <button
+                      onClick={() => handleMoveOrder(deal, "down")}
+                      disabled={idx === sortedDeals.length - 1}
+                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
+                    >
+                      <ArrowDown size={15} />
+                    </button>
+                  </div>
+                );
+              },
             },
             {
               header: "Thao tác",
