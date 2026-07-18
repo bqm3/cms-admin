@@ -297,7 +297,7 @@ export function FeaturedDealManagementPage() {
             {
               header: "Thứ tự",
               align: "center",
-              render: (deal, idx) => (
+              render: (deal: any, idx: any) => (
                 <div className="flex items-center justify-center gap-1">
                   <button
                     onClick={() => handleMoveOrder(deal, "up")}
