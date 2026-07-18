@@ -24,6 +24,7 @@ import { Contact } from "./pages/Public/Contact";
 import { ReviewManagementPage } from "./pages/ReviewManagementPage";
 import { PublicReviewListPage } from "./pages/PublicReviewListPage";
 import { PublicReviewDetailPage } from "./pages/PublicReviewDetailPage";
+import { FeaturedDealManagementPage } from "./pages/FeaturedDealManagementPage";
 
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
       <Route element={<MediaManagementPage />} path="/media" />
       <Route element={<FooterManagementPage />} path="/footer-links" />
       <Route element={<ReviewManagementPage />} path="/reviews" />
+      <Route element={<FeaturedDealManagementPage />} path="/featured-deals" />
       <Route element={<TemplateDashboardPage />} path="/template-dashboard" />
       <Route element={<TemplateEditorPage />} path="/template-editor/new" />
       <Route element={<TemplateEditorPage />} path="/template-editor/:id" />

@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BookOpen,
+  Flame,
   Image as ImageIcon,
   Layout,
   LayoutDashboard,
@@ -62,6 +63,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           { icon: ImageIcon, label: "Thư viện ảnh", path: "/media" },
           { icon: Layout, label: "Quản lý Footer", path: "/footer-links" },
           { icon: BookOpen, label: "Quản lý Review", path: "/reviews" },
+          { icon: Flame, label: "Deal Nổi Bật", path: "/featured-deals" },
         ]
       : []),
   ];

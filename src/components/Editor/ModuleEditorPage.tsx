@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
-import { CheckCircle2, Copy, ImagePlus, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import { CheckCircle2, Copy, GripVertical, ImagePlus, Link2, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import api, { SERVER_URL } from "../../services/api";
 import { AdminLayout } from "../../layouts/AdminLayout";
 import { TinyMceEditor } from "../Common/TinyMceEditor";
@@ -195,6 +195,71 @@ export function ModuleEditorPage() {
   const [initialAffiliateUrl, setInitialAffiliateUrl] = useState("");
 
   const couponModal = useDisclosure();
+  const linkModal = useDisclosure();
+
+  // ── Post Links state ──────────────────────────────────────────────────
+  type PostLinkItem = { id?: number; title: string; href: string; sequence_number: number };
+  const emptyLink: PostLinkItem = { title: "", href: "", sequence_number: 0 };
+  const [postLinks, setPostLinks] = useState<PostLinkItem[]>([]);
+  const [linkDraft, setLinkDraft] = useState<PostLinkItem>(emptyLink);
+  const [editingLinkIndex, setEditingLinkIndex] = useState<number | null>(null);
+  const [linksSaving, setLinksSaving] = useState(false);
+
+  const loadPostLinks = useCallback(async (postId: string) => {
+    try {
+      const res = await api.get(`/post-links/${postId}`);
+      setPostLinks(res.data || []);
+    } catch (err) {
+      console.error("Error loading post links", err);
+    }
+  }, []);
+
+  const savePostLinks = async () => {
+    if (!id || id === "new") {
+      alert("Vui lòng lưu bài viết trước khi quản lý links.");
+      return;
+    }
+    try {
+      setLinksSaving(true);
+      const res = await api.post(`/post-links/bulk/${id}`, {
+        links: postLinks.map((l, idx) => ({ ...l, sequence_number: idx })),
+      });
+      setPostLinks(res.data || []);
+      alert("✅ Lưu links thành công!");
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Lưu links thất bại");
+    } finally {
+      setLinksSaving(false);
+    }
+  };
+
+  const openCreateLink = () => {
+    setLinkDraft({ ...emptyLink, sequence_number: postLinks.length });
+    setEditingLinkIndex(null);
+    linkModal.onOpen();
+  };
+
+  const openEditLink = (index: number) => {
+    setLinkDraft({ ...postLinks[index] });
+    setEditingLinkIndex(index);
+    linkModal.onOpen();
+  };
+
+  const saveLinkDraft = () => {
+    if (!linkDraft.title.trim()) { alert("Vui lòng nhập title."); return; }
+    if (!linkDraft.href.trim()) { alert("Vui lòng nhập URL."); return; }
+    setPostLinks((prev) => {
+      const next = [...prev];
+      if (editingLinkIndex === null) {
+        next.push({ ...linkDraft, sequence_number: next.length });
+      } else {
+        next[editingLinkIndex] = linkDraft;
+      }
+      return next;
+    });
+    setLinkDraft(emptyLink);
+    setEditingLinkIndex(null);
+  };
 
   const loadCategories = async () => {
     try {
@@ -277,6 +342,7 @@ export function ModuleEditorPage() {
     }
     if (!categoriesLoaded) return;
     void loadPost();
+    void loadPostLinks(id!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isNew, categoriesLoaded]);
 
@@ -439,6 +505,73 @@ export function ModuleEditorPage() {
             </Button>
           </div>
         </div>
+
+          {/* ── POST LINKS ─────────────────────────────────────────────── */}
+          {!isNew && (
+            <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <SectionTitle
+                  title="Link phụ (Post Links)"
+                  subtitle="Hiển thị dưới dạng nút trực tiếp trên card bài viết ở trang chủ và trang danh mục."
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={openCreateLink}
+                    className="bg-[#21294a] font-bold text-white"
+                    startContent={<Plus size={16} />}
+                  >
+                    Thêm link
+                  </Button>
+                  <Button
+                    onClick={savePostLinks}
+                    isLoading={linksSaving}
+                    className="bg-emerald-600 font-bold text-white"
+                    startContent={linksSaving ? null : <Save size={16} />}
+                  >
+                    Lưu links
+                  </Button>
+                </div>
+              </div>
+
+              {postLinks.length > 0 ? (
+                <div className="space-y-2">
+                  {postLinks.map((link, index) => (
+                    <div
+                      key={`${link.id ?? "new"}-${index}`}
+                      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
+                    >
+                      <GripVertical size={16} className="text-slate-300 shrink-0" />
+                      <Link2 size={15} className="text-[#21294a] shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-bold text-slate-800 truncate">{link.title}</div>
+                        <div className="text-xs text-slate-400 truncate">{link.href}</div>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => openEditLink(index)}
+                          className="rounded-full bg-white p-2 text-slate-600 shadow-sm transition hover:bg-slate-100"
+                        >
+                          <Pencil size={13} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPostLinks((prev) => prev.filter((_, i) => i !== index))}
+                          className="rounded-full bg-white p-2 text-rose-500 shadow-sm transition hover:bg-rose-50"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-sm text-slate-400">
+                  Chưa có link phụ. Bấm <strong>Thêm link</strong> để tạo.
+                </div>
+              )}
+            </section>
+          )}
 
         <div className="grid gap-6">
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
@@ -679,6 +812,8 @@ export function ModuleEditorPage() {
               Nút CTA public sẽ mở <strong>Affiliate URL</strong> đã nhập ở phần Basic information.
             </p>
           </section>
+
+        
         </div>
       </div>
 
@@ -859,6 +994,63 @@ export function ModuleEditorPage() {
           <ModalFooter>
             <Button variant="light" className="font-bold" onPress={couponModal.onClose}>
               Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* ── Link Modal ───────────────────────────────────────────────── */}
+      <Modal
+        isOpen={linkModal.isOpen}
+        onClose={linkModal.onClose}
+        backdrop="blur"
+        size="lg"
+        classNames={{
+          base: "mx-2",
+          header: "border-b border-slate-100 px-6 py-5",
+          footer: "border-t border-slate-100 px-6 py-4",
+        }}
+      >
+        <ModalContent>
+          <ModalHeader>
+            <h2 className="text-lg font-black text-slate-900">
+              {editingLinkIndex === null ? "Thêm link phụ" : "Sửa link phụ"}
+            </h2>
+          </ModalHeader>
+          <ModalBody>
+            <div className="space-y-4 p-6">
+              <Input
+                label="Tên hiển thị"
+                placeholder="VD: Ưu đãi 20% cho đơn đầu tiên"
+                value={linkDraft.title}
+                onChange={(e) => setLinkDraft((prev) => ({ ...prev, title: e.target.value }))}
+                classNames={{
+                  inputWrapper: "bg-white border border-slate-200 shadow-sm rounded-2xl h-12",
+                  input: "text-sm font-medium",
+                }}
+              />
+              <Input
+                label="URL"
+                placeholder="https://..."
+                value={linkDraft.href}
+                onChange={(e) => setLinkDraft((prev) => ({ ...prev, href: e.target.value }))}
+                classNames={{
+                  inputWrapper: "bg-white border border-slate-200 shadow-sm rounded-2xl h-12",
+                  input: "text-sm font-medium",
+                }}
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="flat" className="font-bold" onPress={linkModal.onClose}>
+              Hủy
+            </Button>
+            <Button
+              className="bg-[#21294a] font-bold text-white"
+              onPress={() => { saveLinkDraft(); linkModal.onClose(); }}
+              startContent={editingLinkIndex === null ? <Plus size={16} /> : <CheckCircle2 size={16} />}
+            >
+              {editingLinkIndex === null ? "Thêm" : "Cập nhật"}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -49,6 +49,23 @@ export function DashboardPage() {
   const [copyPostId, setCopyPostId] = useState<number | null>(null);
   const [copyLoading, setCopyLoading] = useState(false);
 
+  const [bulkHiddenLoading, setBulkHiddenLoading] = useState(false);
+
+  const handleBulkHidden = async (hide: boolean) => {
+    const action = hide ? "ẩn toàn bộ" : "hiện toàn bộ";
+    if (!window.confirm(`Bạn có chắc muốn ${action} tất cả bài viết không bị xóa?`)) return;
+    try {
+      setBulkHiddenLoading(true);
+      const res = await api.patch("/posts/bulk-hidden", { is_hidden: hide });
+      alert(`✅ Đã ${action} ${res.data.affected ?? ""} bài viết.`);
+      fetchPosts();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || `${action} thất bại`);
+    } finally {
+      setBulkHiddenLoading(false);
+    }
+  };
+
   const [slugDialogOpen, setSlugDialogOpen] = useState(false);
   const [slugPostId, setSlugPostId] = useState<number | null>(null);
   const [slugValue, setSlugValue] = useState("");
@@ -215,6 +232,26 @@ export function DashboardPage() {
             >
               Tạo page cố định
             </Button>
+            {user.role === "admin" && (
+              <>
+                <Button
+                  className="h-11 rounded-lg border border-amber-200 bg-amber-50 px-4 font-bold text-amber-700 shadow-sm hover:bg-amber-100"
+                  startContent={<EyeOff size={16} />}
+                  isLoading={bulkHiddenLoading}
+                  onPress={() => handleBulkHidden(true)}
+                >
+                  Ẩn tất cả
+                </Button>
+                <Button
+                  className="h-11 rounded-lg border border-emerald-200 bg-emerald-50 px-4 font-bold text-emerald-700 shadow-sm hover:bg-emerald-100"
+                  startContent={<Eye size={16} />}
+                  isLoading={bulkHiddenLoading}
+                  onPress={() => handleBulkHidden(false)}
+                >
+                  Hiện tất cả
+                </Button>
+              </>
+            )}
           </div>
         </div>
 

@@ -155,8 +155,8 @@ export function PublicFooter({
         <img
           src="/logo_cms.webp"
           srcSet="/logo_cms.webp 1x, /logo_cms.webp 2x"
-          width={48}
-          height={47}
+          width={40}
+          height={39}
           alt="Couponza"
           decoding="async"
           className="block"
@@ -164,18 +164,18 @@ export function PublicFooter({
       </div>
       <div className="flex flex-col">
         <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
-          GLOBAL
+          COUPONZA
         </span>
-        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
+        {/* <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
           <span className="text-red-500">PROMOTION</span>
-        </span>
+        </span> */}
       </div>
     </div>
   );
 
   return (
     // ✅ min-h để giữ chiều cao footer khi data tới (chặn CLS)
-    <footer className="font-sans bg-white border-t border-[#e6e6e6] mt-20 pt-16 pb-10 min-h-[520px]">
+    <footer className="font-sans bg-white border-t border-[#e6e6e6] mt-10 pt-8 pb-6">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2.5fr_repeat(5,1fr)] gap-x-8 gap-y-10 mb-12">
           {/* BRAND */}
@@ -397,7 +397,7 @@ export function PublicFooter({
         </div>
 
         {/* ✅ giữ chiều cao khu vực bottom bar để không nhảy */}
-        <div className="pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 min-h-[44px]">
+        <div className="pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 min-h-[30px]">
           <p className="text-xs font-semibold text-gray-700 tracking-wide text-center">
             © {new Date().getFullYear()} COUPONZA. ALL RIGHTS RESERVED.
           </p>

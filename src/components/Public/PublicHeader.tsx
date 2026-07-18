@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-sort-props */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable prettier/prettier */
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
@@ -34,7 +34,6 @@ export function PublicHeader({
 }: PublicHeaderProps) {
   const navigate = useNavigate();
 
-  // desktop search (giữ nguyên)
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const debouncedSearch = useDebounce(localSearch, 500);
 
@@ -65,22 +64,26 @@ export function PublicHeader({
     return selectedParentCategory ? String(selectedParentCategory) : first;
   });
 
-  // ✅ accordion open state (single-open)
+  // accordion open state (single-open)
   const [openParentId, setOpenParentId] = useState<string>("");
+  // desktop categories dropdown open
+  const [catDropdownOpen, setCatDropdownOpen] = useState(false);
+  // hover sub-category (desktop nested dropdown)
+  const [hoveredParentId, setHoveredParentId] = useState<string | null>(null);
+  // delay timer refs to prevent premature close
+  const catCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const subCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // sync active parent when selectedParentCategory changes
   useEffect(() => {
     if (selectedParentCategory != null) {
       setActiveParentSlug(String(selectedParentCategory));
     }
   }, [selectedParentCategory]);
 
-  // update default when parents loaded later
   useEffect(() => {
     if (!activeParentSlug && parents?.length) setActiveParentSlug(String(parents[0].slug));
   }, [parents, activeParentSlug]);
 
-  // ✅ set default opened item when opening mobile drawer
   useEffect(() => {
     if (mobileOpen) {
       const slug = String(activeParentSlug || parents?.[0]?.slug || "");
@@ -88,26 +91,18 @@ export function PublicHeader({
     }
   }, [mobileOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const subCats = useMemo(() => {
-    const parentSlug = String(activeParentSlug || "");
-    const parent = (parentCategories || []).find(p => p.slug === parentSlug);
-    if (!parent) return [];
-    return (categories || []).filter((c) => c.parent_id === parent.id && !c?.is_deleted);
-  }, [categories, activeParentSlug, parentCategories]);
-
   const LogoContent = (
     <div className="flex items-center gap-2 group shrink-0 select-none">
       <div className="bg-[#21294a] w-12 h-12 md:w-12 md:h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
-        <img src="/logo_4.png" alt="Couponza"  width="48"
-  height="47"/>
+        <img src="/logo_4.png" alt="Couponza" width="40" height="39" />
       </div>
       <div className="flex flex-col">
         <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
-          GLOBAL
+          COUPONZA
         </span>
-        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
+        {/* <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
           <span className="text-red-500">PROMOTION</span>
-        </span>
+        </span> */}
       </div>
     </div>
   );
@@ -166,6 +161,125 @@ export function PublicHeader({
             </button>
           </form>
 
+          {/* Desktop Nav: Danh mục + Review */}
+          <nav className="hidden lg:flex items-center gap-1 shrink-0">
+            {/* Danh mục dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => {
+                if (catCloseTimer.current) clearTimeout(catCloseTimer.current);
+                setCatDropdownOpen(true);
+              }}
+              onMouseLeave={() => {
+                catCloseTimer.current = setTimeout(() => {
+                  setCatDropdownOpen(false);
+                  setHoveredParentId(null);
+                }, 120);
+              }}
+            >
+              <button
+                className={`flex items-center gap-1.5 px-4 py-2 text-[15px] font-semibold rounded-lg transition-all ${
+                  catDropdownOpen ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
+                }`}
+                aria-haspopup="true"
+                aria-expanded={catDropdownOpen}
+              >
+                Categories
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-300 ${catDropdownOpen ? "rotate-180 text-[#1a1a1a]" : "text-gray-700"}`}
+                />
+              </button>
+
+              {/* Level 1: parent categories */}
+              <div
+                className={`absolute top-full left-0 pt-1 transition-all duration-200 z-[60] ${
+                  catDropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"
+                }`}
+                onMouseEnter={() => {
+                  if (catCloseTimer.current) clearTimeout(catCloseTimer.current);
+                }}
+                onMouseLeave={() => {
+                  catCloseTimer.current = setTimeout(() => {
+                    setCatDropdownOpen(false);
+                    setHoveredParentId(null);
+                  }, 120);
+                }}
+              >
+                <div className="bg-white border border-slate-200 shadow-xl rounded-xl overflow-visible min-w-[220px] p-1.5">
+                  {parents.map((pc) => {
+                    const sub = (categories || []).filter((c) => c.parent_id === pc.id && !c.is_deleted);
+                    const isHovered = hoveredParentId === String(pc.id);
+                    return (
+                      <div
+                        key={pc.id}
+                        className="relative"
+                        onMouseEnter={() => {
+                          if (subCloseTimer.current) clearTimeout(subCloseTimer.current);
+                          setHoveredParentId(String(pc.id));
+                        }}
+                        onMouseLeave={() => {
+                          subCloseTimer.current = setTimeout(() => {
+                            setHoveredParentId(null);
+                          }, 100);
+                        }}
+                      >
+                        <button
+                          onClick={() => { handleCategoryClick(String(pc.slug)); setCatDropdownOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 text-[14px] font-medium rounded-lg transition-all ${
+                            isHovered ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
+                          }`}
+                        >
+                          <span>{pc.name}</span>
+                          {sub.length > 0 && <ChevronDown size={13} className="-rotate-90 text-gray-500" />}
+                        </button>
+
+                        {/* Level 2: sub categories — extended hit area to prevent gap-close */}
+                        {sub.length > 0 && (
+                          <div
+                            className={`absolute top-0 left-full transition-all duration-150 z-[70] ${
+                              isHovered ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 translate-x-2 pointer-events-none"
+                            }`}
+                            style={{ paddingLeft: "8px" }}
+                            onMouseEnter={() => {
+                              if (subCloseTimer.current) clearTimeout(subCloseTimer.current);
+                              setHoveredParentId(String(pc.id));
+                            }}
+                            onMouseLeave={() => {
+                              subCloseTimer.current = setTimeout(() => {
+                                setHoveredParentId(null);
+                              }, 100);
+                            }}
+                          >
+                            <div className="bg-white border border-slate-200 shadow-xl rounded-xl overflow-hidden min-w-[200px] p-1.5">
+                              {sub.map((cat) => (
+                                <button
+                                  key={cat.id}
+                                  onClick={() => { handleCategoryClick(String(pc.slug), String(cat.slug)); setCatDropdownOpen(false); setHoveredParentId(null); }}
+                                  className="w-full text-left px-3 py-2 text-[14px] font-medium text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6] rounded-lg transition-all"
+                                >
+                                  {cat.name}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Review link */}
+            <Link
+              to="/review"
+              className="flex items-center px-4 py-2 text-[15px] font-semibold rounded-lg text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6] transition-all"
+            >
+              Review
+            </Link>
+          </nav>
+
           {/* Right: Auth */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Button
@@ -187,55 +301,6 @@ export function PublicHeader({
         </div>
       </div>
 
-      {/* Desktop Navigation Bar: Categories (giữ nguyên) */}
-      <div className="font-sans bg-white border-b border-[#e6e6e6] hidden lg:block">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-12 overflow-x-auto md:overflow-visible custom-scrollbar">
-          <nav className="flex items-center h-full min-w-max md:min-w-0 md:justify-around gap-4 px-2">
-            {parents.map((pc) => {
-              const sub = (categories || []).filter((c) => c.parent_id === pc.id && !c.is_deleted);
-              const isActive = String(pc.slug) === selectedParentCategory;
-
-              return (
-                <div key={pc.id} className="relative group h-full shrink-0 flex items-center">
-                  <button
-                    onClick={() => handleCategoryClick(String(pc.slug))}
-                    className={`flex items-center gap-1.5 px-4 py-2 text-[16px] font-semibold rounded-lg transition-all ${
-                      isActive ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
-                    }`}
-                  >
-                    {pc.name}
-                    {sub.length > 0 && (
-                      <ChevronDown
-                        size={14}
-                        className={`transition-transform duration-300 ${
-                          isActive ? "text-[#1a1a1a]" : "text-gray-700 group-hover:text-[#1a1a1a]"
-                        } group-hover:rotate-180`}
-                      />
-                    )}
-                  </button>
-
-                  {sub.length > 0 && (
-                    <div className="absolute top-full left-0 pt-1 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-[60]">
-                      <div className="bg-white border border-slate-200 shadow-xl rounded-xl overflow-hidden min-w-[200px] p-1.5">
-                        {sub.map((cat) => (
-                          <button
-                            key={cat.id}
-                            onClick={() => handleCategoryClick(String(pc.slug), String(cat.slug))}
-                            className="w-full text-left px-3 py-2 text-[14px] font-medium text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6] rounded-lg transition-all"
-                          >
-                            {cat.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </nav>
-        </div>
-      </div>
-
       {/* ======= MOBILE DRAWER ======= */}
       <div className={`lg:hidden ${mobileOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
         {/* backdrop */}
@@ -254,8 +319,7 @@ export function PublicHeader({
           <div className="h-16 px-4 border-b border-[#e6e6e6] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="bg-[#21294a] w-10 h-10 rounded-2xl flex items-center justify-center">
-                <img src="/logo_4.png" alt="Couponza" width="48"
-  height="47"/>
+                <img src="/logo_4.png" alt="Couponza" width="48" height="47" />
               </div>
               <div className="leading-tight">
                 <div className="text-sm font-extrabold text-[#21294a]">GLOBAL</div>
@@ -268,9 +332,18 @@ export function PublicHeader({
             </Button>
           </div>
 
-          {/* ✅ MOBILE ACCORDION */}
+          {/* MOBILE ACCORDION */}
           <div className="px-4 pt-4 pb-6 overflow-y-auto h-[calc(100%-64px-52px)]">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Category</div>
+            {/* Review link */}
+            <Link
+              to="/review"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-3 mb-4 rounded-2xl bg-[#f3f4f6] border border-slate-200 text-[15px] font-semibold text-[#1a1a1a] hover:bg-[#e6e6e6] transition"
+            >
+              Review
+            </Link>
+
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Danh mục</div>
 
             <div className="space-y-2">
               {parents.map((pc) => {
@@ -282,66 +355,66 @@ export function PublicHeader({
                 const isOpen = openParentId === pSlug;
 
                 return (
+                  <div
+                    key={pSlug}
+                    className={`border rounded-2xl overflow-hidden transition-all ${
+                      isOpen ? "border-[#21294a] bg-[#f6f8ff]" : "border-slate-200 bg-white"
+                    }`}
+                  >
+                    {/* header row */}
                     <div
-                      key={pSlug}
-                      className={`border rounded-2xl overflow-hidden transition-all ${
-                        isOpen ? "border-[#21294a] bg-[#f6f8ff]" : "border-slate-200 bg-white"
+                      className={`flex items-center justify-between px-3 py-3 ${
+                        isOpen ? "bg-[#eef2ff]" : "bg-white"
                       }`}
                     >
-                      {/* header row */}
-                      <div
-                        className={`flex items-center justify-between px-3 py-3 ${
-                          isOpen ? "bg-[#eef2ff]" : "bg-white"
+                      {/* click title => navigate parent */}
+                      <button
+                        onClick={() => {
+                          setActiveParentSlug(pSlug);
+                          onParentCategoryChange?.(pSlug);
+                          handleCategoryClick(pSlug);
+                          setMobileOpen(false);
+                        }}
+                        className={`flex-1 text-left font-semibold text-[15px] ${
+                          isOpen ? "text-[#21294a]" : "text-[#1a1a1a]"
                         }`}
                       >
-                        {/* click title => navigate parent */}
-                        <button
-                          onClick={() => {
-                            setActiveParentSlug(pSlug);
-                            onParentCategoryChange?.(pSlug);
-                            handleCategoryClick(pSlug);
-                            setMobileOpen(false);
-                          }}
-                          className={`flex-1 text-left font-semibold text-[15px] ${
-                            isOpen ? "text-[#21294a]" : "text-[#1a1a1a]"
-                          }`}
-                        >
-                          {pc.name}
-                        </button>
+                        {pc.name}
+                      </button>
 
-                        {/* chevron rotate toggle */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveParentSlug(pSlug);
-                            onParentCategoryChange?.(pSlug);
-                            setOpenParentId((prev) => (prev === pSlug ? "" : pSlug)); // ✅ single open
-                          }}
-                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                            isOpen ? "bg-[#21294a] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
-                          }`}
-                          aria-label={isOpen ? "Collapse" : "Expand"}
-                        >
-                          <ChevronDown
-                            size={18}
-                            className={`transition-transform duration-200 ${isOpen ? "rotate-180" : "rotate-0"}`}
-                          />
-                        </button>
-                      </div>
+                      {/* chevron rotate toggle */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveParentSlug(pSlug);
+                          onParentCategoryChange?.(pSlug);
+                          setOpenParentId((prev) => (prev === pSlug ? "" : pSlug));
+                        }}
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                          isOpen ? "bg-[#21294a] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
+                        }`}
+                        aria-label={isOpen ? "Collapse" : "Expand"}
+                      >
+                        <ChevronDown
+                          size={18}
+                          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : "rotate-0"}`}
+                        />
+                      </button>
+                    </div>
 
-                      {/* content (simple show/hide) */}
-                      <div className={`${isOpen ? "block" : "hidden"} px-3 pb-3`}>
-                        {/* View all */}
-                        <button
-                          onClick={() => {
-                            setActiveParentSlug(pSlug);
-                            handleCategoryClick(pSlug);
-                            setMobileOpen(false);
-                          }}
-                          className="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-[#e6e6e6] text-[#1a1a1a]"
-                        >
-                          View all
-                        </button>
+                    {/* content (simple show/hide) */}
+                    <div className={`${isOpen ? "block" : "hidden"} px-3 pb-3`}>
+                      {/* View all */}
+                      <button
+                        onClick={() => {
+                          setActiveParentSlug(pSlug);
+                          handleCategoryClick(pSlug);
+                          setMobileOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-[#e6e6e6] text-[#1a1a1a]"
+                      >
+                        View all
+                      </button>
 
                       <div className="mt-2 space-y-2">
                         {sub.map((cat) => (
