@@ -149,27 +149,16 @@ export function PublicFooter({
   );
 
   const LogoContent = (
-    <div className="flex items-center gap-3 mb-6">
-      <div className="bg-[#21294a] w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-[#21294a]/20 transition-all duration-300">
-        {/* ✅ Logo nhỏ + srcset để giảm ~300KB như PSI report */}
-        <img
-          src="/logo_cms.webp"
-          srcSet="/logo_cms.webp 1x, /logo_cms.webp 2x"
-          width={40}
-          height={39}
-          alt="Couponza"
-          decoding="async"
-          className="block"
-        />
-      </div>
-      <div className="flex flex-col">
-        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
-          COUPONZA
-        </span>
-        {/* <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
-          <span className="text-red-500">PROMOTION</span>
-        </span> */}
-      </div>
+    <div className="flex items-center mb-6">
+      <img
+        src="/couponzas_logo.png"
+        alt="Couponza"
+        width="180"
+        height="80"
+        // decoding="async"
+        // className="h-14 w-auto"
+        className="h-30 w-auto group-hover:opacity-90 transition-opacity duration-200"
+      />
     </div>
   );
 

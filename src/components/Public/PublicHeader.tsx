@@ -92,18 +92,14 @@ export function PublicHeader({
   }, [mobileOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const LogoContent = (
-    <div className="flex items-center gap-2 group shrink-0 select-none">
-      <div className="bg-[#21294a] w-12 h-12 md:w-12 md:h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-[#21294a]/20 group-hover:scale-105 transition-all duration-300">
-        <img src="/logo_4.png" alt="Couponza" width="40" height="39" />
-      </div>
-      <div className="flex flex-col">
-        <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
-          COUPONZA
-        </span>
-        {/* <span className="text-xl md:text-2xl font-extrabold text-[#21294a] leading-none tracking-tight">
-          <span className="text-red-500">PROMOTION</span>
-        </span> */}
-      </div>
+    <div className="flex items-center shrink-0 select-none group">
+      <img
+        src="/couponzas_logo.png"
+        alt="Couponza"
+        width="180"
+        height="80"
+        className="h-30 w-auto group-hover:opacity-90 transition-opacity duration-200"
+      />
     </div>
   );
 
@@ -317,15 +313,13 @@ export function PublicHeader({
         >
           {/* header panel */}
           <div className="h-16 px-4 border-b border-[#e6e6e6] flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="bg-[#21294a] w-10 h-10 rounded-2xl flex items-center justify-center">
-                <img src="/logo_4.png" alt="Couponza" width="48" height="47" />
-              </div>
-              <div className="leading-tight">
-                <div className="text-sm font-extrabold text-[#21294a]">GLOBAL</div>
-                <div className="text-sm font-extrabold text-red-500">PROMOTION</div>
-              </div>
-            </div>
+            <img
+              src="/logo_coupons.svg"
+              alt="Couponza"
+              width="120"
+              height="34"
+              className="h-9 w-auto"
+            />
 
             <Button isIconOnly variant="light" className="text-black" onPress={() => setMobileOpen(false)} aria-label="Close menu">
               <X size={22} />
