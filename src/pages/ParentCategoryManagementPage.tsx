@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
-import { Plus, Trash, Edit, Layers, Search, Calendar } from 'lucide-react';
-import api from '../services/api';
+import { Plus, Trash, Edit, Layers, Search, Calendar, ImagePlus, X } from 'lucide-react';
+import api, { SERVER_URL } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { formatDate } from "../utils/formatDate";
@@ -19,9 +19,17 @@ export function ParentCategoryManagementPage() {
 
     const [name, setName] = useState('');
     const [slug, setSlug] = useState('');
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>('');
+    const createImageRef = useRef<HTMLInputElement>(null);
+
     const [editingCategory, setEditingCategory] = useState<any>(null);
     const [editName, setEditName] = useState('');
     const [editSlug, setEditSlug] = useState('');
+    const [editImageFile, setEditImageFile] = useState<File | null>(null);
+    const [editImagePreview, setEditImagePreview] = useState<string>('');
+    const editImageRef = useRef<HTMLInputElement>(null);
+
     const [sequenceNumber, setSequenceNumber] = useState('0');
     const [editSequenceNumber, setEditSequenceNumber] = useState('0');
 
@@ -77,14 +85,20 @@ export function ParentCategoryManagementPage() {
     const handleCreate = async () => {
         if (!name.trim()) return;
         try {
-            await api.post('/parent-categories', { 
-                name, 
-                slug,
-                sequence_number: parseInt(sequenceNumber) || 0
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('slug', slug);
+            formData.append('sequence_number', sequenceNumber);
+            if (imageFile) formData.append('image', imageFile);
+
+            await api.post('/parent-categories', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
             setName('');
             setSlug('');
             setSequenceNumber('0');
+            setImageFile(null);
+            setImagePreview('');
             createModal.onClose();
             alert('Thêm danh mục cha mới thành công! 📁');
             if (page === 1) fetchParentCategories(); else setPage(1);
@@ -109,16 +123,22 @@ export function ParentCategoryManagementPage() {
         setEditName(cat.name);
         setEditSlug(cat.slug || '');
         setEditSequenceNumber(cat.sequence_number ? String(cat.sequence_number) : '0');
+        setEditImageFile(null);
+        setEditImagePreview(cat.image ? (cat.image.startsWith('http') ? cat.image : `${SERVER_URL}${cat.image}`) : '');
         editModal.onOpen();
     };
 
     const handleUpdate = async () => {
         if (!editingCategory) return;
         try {
-            await api.put(`/parent-categories/${editingCategory.id}`, { 
-                name: editName, 
-                slug: editSlug,
-                sequence_number: parseInt(editSequenceNumber) || 0
+            const formData = new FormData();
+            formData.append('name', editName);
+            formData.append('slug', editSlug);
+            formData.append('sequence_number', editSequenceNumber);
+            if (editImageFile) formData.append('image', editImageFile);
+
+            await api.put(`/parent-categories/${editingCategory.id}`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
             editModal.onClose();
             alert('Cập nhật danh mục cha thành công! ✨');
@@ -133,7 +153,7 @@ export function ParentCategoryManagementPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-[#21294a] p-3 rounded-xl shadow-[#21294a]/10 shadow-lg">
+                        <div className="bg-[#ee4d2d] p-3 rounded-xl shadow-[#ee4d2d]/10 shadow-lg">
                             <Layers className="text-white" size={24} />
                         </div>
                         <div>
@@ -145,7 +165,7 @@ export function ParentCategoryManagementPage() {
                     </div>
                     <Button
                         onPress={createModal.onOpen}
-                        className="bg-[#21294a] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#21294a]/10"
+                        className="bg-[#ee4d2d] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#ee4d2d]/10"
                         startContent={<Plus size={18} />}
                     >
                         Thêm danh mục cha
@@ -154,11 +174,11 @@ export function ParentCategoryManagementPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#21294a] transition-colors" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#ee4d2d] transition-colors" size={18} />
                         <input
                             type="text"
                             placeholder="Tìm kiếm danh mục cha..."
-                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#21294a]/20 focus:border-[#21294a] w-full shadow-sm transition-all"
+                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#ee4d2d]/20 focus:border-[#ee4d2d] w-full shadow-sm transition-all"
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -219,8 +239,16 @@ export function ParentCategoryManagementPage() {
                         header: 'Tên danh mục cha',
                         render: (cat) => (
                             <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-lg bg-[#21294a]/5 flex items-center justify-center border border-[#21294a]/10 shadow-sm">
-                                    <Layers size={16} className="text-[#21294a]" />
+                                <div className="w-10 h-10 rounded-lg bg-[#ee4d2d]/5 flex items-center justify-center border border-[#ee4d2d]/10 shadow-sm overflow-hidden shrink-0">
+                                    {cat.image ? (
+                                        <img
+                                            src={cat.image.startsWith('http') ? cat.image : `${SERVER_URL}${cat.image}`}
+                                            alt={cat.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <Layers size={16} className="text-[#ee4d2d]" />
+                                    )}
                                 </div>
                                 <div className="min-w-0">
                                     <p className="font-bold text-slate-800 text-sm">{cat.name}</p>
@@ -266,7 +294,7 @@ export function ParentCategoryManagementPage() {
                                     isIconOnly
                                     variant="flat"
                                     size="sm"
-                                    className="bg-[#21294a]/5 text-[#21294a] rounded-lg h-8 w-8 transition-all hover:bg-[#21294a]/10"
+                                    className="bg-[#ee4d2d]/5 text-[#ee4d2d] rounded-lg h-8 w-8 transition-all hover:bg-[#ee4d2d]/10"
                                     onPress={() => startEdit(cat)}
                                 >
                                     <Edit size={16} />
@@ -315,11 +343,47 @@ export function ParentCategoryManagementPage() {
                             />
                             <Input label="Slug (URL)" variant="flat" value={slug} onChange={(e) => setSlug(e.target.value)} />
                             <Input label="Thứ tự (STT)" type="number" variant="flat" value={sequenceNumber} onChange={(e) => setSequenceNumber(e.target.value)} />
+
+                            {/* Image Upload */}
+                            <div>
+                                <p className="text-sm font-semibold text-slate-600 mb-2">Ảnh đại diện</p>
+                                <input
+                                    ref={createImageRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            setImageFile(file);
+                                            setImagePreview(URL.createObjectURL(file));
+                                        }
+                                    }}
+                                />
+                                {imagePreview ? (
+                                    <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-[#ee4d2d]/30 group">
+                                        <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
+                                        <button
+                                            onClick={() => { setImageFile(null); setImagePreview(''); }}
+                                            className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <X size={20} className="text-white" />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => createImageRef.current?.click()}
+                                        className="flex items-center gap-2 px-4 py-2.5 border-2 border-dashed border-slate-200 rounded-xl text-sm font-semibold text-slate-500 hover:border-[#ee4d2d] hover:text-[#ee4d2d] transition-colors"
+                                    >
+                                        <ImagePlus size={16} /> Chọn ảnh
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <Button variant="light" onPress={createModal.onClose}>Hủy</Button>
-                        <Button className="bg-[#21294a] text-white font-bold" onPress={handleCreate}>Tạo mới</Button>
+                        <Button className="bg-[#ee4d2d] text-white font-bold" onPress={handleCreate}>Tạo mới</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
@@ -333,11 +397,47 @@ export function ParentCategoryManagementPage() {
                             <Input label="Tên danh mục" variant="flat" value={editName} onChange={(e) => setEditName(e.target.value)} />
                             <Input label="Thứ tự (STT)" type="number" variant="flat" value={editSequenceNumber} onChange={(e) => setEditSequenceNumber(e.target.value)} />
                             <Input label="Slug" variant="flat" value={editSlug} onChange={(e) => setEditSlug(e.target.value)} />
+
+                            {/* Image Upload */}
+                            <div>
+                                <p className="text-sm font-semibold text-slate-600 mb-2">Ảnh đại diện</p>
+                                <input
+                                    ref={editImageRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            setEditImageFile(file);
+                                            setEditImagePreview(URL.createObjectURL(file));
+                                        }
+                                    }}
+                                />
+                                {editImagePreview ? (
+                                    <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-[#ee4d2d]/30 group">
+                                        <img src={editImagePreview} alt="preview" className="w-full h-full object-cover" />
+                                        <button
+                                            onClick={() => { setEditImageFile(null); setEditImagePreview(''); }}
+                                            className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <X size={20} className="text-white" />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => editImageRef.current?.click()}
+                                        className="flex items-center gap-2 px-4 py-2.5 border-2 border-dashed border-slate-200 rounded-xl text-sm font-semibold text-slate-500 hover:border-[#ee4d2d] hover:text-[#ee4d2d] transition-colors"
+                                    >
+                                        <ImagePlus size={16} /> Chọn ảnh
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <Button variant="light" onPress={editModal.onClose}>Hủy</Button>
-                        <Button className="bg-[#21294a] text-white font-bold" onPress={handleUpdate}>Lưu thay đổi</Button>
+                        <Button className="bg-[#ee4d2d] text-white font-bold" onPress={handleUpdate}>Lưu thay đổi</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

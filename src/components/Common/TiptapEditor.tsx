@@ -221,7 +221,7 @@ function ToolbarButton({
       className={[
         "inline-flex h-9 items-center justify-center gap-1 rounded-md border px-2.5 text-sm font-semibold transition",
         active
-          ? "border-[#21294a] bg-[#21294a] text-white shadow-sm"
+          ? "border-[#ee4d2d] bg-[#ee4d2d] text-white shadow-sm"
           : "border-transparent bg-white text-slate-600 hover:border-slate-200 hover:bg-slate-50",
         disabled ? "cursor-not-allowed opacity-50" : "",
       ].join(" ")}
@@ -645,7 +645,7 @@ export function TiptapEditor({
                 className={`inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-md border px-3 text-sm font-semibold transition ${
                   uploadingImage
                     ? "border-slate-200 bg-slate-100 text-slate-400"
-                    : "border-transparent bg-[#21294a] text-white hover:bg-[#1b2340]"
+                    : "border-transparent bg-[#ee4d2d] text-white hover:bg-[#1b2340]"
                 }`}
               >
                 <ImagePlus size={16} />

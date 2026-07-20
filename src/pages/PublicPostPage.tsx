@@ -386,7 +386,7 @@ export function PublicPostPage() {
   if (loading)
     return (
       <div className="text-slate-400 h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-        <div className="w-10 h-10 border-4 border-[#21294a]/10 border-t-[#21294a] rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-[#ee4d2d]/10 border-t-[#ee4d2d] rounded-full animate-spin"></div>
         <p className="text-[10px] font-black uppercase tracking-widest">
           Loading...
         </p>
@@ -401,14 +401,14 @@ export function PublicPostPage() {
         </p>
         <p className="text-base sm:text-2xl md:text-3xl text-slate-500 font-semibold leading-relaxed">
           Automatically returning to the homepage in{" "}
-          <span className="text-[#21294a] font-black text-3xl md:text-5xl inline-block min-w-[1.5em]">
+          <span className="text-[#ee4d2d] font-black text-3xl md:text-5xl inline-block min-w-[1.5em]">
             {countdown}
           </span>{" "}
           seconds...
         </p>
         <button
           onClick={() => navigate("/")}
-          className="bg-[#21294a] text-white px-8 md:px-10 py-3 md:py-4 rounded-2xl font-bold text-base md:text-lg shadow-2xl shadow-[#21294a]/30 hover:scale-105 transition-all active:scale-95 uppercase tracking-wide mt-4"
+          className="bg-[#ee4d2d] text-white px-8 md:px-10 py-3 md:py-4 rounded-2xl font-bold text-base md:text-lg shadow-2xl shadow-[#ee4d2d]/30 hover:scale-105 transition-all active:scale-95 uppercase tracking-wide mt-4"
         >
           Return to homepage now
         </button>

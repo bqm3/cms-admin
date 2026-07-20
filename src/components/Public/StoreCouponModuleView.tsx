@@ -127,7 +127,7 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
                   <img src={logoSrc} alt={data.title} className="max-h-24 max-w-[120px] object-contain" />
                 ) : (
                   <div className="text-center">
-                    <div className="text-3xl font-black tracking-tight text-[#21294a]">{data.title}</div>
+                    <div className="text-3xl font-black tracking-tight text-[#ee4d2d]">{data.title}</div>
                     <div className="mt-2 text-xs font-semibold text-slate-400">Upload logo or paste image URL</div>
                   </div>
                 )}
@@ -280,7 +280,7 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
                 <button
                   type="button"
                   onClick={() => handleOpen(currentPopup.buttonHref)}
-                  className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-[#21294a] px-5 text-sm font-bold text-white transition hover:bg-[#161d36]"
+                  className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-[#ee4d2d] px-5 text-sm font-bold text-white transition hover:bg-[#161d36]"
                 >
                   {currentPopup.buttonText || "Open offer"}
                 </button>

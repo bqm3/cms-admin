@@ -35,14 +35,14 @@ export function Term() {
       <main className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-24">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
-            <div className="w-12 h-12 border-4 border-[#21294a]/20 border-t-[#21294a] rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-[#ee4d2d]/20 border-t-[#ee4d2d] rounded-full animate-spin"></div>
             <p className="text-gray-700 text-xs font-semibold uppercase tracking-wide animate-pulse">
               Loading...
             </p>
           </div>
         ) : (
           <article className="prose prose-slate prose-lg max-w-none">
-            <h1 className="text-4xl font-extrabold text-[#21294a] mb-8 tracking-tight border-b pb-4">Terms of Service</h1>
+            <h1 className="text-4xl font-extrabold text-[#ee4d2d] mb-8 tracking-tight border-b pb-4">Terms of Service</h1>
             <div className="space-y-6 text-[#4a4a4a] leading-relaxed">
               <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use <strong>Couponza</strong> if you do not agree to take all of the terms and conditions stated on this page.</p>
             <ul className="list-disc pl-6 space-y-2">

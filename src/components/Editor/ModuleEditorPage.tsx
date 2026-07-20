@@ -140,7 +140,7 @@ function AssetField({
               input: "text-sm font-medium",
             }}
           />
-          <label className={`inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${uploading ? "bg-slate-100 text-slate-400" : "bg-[#21294a] text-white hover:bg-[#1a213d]"}`}>
+          <label className={`inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${uploading ? "bg-slate-100 text-slate-400" : "bg-[#ee4d2d] text-white hover:bg-[#1a213d]"}`}>
             {uploading ? "Uploading..." : "Upload image"}
             <input
               type="file"
@@ -498,7 +498,7 @@ export function ModuleEditorPage() {
             <Button
               onClick={handleSave}
               isLoading={saving}
-              className="bg-[#21294a] font-bold text-white shadow-lg shadow-[#21294a]/10"
+              className="bg-[#ee4d2d] font-bold text-white shadow-lg shadow-[#ee4d2d]/10"
               startContent={saving ? null : <Save size={18} />}
             >
               {isNew ? "Create Fixed Page" : "Save Fixed Page"}
@@ -517,7 +517,7 @@ export function ModuleEditorPage() {
                 <div className="flex gap-2">
                   <Button
                     onClick={openCreateLink}
-                    className="bg-[#21294a] font-bold text-white"
+                    className="bg-[#ee4d2d] font-bold text-white"
                     startContent={<Plus size={16} />}
                   >
                     Thêm link
@@ -541,7 +541,7 @@ export function ModuleEditorPage() {
                       className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
                     >
                       <GripVertical size={16} className="text-slate-300 shrink-0" />
-                      <Link2 size={15} className="text-[#21294a] shrink-0" />
+                      <Link2 size={15} className="text-[#ee4d2d] shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-bold text-slate-800 truncate">{link.title}</div>
                         <div className="text-xs text-slate-400 truncate">{link.href}</div>
@@ -580,7 +580,7 @@ export function ModuleEditorPage() {
                 title="Coupons"
                 subtitle="Coupons được quản lý bằng modal. Mỗi coupon gồm title, content, code, button text và URL. URL đầu tiên sẽ được dùng làm mặc định cho các coupon sau nếu để trống."
               />
-              <Button onClick={openCreateCoupon} className="bg-[#21294a] font-bold text-white" startContent={<Plus size={16} />}>
+              <Button onClick={openCreateCoupon} className="bg-[#ee4d2d] font-bold text-white" startContent={<Plus size={16} />}>
                 Manage coupons
               </Button>
             </div>
@@ -672,7 +672,7 @@ export function ModuleEditorPage() {
                       categoryName: selected?.name || "",
                     }));
                   }}
-                  className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm outline-none focus:border-[#21294a]"
+                  className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm outline-none focus:border-[#ee4d2d]"
                 >
                   <option value="">-- Select category --</option>
                   {categories.map((cat) => (
@@ -845,7 +845,7 @@ export function ModuleEditorPage() {
                   <p className="mt-1 text-xs text-slate-400">Chọn coupon để sửa hoặc xóa ngay tại đây.</p>
                 </div>
                 <Button
-                  className="bg-[#21294a] font-bold text-white"
+                  className="bg-[#ee4d2d] font-bold text-white"
                   startContent={<Plus size={14} />}
                   onClick={openCreateCoupon}
                 >
@@ -858,7 +858,7 @@ export function ModuleEditorPage() {
                   data.coupons.map((coupon, index) => (
                     <div
                       key={`${coupon.title}-${index}`}
-                      className={`rounded-2xl border p-4 ${editingCouponIndex === index ? "border-[#21294a] bg-[#21294a]/5" : "border-slate-200 bg-white"}`}
+                      className={`rounded-2xl border p-4 ${editingCouponIndex === index ? "border-[#ee4d2d] bg-[#ee4d2d]/5" : "border-slate-200 bg-white"}`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
@@ -967,7 +967,7 @@ export function ModuleEditorPage() {
                   />
                   <div className="md:col-span-2">
                     <textarea
-                      className="min-h-[120px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#21294a]"
+                      className="min-h-[120px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#ee4d2d]"
                       placeholder="Content / description"
                       value={couponDraft.content}
                       onChange={(e) => setCouponDraft((prev) => ({ ...prev, content: e.target.value }))}
@@ -980,7 +980,7 @@ export function ModuleEditorPage() {
                     Done
                   </Button>
                   <Button
-                    className="bg-[#21294a] font-bold text-white"
+                    className="bg-[#ee4d2d] font-bold text-white"
                     onPress={saveCoupon}
                     startContent={editingCouponIndex === null ? <Plus size={16} /> : <CheckCircle2 size={16} />}
                   >
@@ -1046,7 +1046,7 @@ export function ModuleEditorPage() {
               Hủy
             </Button>
             <Button
-              className="bg-[#21294a] font-bold text-white"
+              className="bg-[#ee4d2d] font-bold text-white"
               onPress={() => { saveLinkDraft(); linkModal.onClose(); }}
               startContent={editingLinkIndex === null ? <Plus size={16} /> : <CheckCircle2 size={16} />}
             >

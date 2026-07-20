@@ -192,7 +192,7 @@ export function MediaManagementPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-[#21294a] p-3 rounded-xl shadow-[#21294a]/10 shadow-lg">
+                        <div className="bg-[#ee4d2d] p-3 rounded-xl shadow-[#ee4d2d]/10 shadow-lg">
                             <ImageIcon className="text-white" size={24} />
                         </div>
                         <div>
@@ -213,7 +213,7 @@ export function MediaManagementPage() {
                         </Button>
                         <Button
                             onPress={mediaModal.onOpen}
-                            className="bg-[#21294a] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#21294a]/10"
+                            className="bg-[#ee4d2d] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#ee4d2d]/10"
                             startContent={<Plus size={18} />}
                         >
                             Thêm ảnh
@@ -225,11 +225,11 @@ export function MediaManagementPage() {
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="relative group md:col-span-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#21294a] transition-colors" size={18} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#ee4d2d] transition-colors" size={18} />
                             <input
                                 type="text"
                                 placeholder="Tìm kiếm ảnh..."
-                                className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#21294a]/20 focus:border-[#21294a] w-full shadow-sm transition-all"
+                                className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#ee4d2d]/20 focus:border-[#ee4d2d] w-full shadow-sm transition-all"
                                 value={searchTerm}
                                 onChange={(e) => {
                                     setSearchTerm(e.target.value);
@@ -346,12 +346,12 @@ export function MediaManagementPage() {
                         render: (m) => (
                             <div className="flex flex-col gap-1 max-w-xs">
                                 <p className="font-bold text-slate-800 truncate text-sm">{m.name}</p>
-                                <div className="flex items-center gap-2 group/link cursor-pointer hover:text-[#21294a] transition-colors" onClick={() => copyToClipboard(m.url, m.id)}>
+                                <div className="flex items-center gap-2 group/link cursor-pointer hover:text-[#ee4d2d] transition-colors" onClick={() => copyToClipboard(m.url, m.id)}>
                                     <p className="text-xs text-slate-400 truncate flex-1 font-mono">{m.url}</p>
                                     {copiedId === m.id ? (
                                         <Check size={12} className="text-emerald-500 shrink-0" />
                                     ) : (
-                                        <Copy size={12} className="text-slate-300 group-hover/link:text-[#21294a] shrink-0 transition-colors" />
+                                        <Copy size={12} className="text-slate-300 group-hover/link:text-[#ee4d2d] shrink-0 transition-colors" />
                                     )}
                                 </div>
                             </div>
@@ -383,7 +383,7 @@ export function MediaManagementPage() {
                         header: 'Nguồn',
                         render: (m) => (
                             <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${m.source_type === 'upload'
-                                ? 'bg-[#21294a]/5 text-[#21294a] border-[#21294a]/10'
+                                ? 'bg-[#ee4d2d]/5 text-[#ee4d2d] border-[#ee4d2d]/10'
                                 : 'bg-amber-50 text-amber-600 border-amber-100'
                                 }`}>
                                 {m.source_type === 'upload' ? 'Upload' : 'Link'}
@@ -451,7 +451,7 @@ export function MediaManagementPage() {
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Danh mục</label>
                                     <select
-                                        className="w-full h-12 px-4 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#21294a]/10 transition-all shadow-sm cursor-pointer"
+                                        className="w-full h-12 px-4 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#ee4d2d]/10 transition-all shadow-sm cursor-pointer"
                                         value={selectedCategory}
                                         onChange={(e) => setSelectedCategory(e.target.value)}
                                     >
@@ -464,7 +464,7 @@ export function MediaManagementPage() {
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Loại ảnh</label>
                                     <select
-                                        className="w-full h-12 px-4 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#21294a]/10 transition-all shadow-sm cursor-pointer"
+                                        className="w-full h-12 px-4 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#ee4d2d]/10 transition-all shadow-sm cursor-pointer"
                                         value={selectedMediaType}
                                         onChange={(e) => setSelectedMediaType(e.target.value)}
                                     >
@@ -480,13 +480,13 @@ export function MediaManagementPage() {
                                 <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-100">
                                      <button
                                         onClick={() => setUploadType('upload')}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all ${uploadType === 'upload' ? 'bg-[#21294a] text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all ${uploadType === 'upload' ? 'bg-[#ee4d2d] text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
                                     >
                                         <Upload size={14} /> Tải lên
                                     </button>
                                     <button
                                         onClick={() => setUploadType('link')}
-                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all ${uploadType === 'link' ? 'bg-[#21294a] text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all ${uploadType === 'link' ? 'bg-[#ee4d2d] text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
                                     >
                                         <LinkIcon size={14} /> Nhập Link
                                     </button>
@@ -500,7 +500,7 @@ export function MediaManagementPage() {
                                             multiple
                                             onChange={(e) => setFiles(prev => [...prev, ...Array.from(e.target.files || [])])}
                                         />
-                                        <label htmlFor="media-upload" className="flex flex-col items-center justify-center w-full min-h-44 border-2 border-dashed border-slate-200 rounded-2xl bg-white cursor-pointer hover:border-[#21294a]/40 hover:bg-[#21294a]/5 transition-all group lg:p-4">
+                                        <label htmlFor="media-upload" className="flex flex-col items-center justify-center w-full min-h-44 border-2 border-dashed border-slate-200 rounded-2xl bg-white cursor-pointer hover:border-[#ee4d2d]/40 hover:bg-[#ee4d2d]/5 transition-all group lg:p-4">
                                             {files.length > 0 ? (
                                                 <div className="grid grid-cols-4 gap-2 w-full p-2 max-h-64 overflow-y-auto">
                                                     {files.map((f, i) => (
@@ -522,15 +522,15 @@ export function MediaManagementPage() {
                                                     ))}
                                                     <div 
                                                         onClick={() => document.getElementById('media-upload')?.click()}
-                                                        className="aspect-square border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-400 hover:border-[#21294a]/40 hover:bg-[#21294a]/5 transition-all cursor-pointer"
+                                                        className="aspect-square border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center text-slate-400 hover:border-[#ee4d2d]/40 hover:bg-[#ee4d2d]/5 transition-all cursor-pointer"
                                                     >
                                                         <Plus size={20} />
                                                     </div>
                                                 </div>
                                             ) : (
                                                  <>
-                                                    <div className="bg-[#21294a]/5 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform shadow-sm">
-                                                        <Upload className="text-[#21294a]" size={24} />
+                                                    <div className="bg-[#ee4d2d]/5 p-4 rounded-xl mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                                                        <Upload className="text-[#ee4d2d]" size={24} />
                                                     </div>
                                                     <p className="text-sm font-bold text-slate-500">Click hoặc kéo thả ảnh</p>
                                                     <p className="text-xs text-slate-400 mt-1">Hỗ trợ PNG, JPG, WEBP tối đa 10MB</p>
@@ -553,7 +553,7 @@ export function MediaManagementPage() {
                     </ModalBody>
                     <ModalFooter>
                         <Button variant="light" size="sm" onPress={mediaModal.onClose} className="font-bold rounded-xl h-10 px-6">Hủy</Button>
-                        <Button className="bg-[#21294a] text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-[#21294a]/10" size="sm" onPress={handleCreateMedia}>Hoàn tất</Button>
+                        <Button className="bg-[#ee4d2d] text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-[#ee4d2d]/10" size="sm" onPress={handleCreateMedia}>Hoàn tất</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
@@ -578,7 +578,7 @@ export function MediaManagementPage() {
                                 />
                                 <Button
                                     onPress={handleCreateType}
-                                    className="bg-[#21294a] text-white font-bold h-11 px-4 rounded-xl flex-shrink-0"
+                                    className="bg-[#ee4d2d] text-white font-bold h-11 px-4 rounded-xl flex-shrink-0"
                                 >
                                     Thêm
                                 </Button>
@@ -603,7 +603,7 @@ export function MediaManagementPage() {
                                                     {editingMediaType?.id === type.id ? (
                                                         <input
                                                             autoFocus
-                                                            className="text-sm font-bold text-slate-700 w-full bg-slate-100 rounded-lg px-2 py-1 outline-none ring-1 ring-[#21294a]"
+                                                            className="text-sm font-bold text-slate-700 w-full bg-slate-100 rounded-lg px-2 py-1 outline-none ring-1 ring-[#ee4d2d]"
                                                             value={editMediaTypeName}
                                                             onChange={(e) => setEditMediaTypeName(e.target.value)}
                                                             onBlur={handleUpdateType}
@@ -618,7 +618,7 @@ export function MediaManagementPage() {
                                                         <Button
                                                             size="sm"
                                                             variant="light"
-                                                            className="text-[#21294a] font-bold"
+                                                            className="text-[#ee4d2d] font-bold"
                                                             onPress={handleUpdateType}
                                                         >
                                                             Lưu
@@ -629,7 +629,7 @@ export function MediaManagementPage() {
                                                                 isIconOnly
                                                                 size="sm"
                                                                 variant="flat"
-                                                                className="bg-[#21294a]/5 text-[#21294a] rounded-lg opacity-0 group-hover:opacity-100"
+                                                                className="bg-[#ee4d2d]/5 text-[#ee4d2d] rounded-lg opacity-0 group-hover:opacity-100"
                                                                 onPress={() => {
                                                                     setEditingMediaType(type);
                                                                     setEditMediaTypeName(type.name);

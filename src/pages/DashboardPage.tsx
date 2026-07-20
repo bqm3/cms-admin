@@ -212,7 +212,7 @@ export function DashboardPage() {
       <div className="mb-6">
         <div className="mb-4 flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-[#21294a] p-3 shadow-lg shadow-[#21294a]/10">
+            <div className="rounded-lg bg-[#ee4d2d] p-3 shadow-lg shadow-[#ee4d2d]/10">
               <LayoutDashboard className="text-white" size={24} />
             </div>
             <div>
@@ -221,13 +221,13 @@ export function DashboardPage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button as={Link} to="/editor/new" className="h-11 rounded-lg bg-[#21294a] px-6 font-bold text-white" startContent={<Plus size={18} />}>
+            <Button as={Link} to="/editor/new" className="h-11 rounded-lg bg-[#ee4d2d] px-6 font-bold text-white" startContent={<Plus size={18} />}>
               Viết bài mới
             </Button>
             <Button
               as={Link}
               to="/module/new"
-              className="h-11 rounded-lg border border-[#21294a]/15 bg-white px-6 font-bold text-[#21294a] shadow-sm"
+              className="h-11 rounded-lg border border-[#ee4d2d]/15 bg-white px-6 font-bold text-[#ee4d2d] shadow-sm"
               startContent={<LayoutTemplate size={18} />}
             >
               Tạo page cố định
@@ -282,7 +282,7 @@ export function DashboardPage() {
                   setSelectedCategory("");
                   setPage(1);
                 }}
-                className="h-11 w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm outline-none focus:ring-2 focus:ring-[#21294a]"
+                className="h-11 w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm outline-none focus:ring-2 focus:ring-[#ee4d2d]"
               >
                 <option value="">Tất cả danh mục cha</option>
                 {parentCategories.map((pc) => (
@@ -298,7 +298,7 @@ export function DashboardPage() {
                   setSelectedCategory(e.target.value);
                   setPage(1);
                 }}
-                className="h-11 w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm outline-none focus:ring-2 focus:ring-[#21294a]"
+                className="h-11 w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm outline-none focus:ring-2 focus:ring-[#ee4d2d]"
               >
                 <option value="">Tất cả danh mục con</option>
                 {categories
@@ -316,7 +316,7 @@ export function DashboardPage() {
                   setViewSort(e.target.value);
                   setPage(1);
                 }}
-                className="h-11 w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm outline-none focus:ring-2 focus:ring-[#21294a]"
+                className="h-11 w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm outline-none focus:ring-2 focus:ring-[#ee4d2d]"
               >
                 <option value="">Sắp xếp lượt xem</option>
                 <option value="DESC">Lượt xem giảm dần</option>
@@ -358,8 +358,8 @@ export function DashboardPage() {
                   {post.logo ? (
                     <img src={resolveImageUrl(post.logo)} alt={post.title} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-[#21294a]/5">
-                      <Globe size={16} className="text-[#21294a]/30" />
+                    <div className="flex h-full w-full items-center justify-center bg-[#ee4d2d]/5">
+                      <Globe size={16} className="text-[#ee4d2d]/30" />
                     </div>
                   )}
                 </div>
@@ -372,7 +372,7 @@ export function DashboardPage() {
                     <span className="truncate font-mono text-xs font-medium text-slate-400">/{post.slug || post.id}</span>
                     <button
                       onClick={() => openSlugDialog(post)}
-                      className="text-slate-300 hover:text-[#21294a] transition-colors"
+                      className="text-slate-300 hover:text-[#ee4d2d] transition-colors"
                       title="Sửa slug"
                     >
                       <Edit size={12} className="inline" />
@@ -386,7 +386,7 @@ export function DashboardPage() {
             header: "Phân loại",
             render: (post) => (
               <div className="flex flex-col gap-1">
-                <span className="w-fit rounded-md border border-[#21294a]/10 bg-[#21294a]/5 px-2 py-0.5 text-xs font-bold text-[#21294a]">
+                <span className="w-fit rounded-md border border-[#ee4d2d]/10 bg-[#ee4d2d]/5 px-2 py-0.5 text-xs font-bold text-[#ee4d2d]">
                   {post.category?.name || "Chưa phân loại"}
                 </span>
                 <span className="text-xs font-semibold text-slate-400">@{post.creator?.username || "vô danh"}</span>
@@ -423,7 +423,7 @@ export function DashboardPage() {
           {
             header: "Lượt xem",
             align: "center",
-            render: (post) => <div className="inline-flex items-center gap-1.5 rounded-md border border-[#21294a]/10 bg-[#21294a]/5 px-2.5 py-1 text-xs font-bold text-[#21294a]"><Eye size={12} /> {post.view_count || 0}</div>,
+            render: (post) => <div className="inline-flex items-center gap-1.5 rounded-md border border-[#ee4d2d]/10 bg-[#ee4d2d]/5 px-2.5 py-1 text-xs font-bold text-[#ee4d2d]"><Eye size={12} /> {post.view_count || 0}</div>,
           },
           {
             header: "Thao tác",
@@ -441,7 +441,7 @@ export function DashboardPage() {
                   isIconOnly
                   size="sm"
                   variant="flat"
-                  className="bg-[#21294a]/5 text-[#21294a]"
+                  className="bg-[#ee4d2d]/5 text-[#ee4d2d]"
                 >
                   <Edit size={16} />
                 </Button>
@@ -487,7 +487,7 @@ export function DashboardPage() {
           </ModalBody>
           <ModalFooter>
             <Button variant="flat" onPress={() => setCopyDialogOpen(false)} isDisabled={copyLoading}>Hủy</Button>
-            <Button className="bg-[#21294a] text-white" onPress={handleCopy} isLoading={copyLoading}>Tạo bản copy</Button>
+            <Button className="bg-[#ee4d2d] text-white" onPress={handleCopy} isLoading={copyLoading}>Tạo bản copy</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -513,7 +513,7 @@ export function DashboardPage() {
           </ModalBody>
           <ModalFooter>
             <Button variant="flat" onPress={() => setSlugDialogOpen(false)} isDisabled={slugLoading}>Hủy</Button>
-            <Button className="bg-[#21294a] text-white" onPress={handleSaveSlug} isLoading={slugLoading}>Lưu thay đổi</Button>
+            <Button className="bg-[#ee4d2d] text-white" onPress={handleSaveSlug} isLoading={slugLoading}>Lưu thay đổi</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

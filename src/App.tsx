@@ -25,6 +25,7 @@ import { ReviewManagementPage } from "./pages/ReviewManagementPage";
 import { PublicReviewListPage } from "./pages/PublicReviewListPage";
 import { PublicReviewDetailPage } from "./pages/PublicReviewDetailPage";
 import { FeaturedDealManagementPage } from "./pages/FeaturedDealManagementPage";
+import { BannerManagementPage } from "./pages/BannerManagementPage";
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
       <Route element={<FooterManagementPage />} path="/footer-links" />
       <Route element={<ReviewManagementPage />} path="/reviews" />
       <Route element={<FeaturedDealManagementPage />} path="/featured-deals" />
+      <Route element={<BannerManagementPage />} path="/banners" />
       <Route element={<TemplateDashboardPage />} path="/template-dashboard" />
       <Route element={<TemplateEditorPage />} path="/template-editor/new" />
       <Route element={<TemplateEditorPage />} path="/template-editor/:id" />

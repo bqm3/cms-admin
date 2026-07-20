@@ -146,12 +146,12 @@ export function PostLinkDialog({ postId, postTitle, isOpen, onClose, onSuccess }
             <ModalContent>
                 <ModalHeader className="flex flex-col gap-1">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-[#21294a]/5 rounded-xl text-[#21294a]">
+                        <div className="p-2.5 bg-[#ee4d2d]/5 rounded-xl text-[#ee4d2d]">
                             <LinkIcon size={20} />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-800 tracking-tight">Quản lý Link phụ</h2>
-                            <p className="text-xs font-semibold text-slate-400 mt-0.5">Dự án: <span className="text-[#21294a]">{postTitle}</span></p>
+                            <p className="text-xs font-semibold text-slate-400 mt-0.5">Dự án: <span className="text-[#ee4d2d]">{postTitle}</span></p>
                         </div>
                     </div>
                 </ModalHeader>
@@ -171,7 +171,7 @@ export function PostLinkDialog({ postId, postTitle, isOpen, onClose, onSuccess }
                                 </Button>
                                 <Button 
                                     size="sm" 
-                                    className="bg-[#21294a] text-white font-bold rounded-xl h-9 px-4 shadow-lg shadow-[#21294a]/10 hover:scale-105 transition-all"
+                                    className="bg-[#ee4d2d] text-white font-bold rounded-xl h-9 px-4 shadow-lg shadow-[#ee4d2d]/10 hover:scale-105 transition-all"
                                     onPress={handleAddLink}
                                     startContent={<Plus size={16} />}
                                 >
@@ -184,7 +184,7 @@ export function PostLinkDialog({ postId, postTitle, isOpen, onClose, onSuccess }
                             <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl mb-4 animate-in fade-in slide-in-from-top-2">
                                 <p className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider mb-2">Nhập nhanh (Mỗi dòng một mục - Định dạng: Tiêu đề | Link)</p>
                                 <textarea
-                                    className="w-full h-32 p-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#21294a]/10 transition-all"
+                                    className="w-full h-32 p-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#ee4d2d]/10 transition-all"
                                     placeholder={`Link 1 | https://...
 Link 2 | https://...
 Hoặc chỉ dán Link`}
@@ -194,7 +194,7 @@ Hoặc chỉ dán Link`}
                                 <div className="mt-3 flex justify-end">
                                     <Button 
                                         size="sm"
-                                        className="bg-[#21294a] text-white font-bold rounded-xl px-6 h-9"
+                                        className="bg-[#ee4d2d] text-white font-bold rounded-xl px-6 h-9"
                                         onPress={handleAddBulk}
                                     >
                                         Xác nhận thêm ({bulkText.split('\n').filter(l => l.trim()).length})
@@ -205,7 +205,7 @@ Hoặc chỉ dán Link`}
 
                         {loading ? (
                             <div className="py-20 flex flex-col items-center justify-center gap-4">
-                                <div className="w-8 h-8 border-3 border-slate-100 border-t-[#21294a] rounded-full animate-spin"></div>
+                                <div className="w-8 h-8 border-3 border-slate-100 border-t-[#ee4d2d] rounded-full animate-spin"></div>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Đang tải dữ liệu...</p>
                             </div>
                         ) : links.length === 0 ? (
@@ -218,7 +218,7 @@ Hoặc chỉ dán Link`}
                         ) : (
                             <div className="space-y-3">
                                 {links.map((link, index) => (
-                                    <div key={link.id || `new-${index}`} className="group p-4 bg-white border border-slate-200 rounded-2xl hover:border-[#21294a]/30 hover:shadow-xl hover:shadow-[#21294a]/5 transition-all flex flex-col md:flex-row gap-4 items-end md:items-center">
+                                    <div key={link.id || `new-${index}`} className="group p-4 bg-white border border-slate-200 rounded-2xl hover:border-[#ee4d2d]/30 hover:shadow-xl hover:shadow-[#ee4d2d]/5 transition-all flex flex-col md:flex-row gap-4 items-end md:items-center">
                                         <div className="w-full md:w-20">
                                             <Input
                                                 label="STT"
@@ -261,7 +261,7 @@ Hoặc chỉ dán Link`}
                                                 classNames={{
                                                     label: "text-[10px] font-extrabold uppercase text-slate-400 tracking-wider mb-1",
                                                     inputWrapper: "bg-slate-50 border-none shadow-none h-10 rounded-xl px-4",
-                                                    input: "font-medium text-[#21294a] text-xs placeholder:text-slate-300"
+                                                    input: "font-medium text-[#ee4d2d] text-xs placeholder:text-slate-300"
                                                 }}
                                             />
                                         </div>
@@ -290,7 +290,7 @@ Hoặc chỉ dán Link`}
                         Hủy bỏ
                     </Button>
                     <Button 
-                        className="bg-[#21294a] text-white font-bold text-xs uppercase tracking-widest rounded-xl h-12 px-10 shadow-xl shadow-[#21294a]/20 hover:scale-[1.02] active:scale-95 transition-all"
+                        className="bg-[#ee4d2d] text-white font-bold text-xs uppercase tracking-widest rounded-xl h-12 px-10 shadow-xl shadow-[#ee4d2d]/20 hover:scale-[1.02] active:scale-95 transition-all"
                         onPress={handleSave}
                         isLoading={saving}
                         startContent={!saving && <Save size={16} />}

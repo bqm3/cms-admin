@@ -48,7 +48,7 @@ export function PostCard({ post }: PostCardProps) {
 
             {/* Hover Action Badge */}
             <div className="absolute top-4 right-4 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
-              <div className="bg-white/95 backdrop-blur-md shadow-xl px-4 py-2 rounded-lg text-xs font-semibold text-[#21294a] uppercase flex items-center gap-2 border border-slate-100">
+              <div className="bg-white/95 backdrop-blur-md shadow-xl px-4 py-2 rounded-lg text-xs font-semibold text-[#ee4d2d] uppercase flex items-center gap-2 border border-slate-100">
                 See Details <ChevronRight size={12} strokeWidth={3} />
               </div>
             </div>
@@ -56,7 +56,7 @@ export function PostCard({ post }: PostCardProps) {
 
           {/* Content area */}
           <div className="p-6 flex-1 flex flex-col">
-            <h3 className="text-[18px] font-bold text-[#1a1a1a] mb-2.5 group-hover:text-[#21294a] transition-colors line-clamp-2 leading-tight tracking-tight">
+            <h3 className="text-[18px] font-bold text-[#1a1a1a] mb-2.5 group-hover:text-[#ee4d2d] transition-colors line-clamp-2 leading-tight tracking-tight">
               {post.title}
             </h3>
 
@@ -70,7 +70,7 @@ export function PostCard({ post }: PostCardProps) {
                       e.stopPropagation();
                       window.open(link.href, "_blank");
                     }}
-                    className="w-full flex items-center justify-between bg-slate-50 hover:bg-[#21294a] text-slate-700 hover:text-white px-5 py-3.5 rounded-[8px] text-[13px] font-bold border border-slate-200 hover:border-[#21294a] transition-all duration-200 group/link relative z-20 shadow-sm active:scale-[0.98]"
+                    className="w-full flex items-center justify-between bg-slate-50 hover:bg-[#ee4d2d] text-slate-700 hover:text-white px-5 py-3.5 rounded-[8px] text-[13px] font-bold border border-slate-200 hover:border-[#ee4d2d] transition-all duration-200 group/link relative z-20 shadow-sm active:scale-[0.98]"
                   >
                     <span className="truncate pr-2">{link.title}</span>
                     <ExternalLink size={14} className="opacity-40 group-hover/link:opacity-100 flex-shrink-0" />
@@ -91,7 +91,7 @@ export function PostCard({ post }: PostCardProps) {
                   e.stopPropagation();
                   window.open(`/${post.slug || post.id}`, "_blank");
                 }}
-                className="w-full flex items-center justify-center gap-2 bg-[#21294a] hover:bg-[#21294a]/80 text-white text-[13px] font-bold px-4 py-2.5 rounded-[8px] transition-all duration-200 active:scale-[0.98] relative z-20"
+                className="w-full flex items-center justify-center gap-2 bg-[#ee4d2d] hover:bg-[#ee4d2d]/80 text-white text-[13px] font-bold px-4 py-2.5 rounded-[8px] transition-all duration-200 active:scale-[0.98] relative z-20"
               >
                 See Details <ChevronRight size={14} strokeWidth={2.5} />
               </button>

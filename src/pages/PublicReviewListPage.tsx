@@ -79,7 +79,7 @@ export function PublicReviewListPage() {
       <main className="mx-auto max-w-7xl px-4 py-12 md:px-6">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.3em] text-[#21294a]">Review</p>
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-[#ee4d2d]">Review</p>
             <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-900">Review List</h1>
             <p className="mt-3 max-w-2xl text-sm font-medium text-slate-500">Displayed in cards with public pagination.</p>
           </div>
@@ -129,7 +129,7 @@ export function PublicReviewListPage() {
                         <h2 className="mt-2 line-clamp-2 text-2xl font-black text-slate-900">{review.title}</h2>
                       </div>
                       <p className="line-clamp-4 text-sm leading-7 text-slate-600">{contentText}</p>
-                      <Link to={`/review/${review.slug}`} className="inline-flex rounded-xl bg-[#21294a] px-5 py-3 text-sm font-bold text-white">
+                      <Link to={`/review/${review.slug}`} className="inline-flex rounded-xl bg-[#ee4d2d] px-5 py-3 text-sm font-bold text-white">
                         View details
                       </Link>
                     </div>

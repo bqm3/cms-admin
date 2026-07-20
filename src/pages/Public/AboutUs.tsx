@@ -35,22 +35,22 @@ export function AboutUs() {
       <main className="max-w-[1200px] mx-auto px-4 md:px-6 mt-16 mb-24">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
-            <div className="w-12 h-12 border-4 border-[#21294a]/20 border-t-[#21294a] rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-[#ee4d2d]/20 border-t-[#ee4d2d] rounded-full animate-spin"></div>
             <p className="text-gray-700 text-xs font-semibold uppercase tracking-wide animate-pulse">
               Loading...
             </p>
           </div>
         ) : (
           <article className="prose prose-slate prose-lg max-w-none">
-            <h1 className="text-4xl font-extrabold text-[#21294a] mb-8 tracking-tight border-b pb-4">About Us</h1>
+            <h1 className="text-4xl font-extrabold text-[#ee4d2d] mb-8 tracking-tight border-b pb-4">About Us</h1>
             <div className="space-y-6 text-[#4a4a4a] leading-relaxed">
-              <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">Our Vision: Empowering the Modern Consumer</h2>
+              <h2 className="text-2xl font-bold text-[#ee4d2d] mt-8 mb-4">Our Vision: Empowering the Modern Consumer</h2>
               <p>Welcome to <strong>Couponza</strong>, your trusted partner in navigating the vast world of digital commerce. In an era where every click counts, we are dedicated to helping consumers and professionals alike find the most valuable deals, verified coupons, and strategic promotions across the most competitive industries today.</p>
 
-              <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">Who We Are</h2>
+              <h2 className="text-2xl font-bold text-[#ee4d2d] mt-8 mb-4">Who We Are</h2>
               <p>Couponza is more than just a coupon site; we are a dedicated team of market analysts and digital enthusiasts committed to transparency. We understand that in fields like Finance, Technology, and Wellness, finding a reliable offer is just as important as the discount itself. That is why we curate, verify, and deliver only the best opportunities from world-class brands.</p>
 
-              <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">What Sets Us Apart?</h2>
+              <h2 className="text-2xl font-bold text-[#ee4d2d] mt-8 mb-4">What Sets Us Apart?</h2>
               <p>At <strong>Couponza</strong>, we don't just list links. We build a bridge between quality brands and smart users through:</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Rigorous Verification:</strong> Every promotion featured on our platform undergoes a manual check to ensure it provides genuine value.</li>
@@ -58,10 +58,10 @@ export function AboutUs() {
                 <li><strong>User-Centric Approach:</strong> We prioritize your experience, ensuring our platform is easy to navigate and our information is always up-to-date.</li>
               </ul>
 
-              <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">Our Commitment to Transparency</h2>
+              <h2 className="text-2xl font-bold text-[#ee4d2d] mt-8 mb-4">Our Commitment to Transparency</h2>
               <p>As a modern digital entity, Couponza operates with full transparency. We may receive commissions from the brands we feature, but our editorial integrity remains uncompromised. Our first priority is—and always will be—providing you with accurate, actionable information that helps you save money and time.</p>
 
-              <h2 className="text-2xl font-bold text-[#21294a] mt-8 mb-4">Join the Global Community</h2>
+              <h2 className="text-2xl font-bold text-[#ee4d2d] mt-8 mb-4">Join the Global Community</h2>
               <p>The world of digital promotions is constantly evolving. Join thousands of users who start their shopping and investing journey with Couponza.</p>
               <p><strong>Couponza – Your Gateway to Smarter Savings.</strong></p>
             </div>

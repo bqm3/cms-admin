@@ -106,7 +106,7 @@ export function FooterManagementPage() {
       <div className="mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
-            <div className="bg-[#21294a] p-3 rounded-lg shadow-[#21294a]/10 shadow-lg">
+            <div className="bg-[#ee4d2d] p-3 rounded-lg shadow-[#ee4d2d]/10 shadow-lg">
               <Layout className="text-white" size={24} />
             </div>
             <div>
@@ -121,7 +121,7 @@ export function FooterManagementPage() {
           <Button
             onClick={handleSave}
             isLoading={saving}
-            className="bg-[#21294a] text-white font-bold h-11 px-8 rounded-lg shadow-lg shadow-[#21294a]/10"
+            className="bg-[#ee4d2d] text-white font-bold h-11 px-8 rounded-lg shadow-lg shadow-[#ee4d2d]/10"
             startContent={<Save size={18} />}
           >
             Lưu thay đổi
@@ -176,7 +176,7 @@ export function FooterManagementPage() {
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-slate-100 bg-slate-50/50">
               <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <Layout size={20} className="text-[#21294a]" />
+                <Layout size={20} className="text-[#ee4d2d]" />
                 Liên kết phụ (Dưới cùng)
               </h2>
               <p className="text-xs font-medium text-slate-400 mt-1">

@@ -58,7 +58,7 @@ export function DataTable<T>({
                             <tr>
                                 <td colSpan={columns.length} className="px-6 py-24 text-center">
                                     <div className="flex flex-col items-center justify-center gap-4">
-                                        <div className="w-10 h-10 border-4 border-slate-50 border-t-[#21294a] rounded-full animate-spin"></div>
+                                        <div className="w-10 h-10 border-4 border-slate-50 border-t-[#ee4d2d] rounded-full animate-spin"></div>
                                         <p className="font-bold text-slate-400 uppercase tracking-widest text-xs">Đang tải dữ liệu...</p>
                                     </div>
                                 </td>
@@ -78,7 +78,7 @@ export function DataTable<T>({
                             </tr>
                         ) : (
                             data.map((item, rowIndex) => (
-                                <tr key={rowIndex} className="hover:bg-[#21294a]/[0.02] transition-all group">
+                                <tr key={rowIndex} className="hover:bg-[#ee4d2d]/[0.02] transition-all group">
                                     {columns.map((column, colIndex) => (
                                         <td
                                             key={colIndex}
@@ -102,7 +102,7 @@ export function DataTable<T>({
                         <div className="flex items-center gap-2.5">
                             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Hiển thị:</p>
                             <select
-                                className="bg-white border border-slate-200 rounded-xl text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#21294a]/5 transition-all cursor-pointer h-9 shadow-sm"
+                                className="bg-white border border-slate-200 rounded-xl text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#ee4d2d]/5 transition-all cursor-pointer h-9 shadow-sm"
                                 value={pagination.limit}
                                 onChange={(e) => pagination.onLimitChange(Number(e.target.value))}
                             >
@@ -113,7 +113,7 @@ export function DataTable<T>({
                         </div>
                         <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                            Tổng cộng: <span className="text-[#21294a] ml-1">{pagination.totalItems}</span>
+                            Tổng cộng: <span className="text-[#ee4d2d] ml-1">{pagination.totalItems}</span>
                         </p>
                     </div>
 
@@ -127,7 +127,7 @@ export function DataTable<T>({
                         radius="full"
                         size="md"
                         classNames={{
-                            cursor: "bg-[#21294a] text-white shadow-lg shadow-[#21294a]/20",
+                            cursor: "bg-[#ee4d2d] text-white shadow-lg shadow-[#ee4d2d]/20",
                             base: "gap-2",
                             item: "font-bold text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all min-w-[36px] h-9",
                             prev: "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all min-w-[36px] h-9",

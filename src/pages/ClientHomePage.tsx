@@ -47,7 +47,7 @@ function CountdownDisplay({ endDate }: { endDate: string | null }) {
       <span className="text-sm font-semibold text-white/80">Hunt for Hot Deals inside:</span>
       {[time.hours, time.minutes, time.seconds].map((val, i) => (
         <div key={i} className="flex items-center gap-1.5">
-          <div className="bg-[#21294a] text-white font-black text-sm w-9 h-9 flex items-center justify-center rounded-lg tabular-nums shadow-inner">
+          <div className="bg-[#ee4d2d] text-white font-black text-sm w-9 h-9 flex items-center justify-center rounded-lg tabular-nums shadow-inner">
             {pad(val)}
           </div>
           {i < 2 && <span className="text-white font-black text-base">:</span>}
@@ -70,10 +70,10 @@ function FeaturedDealCard({ deal }: { deal: any }) {
   return (
     <div
       onClick={handleClick}
-      className={`group relative flex flex-row items-stretch rounded-2xl overflow-hidden border-2 border-[#21294a]/70 bg-gradient-to-r from-[#1a2240] to-[#21294a] shadow-lg hover:shadow-xl transition-all duration-300 min-h-[110px] ${deal.url ? "cursor-pointer" : ""}`}
+      className={`group relative flex flex-row items-stretch rounded-2xl overflow-hidden border-2 border-[#ee4d2d]/70 bg-gradient-to-r from-[#1a2240] to-[#ee4d2d] shadow-lg hover:shadow-xl transition-all duration-300 min-h-[110px] ${deal.url ? "cursor-pointer" : ""}`}
     >
       {/* Left: text content */}
-      <div className="flex flex-col justify-center gap-2 px-5 py-4 flex-1 min-w-0">
+      <div className="flex flex-col justify-center gap-2 px-5 py-4 w-1/2 min-w-0">
         {/* Top label */}
         <div className="flex items-center gap-2">
           <Flame size={14} className="text-orange-400 shrink-0" />
@@ -113,15 +113,13 @@ function FeaturedDealCard({ deal }: { deal: any }) {
 
       {/* Right: image */}
       {imageUrl && (
-        <div className="w-60 md:w-100 lg:w-150 shrink-0 relative overflow-hidden">
+        <div className="w-1/2 shrink-0 relative overflow-hidden m-1">
           <img
             src={imageUrl}
             alt={deal.title}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-xl"
             loading="lazy"
           />
-          {/* subtle gradient overlay on left edge of image */}
-          <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#21294a] to-transparent" />
         </div>
       )}
     </div>
@@ -149,6 +147,7 @@ export function ClientHomePage() {
   const [latestPosts, setLatestPosts] = useState<any[]>([]);
   const [featuredDeals, setFeaturedDeals] = useState<any[]>([]);
   const [latestReviews, setLatestReviews] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchGroupedPosts = useCallback(async (parents: any[]) => {
@@ -205,6 +204,16 @@ export function ClientHomePage() {
     }
   }, []);
 
+  // Fetch banners
+  const fetchBanners = useCallback(async () => {
+    try {
+      const res = await api.get("/banners/public");
+      setBanners(res.data.banners || []);
+    } catch (err) {
+      console.error("Error fetching banners:", err);
+    }
+  }, []);
+
   useEffect(() => {
     if (parentCategories.length > 0) {
       fetchGroupedPosts(parentCategories.filter((p) => !p.is_deleted));
@@ -215,7 +224,8 @@ export function ClientHomePage() {
     fetchLatestPosts();
     fetchFeaturedDeals();
     fetchLatestReviews();
-  }, [fetchLatestPosts, fetchFeaturedDeals, fetchLatestReviews]);
+    fetchBanners();
+  }, [fetchLatestPosts, fetchFeaturedDeals, fetchLatestReviews, fetchBanners]);
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -263,10 +273,65 @@ export function ClientHomePage() {
         categories={categories}
       />
 
+      {/* ── BANNERS ──────────────────────────────────────────────────── */}
+      {banners.length > 0 && (
+        <div className="w-full">
+          {banners.map((banner) => {
+            const imgUrl = banner.image
+              ? banner.image.startsWith("http") ? banner.image : `${SERVER_URL}${banner.image}`
+              : null;
+            return (
+              <div
+                key={banner.id}
+                className="relative w-full overflow-hidden"
+                style={{ minHeight: "320px" }}
+              >
+                {/* Full background image */}
+                {imgUrl && (
+                  <img
+                    src={imgUrl}
+                    alt={banner.title}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="eager"
+                  />
+                )}
+                {/* Dark overlay for readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
+
+                {/* Content — left aligned */}
+                <div className="relative z-10 flex flex-col justify-center gap-4 px-8 md:px-16 py-16 max-w-2xl h-full min-h-[320px]">
+                  <h2 className="text-3xl md:text-5xl font-black text-white leading-tight drop-shadow-lg">
+                    {banner.title}
+                  </h2>
+                  {banner.description && (
+                    <p className="text-white/80 text-base md:text-lg leading-relaxed font-medium max-w-lg">
+                      {banner.description}
+                    </p>
+                  )}
+                  {banner.url && (
+                    <div className="mt-2">
+                      <a
+                        href={banner.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-[#ee4d2d] hover:bg-[#d9431f] text-white font-bold text-sm px-6 py-3 rounded-xl shadow-lg shadow-[#ee4d2d]/30 transition-all duration-200 hover:-translate-y-0.5"
+                      >
+                        Discover now
+                        <ExternalLink size={15} />
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <main className="max-w-[1500px] mx-auto px-4 md:px-6 mt-12 pb-20">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
-            <div className="w-12 h-12 border-4 border-[#21294a]/20 border-t-[#21294a] rounded-full animate-spin" />
+            <div className="w-12 h-12 border-4 border-[#ee4d2d]/20 border-t-[#ee4d2d] rounded-full animate-spin" />
             <p className="text-gray-700 text-xs font-semibold uppercase tracking-wide animate-pulse">Loading...</p>
           </div>
         ) : (
@@ -277,12 +342,12 @@ export function ClientHomePage() {
               <section>
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-[28px] font-bold text-[#1a1a1a] tracking-tight flex items-center gap-2">
-                    <Clock size={24} className="text-[#21294a]" />
+                    <Clock size={24} className="text-[#ee4d2d]" />
                     Latest Posts
                   </h2>
                   <Button
                     variant="light"
-                    className="font-semibold text-[14px] bg-[#21294a] text-white hover:bg-[#21294a]/90 px-5 h-9 rounded-lg group/btn transition-all"
+                    className="font-semibold text-[14px] bg-[#ee4d2d] text-white hover:bg-[#ee4d2d]/90 px-5 h-9 rounded-lg group/btn transition-all"
                     onClick={() => navigate("/category")}
                   >
                     Find More <ChevronRight size={15} className="ml-1 text-white" />
@@ -300,22 +365,34 @@ export function ClientHomePage() {
             {activeParents.length > 0 && (
               <section>
                 <div className="flex items-center gap-2 mb-6">
-                  <Tag size={22} className="text-[#21294a]" />
+                  <Tag size={22} className="text-[#ee4d2d]" />
                   <h2 className="text-[28px] font-bold text-[#1a1a1a] tracking-tight">Popular Categories</h2>
                 </div>
                 <div className="flex gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory custom-scrollbar">
                   {activeParents.map((pc) => {
                     const sub = categories.filter((c) => c.parent_id === pc.id && !c.is_deleted);
+                    const imgUrl = pc.image
+                      ? pc.image.startsWith("http") ? pc.image : `${SERVER_URL}${pc.image}`
+                      : null;
                     return (
                       <button
                         key={pc.id}
                         onClick={() => navigateToCategory(String(pc.slug || pc.id), "")}
-                        className="snap-start flex-shrink-0 group flex flex-col items-center justify-center gap-2 bg-white border-2 border-[#e6e6e6] hover:border-[#21294a] rounded-2xl px-6 py-5 min-w-[150px] text-center transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                        className="snap-start flex-shrink-0 group flex flex-col items-center justify-center gap-2 bg-white border-2 border-[#e6e6e6] hover:border-[#ee4d2d] rounded-xl px-4 py-3 min-w-[150px] text-center transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
                       >
-                        <div className="w-12 h-12 rounded-xl bg-[#f3f4f6] group-hover:bg-[#21294a]/10 flex items-center justify-center transition-colors">
-                          <Tag size={22} className="text-[#21294a]" />
+                        <div className="w-12 h-12 rounded-xl bg-[#f3f4f6] group-hover:bg-[#ee4d2d]/10 flex items-center justify-center transition-colors overflow-hidden">
+                          {imgUrl ? (
+                            <img
+                              src={imgUrl}
+                              alt={pc.name}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <Tag size={22} className="text-[#ee4d2d]" />
+                          )}
                         </div>
-                        <span className="font-bold text-[14px] text-[#1a1a1a] group-hover:text-[#21294a] transition-colors leading-tight">
+                        <span className="font-bold text-[14px] text-[#1a1a1a] group-hover:text-[#ee4d2d] transition-colors leading-tight">
                           {pc.name}
                         </span>
                         {sub.length > 0 && (
@@ -360,7 +437,7 @@ export function ClientHomePage() {
                   <div className="flex justify-center mt-10">
                     <Button
                       variant="light"
-                      className="font-semibold text-[14px] bg-[#21294a] text-white hover:bg-[#21294a]/90 px-6 h-10 rounded-lg group/btn transition-all"
+                      className="font-semibold text-[14px] bg-[#ee4d2d] text-white hover:bg-[#ee4d2d]/90 px-6 h-10 rounded-lg group/btn transition-all"
                       onClick={() => navigateToCategory(String(pc.slug || pc.id), "")}
                     >
                       More <ChevronRight size={16} className="ml-1 text-white" />
@@ -379,7 +456,7 @@ export function ClientHomePage() {
                     as={Link}
                     to="/review"
                     variant="light"
-                    className="font-semibold text-[14px] bg-[#21294a] text-white hover:bg-[#21294a]/90 px-5 h-9 rounded-lg transition-all"
+                    className="font-semibold text-[14px] bg-[#ee4d2d] text-white hover:bg-[#ee4d2d]/90 px-5 h-9 rounded-lg transition-all"
                   >
                     Find More <ChevronRight size={15} className="ml-1 text-white" />
                   </Button>
@@ -415,15 +492,15 @@ export function ClientHomePage() {
                           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                             {new Date(review.created_at).toLocaleDateString("vi-VN")}
                           </p>
-                          <h3 className="text-lg font-bold text-[#1a1a1a] line-clamp-2 group-hover:text-[#21294a] transition-colors">
+                          <h3 className="text-lg font-bold text-[#1a1a1a] line-clamp-2 group-hover:text-[#ee4d2d] transition-colors">
                             {review.title}
                           </h3>
                           {excerpt && (
                             <p className="text-sm text-slate-500 line-clamp-3 leading-relaxed">{excerpt}</p>
                           )}
                           <div className="mt-auto pt-3">
-                            <span className="inline-flex items-center gap-1 text-[#21294a] font-bold text-sm group-hover:gap-2 transition-all">
-                              Đọc thêm <ChevronRight size={14} />
+                            <span className="inline-flex items-center gap-1 text-[#ee4d2d] font-bold text-sm group-hover:gap-2 transition-all">
+                              Read more <ChevronRight size={14} />
                             </span>
                           </div>
                         </div>

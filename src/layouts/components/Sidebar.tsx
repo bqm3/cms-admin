@@ -5,6 +5,7 @@ import {
   Image as ImageIcon,
   Layout,
   LayoutDashboard,
+  LayoutPanelTop,
   LayoutTemplate,
   Layers,
   LogOut,
@@ -64,6 +65,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           { icon: Layout, label: "Quản lý Footer", path: "/footer-links" },
           { icon: BookOpen, label: "Quản lý Review", path: "/reviews" },
           { icon: Flame, label: "Deal Nổi Bật", path: "/featured-deals" },
+          { icon: LayoutPanelTop, label: "Quản lý Banner", path: "/banners" },
         ]
       : []),
   ];
@@ -72,12 +74,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const linkClasses = (active: boolean) =>
     `flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 ${
-      active ? "bg-[#21294a]/5 border border-[#21294a]/20 shadow-sm" : "hover:bg-slate-50"
+      active ? "bg-[#ee4d2d]/5 border border-[#ee4d2d]/20 shadow-sm" : "hover:bg-slate-50"
     }`;
 
   const iconClasses = (active: boolean) =>
     `p-2 rounded-md flex-shrink-0 ${
-      active ? "bg-[#21294a]/10 text-[#21294a]" : "bg-slate-100 text-slate-400"
+      active ? "bg-[#ee4d2d]/10 text-[#ee4d2d]" : "bg-slate-100 text-slate-400"
     }`;
 
   return (
@@ -89,7 +91,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         <div className="border-b border-slate-200/80 p-5">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-[#21294a] p-2.5 shadow-lg shadow-[#21294a]/10">
+            <div className="rounded-lg bg-[#ee4d2d] p-2.5 shadow-lg shadow-[#ee4d2d]/10">
               <Shield className="text-white" size={20} />
             </div>
             {isOpen ? (
@@ -110,7 +112,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <div className={iconClasses(active)}>
                   <Icon size={20} />
                 </div>
-                {isOpen ? <span className={`text-sm font-semibold ${active ? "text-[#21294a]" : "text-slate-600"}`}>{item.label}</span> : null}
+                {isOpen ? <span className={`text-sm font-semibold ${active ? "text-[#ee4d2d]" : "text-slate-600"}`}>{item.label}</span> : null}
               </Link>
             );
           })}
@@ -120,7 +122,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="border-t border-slate-200/80 p-4">
             <div className="mb-3 rounded-lg border border-slate-100 bg-slate-50 p-3 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#21294a] text-sm font-bold text-white shadow-md shadow-[#21294a]/10">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#ee4d2d] text-sm font-bold text-white shadow-md shadow-[#ee4d2d]/10">
                   {user.username?.substring(0, 1).toUpperCase() || "A"}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -150,7 +152,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         <div className="flex items-center justify-between border-b border-slate-200 p-5">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-[#21294a] p-2.5 shadow-lg shadow-[#21294a]/10">
+            <div className="rounded-lg bg-[#ee4d2d] p-2.5 shadow-lg shadow-[#ee4d2d]/10">
               <Shield className="text-white" size={20} />
             </div>
             <div>
@@ -172,7 +174,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <div className={iconClasses(active)}>
                   <Icon size={20} />
                 </div>
-                <span className={`text-sm font-semibold ${active ? "text-[#21294a]" : "text-slate-600"}`}>{item.label}</span>
+                <span className={`text-sm font-semibold ${active ? "text-[#ee4d2d]" : "text-slate-600"}`}>{item.label}</span>
               </Link>
             );
           })}
@@ -181,7 +183,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="border-t border-slate-200 p-4">
           <div className="mb-3 rounded-lg border border-slate-100 bg-slate-50 p-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#21294a] text-sm font-bold text-white shadow-md shadow-[#21294a]/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#ee4d2d] text-sm font-bold text-white shadow-md shadow-[#ee4d2d]/10">
                 {user.username?.substring(0, 1).toUpperCase() || "A"}
               </div>
               <div className="min-w-0 flex-1">

@@ -196,7 +196,7 @@ export function FeaturedDealManagementPage() {
             </div>
           </div>
           <Button
-            className="h-11 rounded-lg bg-[#21294a] px-6 font-bold text-white shadow-lg shadow-[#21294a]/10"
+            className="h-11 rounded-lg bg-[#ee4d2d] px-6 font-bold text-white shadow-lg shadow-[#ee4d2d]/10"
             startContent={<Plus size={18} />}
             onPress={openCreate}
           >
@@ -377,7 +377,7 @@ export function FeaturedDealManagementPage() {
                   Mô tả ngắn
                 </label>
                 <textarea
-                  className="min-h-[88px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#21294a] transition"
+                  className="min-h-[88px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#ee4d2d] transition"
                   placeholder="Giảm đến hết cuối tháng. Giảm 70% vé máy bay nội địa..."
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -399,7 +399,7 @@ export function FeaturedDealManagementPage() {
                 </label>
                 <input
                   type="datetime-local"
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none focus:border-[#21294a] transition"
+                  className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none focus:border-[#ee4d2d] transition"
                   value={form.countdown_end}
                   onChange={(e) => setForm({ ...form, countdown_end: e.target.value })}
                 />
@@ -427,7 +427,7 @@ export function FeaturedDealManagementPage() {
                   <input
                     type="file"
                     accept="image/*"
-                    className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-[#21294a] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white"
+                    className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-[#ee4d2d] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white"
                     onChange={(e) => handleImageUpload(e.target.files?.[0] || null)}
                     disabled={uploadingImage}
                   />
@@ -467,7 +467,7 @@ export function FeaturedDealManagementPage() {
               Hủy
             </Button>
             <Button
-              className="bg-[#21294a] font-bold text-white"
+              className="bg-[#ee4d2d] font-bold text-white"
               onPress={handleSave}
               isLoading={saving}
             >

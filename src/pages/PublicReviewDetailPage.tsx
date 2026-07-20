@@ -101,7 +101,7 @@ export function PublicReviewDetailPage() {
 
             <div className="px-6 py-8 md:px-10 md:py-12 xl:px-16 xl:py-16">
               <div className="flex flex-wrap items-center gap-3 text-[11px] font-black uppercase tracking-[0.24em] text-slate-500">
-                <span className="rounded-full bg-[#21294a] px-3 py-1 text-white">Review</span>
+                <span className="rounded-full bg-[#ee4d2d] px-3 py-1 text-white">Review</span>
                 <span className="inline-flex items-center gap-2">
                   <CalendarDays size={14} />
                   {new Date(review.created_at).toLocaleDateString("vi-VN")}

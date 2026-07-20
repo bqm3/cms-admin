@@ -30,13 +30,13 @@ export function LoginPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-[#21294a]/10 selection:text-[#21294a]">
-            <Card className="w-full max-w-[420px] bg-white shadow-xl shadow-[#21294a]/10 border-none rounded-2xl overflow-hidden">
+        <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-[#ee4d2d]/10 selection:text-[#ee4d2d]">
+            <Card className="w-full max-w-[420px] bg-white shadow-xl shadow-[#ee4d2d]/10 border-none rounded-2xl overflow-hidden">
                 <CardBody className="p-0">
-                    <div className="bg-[#21294a] p-10 text-center relative overflow-hidden">
+                    <div className="bg-[#ee4d2d] p-10 text-center relative overflow-hidden">
                         {/* Background pattern */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 opacity-30"></div>
-                        <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#21294a]/20 rounded-full -ml-10 -mb-10 opacity-30"></div>
+                        <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#ee4d2d]/20 rounded-full -ml-10 -mb-10 opacity-30"></div>
 
                         <div className="bg-white/10 w-16 h-16 rounded-2xl backdrop-blur-md mx-auto flex items-center justify-center mb-5 shadow-xl">
                             <Shield className="text-white" size={32} />
@@ -57,7 +57,7 @@ export function LoginPage() {
                                 classNames={{
                                     label: "text-slate-500 font-bold text-[10px] uppercase tracking-wider mb-1",
                                     input: "text-slate-900 font-medium",
-                                    inputWrapper: "bg-slate-50 border border-slate-100 focus-within:border-[#21294a]/20 h-12 rounded-lg transition-all px-4",
+                                    inputWrapper: "bg-slate-50 border border-slate-100 focus-within:border-[#ee4d2d]/20 h-12 rounded-lg transition-all px-4",
                                 }}
                             />
                             <Input
@@ -71,7 +71,7 @@ export function LoginPage() {
                                 classNames={{
                                     label: "text-slate-500 font-bold text-[10px] uppercase tracking-wider mb-1",
                                     input: "text-slate-900 font-medium",
-                                    inputWrapper: "bg-slate-50 border border-slate-100 focus-within:border-[#21294a]/20 h-12 rounded-lg transition-all px-4",
+                                    inputWrapper: "bg-slate-50 border border-slate-100 focus-within:border-[#ee4d2d]/20 h-12 rounded-lg transition-all px-4",
                                 }}
                             />
                         </div>
@@ -85,7 +85,7 @@ export function LoginPage() {
                         <Button
                             type="submit"
                             isLoading={isSubmitting}
-                            className="bg-[#21294a] hover:bg-[#21294a]/90 text-white font-bold h-12 rounded-lg shadow-lg shadow-[#21294a]/10 text-sm group transition-all"
+                            className="bg-[#ee4d2d] hover:bg-[#ee4d2d]/90 text-white font-bold h-12 rounded-lg shadow-lg shadow-[#ee4d2d]/10 text-sm group transition-all"
                             endContent={<ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />}
                         >
                             Log in

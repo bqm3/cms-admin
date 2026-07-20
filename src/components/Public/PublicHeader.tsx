@@ -137,7 +137,7 @@ export function PublicHeader({
               placeholder="Search projects and categories..."
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              startContent={<Search size={18} className="text-slate-900 group-focus-within:text-[#21294a] transition-colors" />}
+              startContent={<Search size={18} className="text-slate-900 group-focus-within:text-[#ee4d2d] transition-colors" />}
               isClearable
               onClear={() => {
                 setLocalSearch("");
@@ -145,13 +145,13 @@ export function PublicHeader({
               }}
               classNames={{
                 inputWrapper:
-                  "bg-white border-2 border-slate-200 h-11 px-4 shadow-none rounded-full group-hover:border-[#21294a] group-focus-within:border-[#21294a] transition-all",
+                  "bg-white border-2 border-slate-200 h-11 px-4 shadow-none rounded-full group-hover:border-[#ee4d2d] group-focus-within:border-[#ee4d2d] transition-all",
                 input: "text-[15px] font-medium text-[#1a1a1a] placeholder:text-gray-700 pl-1",
               }}
             />
             <button
               type="submit"
-              className="absolute right-1 w-9 h-9 bg-[#21294a] rounded-full flex items-center justify-center text-white hover:opacity-90 transition-all shadow-sm"
+              className="absolute right-1 w-9 h-9 bg-[#ee4d2d] rounded-full flex items-center justify-center text-white hover:opacity-90 transition-all shadow-sm"
             >
               <Search size={16} strokeWidth={3} />
             </button>
@@ -281,7 +281,7 @@ export function PublicHeader({
             <Button
               as={Link}
               to="/login"
-              className="bg-[#21294a] text-white font-bold text-sm h-10 px-6 rounded-full shadow-lg shadow-[#21294a]/10 hover:bg-[#21294a]/80 transition-all active:scale-95 hidden sm:flex"
+              className="bg-[#ee4d2d] text-white font-bold text-sm h-10 px-6 rounded-full shadow-lg shadow-[#ee4d2d]/10 hover:bg-[#ee4d2d]/80 transition-all active:scale-95 hidden sm:flex"
             >
               Log in
             </Button>
@@ -289,7 +289,7 @@ export function PublicHeader({
             <Button
               as={Link}
               to="/login"
-              className="bg-[#21294a] text-white font-bold text-sm h-9 px-4 rounded-full shadow-sm sm:hidden"
+              className="bg-[#ee4d2d] text-white font-bold text-sm h-9 px-4 rounded-full shadow-sm sm:hidden"
             >
               Log in
             </Button>
@@ -352,7 +352,7 @@ export function PublicHeader({
                   <div
                     key={pSlug}
                     className={`border rounded-2xl overflow-hidden transition-all ${
-                      isOpen ? "border-[#21294a] bg-[#f6f8ff]" : "border-slate-200 bg-white"
+                      isOpen ? "border-[#ee4d2d] bg-[#f6f8ff]" : "border-slate-200 bg-white"
                     }`}
                   >
                     {/* header row */}
@@ -370,7 +370,7 @@ export function PublicHeader({
                           setMobileOpen(false);
                         }}
                         className={`flex-1 text-left font-semibold text-[15px] ${
-                          isOpen ? "text-[#21294a]" : "text-[#1a1a1a]"
+                          isOpen ? "text-[#ee4d2d]" : "text-[#1a1a1a]"
                         }`}
                       >
                         {pc.name}
@@ -385,7 +385,7 @@ export function PublicHeader({
                           setOpenParentId((prev) => (prev === pSlug ? "" : pSlug));
                         }}
                         className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                          isOpen ? "bg-[#21294a] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
+                          isOpen ? "bg-[#ee4d2d] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
                         }`}
                         aria-label={isOpen ? "Collapse" : "Expand"}
                       >

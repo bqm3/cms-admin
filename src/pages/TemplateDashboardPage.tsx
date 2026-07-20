@@ -116,13 +116,13 @@ export function TemplateDashboardPage() {
                         {template.logo ? (
                             <img src={`${SERVER_URL}${template.logo}`} alt={template.title} className="w-full h-full object-cover" />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-[#21294a]/5">
-                                <LayoutTemplate size={16} className="text-[#21294a]/30" />
+                            <div className="w-full h-full flex items-center justify-center bg-[#ee4d2d]/5">
+                                <LayoutTemplate size={16} className="text-[#ee4d2d]/30" />
                             </div>
                         )}
                     </div>
                     <div className="min-w-0 max-w-[320px]">
-                        <h4 className="font-bold text-slate-800 text-sm leading-tight truncate group-hover:text-[#21294a] transition-colors" title={template.title}>
+                        <h4 className="font-bold text-slate-800 text-sm leading-tight truncate group-hover:text-[#ee4d2d] transition-colors" title={template.title}>
                             {template.title}
                         </h4>
                         <p className="text-xs font-medium text-slate-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis font-mono">
@@ -136,7 +136,7 @@ export function TemplateDashboardPage() {
             header: 'Phân loại',
             render: (template: any) => (
                 <div className="flex flex-col gap-1">
-                    <span className="text-xs font-bold text-[#21294a] bg-[#21294a]/5 w-fit px-2 py-0.5 rounded-md border border-[#21294a]/10">
+                    <span className="text-xs font-bold text-[#ee4d2d] bg-[#ee4d2d]/5 w-fit px-2 py-0.5 rounded-md border border-[#ee4d2d]/10">
                         {template.category?.name || 'Chưa phân loại'}
                     </span>
                     <span className="text-xs font-semibold text-slate-400 flex items-center gap-1">
@@ -158,7 +158,7 @@ export function TemplateDashboardPage() {
             header: 'Lượt xem',
             align: 'center' as const,
             render: (template: any) => (
-                <div className="inline-flex items-center gap-1.5 text-[#21294a] font-bold text-xs bg-[#21294a]/5 border border-[#21294a]/10 px-2.5 py-1 rounded-full">
+                <div className="inline-flex items-center gap-1.5 text-[#ee4d2d] font-bold text-xs bg-[#ee4d2d]/5 border border-[#ee4d2d]/10 px-2.5 py-1 rounded-full">
                     <Eye size={12} /> {template.view_count || 0}
                 </div>
             )
@@ -174,7 +174,7 @@ export function TemplateDashboardPage() {
                         isIconOnly
                         size="sm"
                         variant="flat"
-                        className="bg-[#21294a]/5 text-[#21294a] rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#21294a]/10"
+                        className="bg-[#ee4d2d]/5 text-[#ee4d2d] rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#ee4d2d]/10"
                         title="Sửa template"
                     >
                         <Edit size={14} />
@@ -216,7 +216,7 @@ export function TemplateDashboardPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-[#21294a] p-3 rounded-xl shadow-[#21294a]/10 shadow-lg">
+                        <div className="bg-[#ee4d2d] p-3 rounded-xl shadow-[#ee4d2d]/10 shadow-lg">
                             <LayoutTemplate className="text-white" size={24} />
                         </div>
                         <div>
@@ -231,7 +231,7 @@ export function TemplateDashboardPage() {
                     <Button
                         as={Link}
                         to="/template-editor/new"
-                        className="bg-[#21294a] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#21294a]/10"
+                        className="bg-[#ee4d2d] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#ee4d2d]/10"
                         startContent={<Plus size={18} />}
                     >
                         Tạo Template Mới
@@ -266,7 +266,7 @@ export function TemplateDashboardPage() {
                                     setSelectedCategory('');
                                     setPage(1);
                                 }}
-                                className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#21294a] appearance-none transition-all cursor-pointer text-sm"
+                                className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#ee4d2d] appearance-none transition-all cursor-pointer text-sm"
                                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                             >
                                 <option value="">Tất cả danh mục cha</option>
@@ -282,7 +282,7 @@ export function TemplateDashboardPage() {
                                     setSelectedCategory(e.target.value);
                                     setPage(1);
                                 }}
-                                className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#21294a] appearance-none transition-all cursor-pointer text-sm"
+                                className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 shadow-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#ee4d2d] appearance-none transition-all cursor-pointer text-sm"
                                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                             >
                                 <option value="">Tất cả danh mục con</option>

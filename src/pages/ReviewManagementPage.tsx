@@ -164,7 +164,7 @@ export function ReviewManagementPage() {
       <div className="mb-6">
         <div className="mb-4 flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-[#21294a] p-3 shadow-lg shadow-[#21294a]/10">
+            <div className="rounded-lg bg-[#ee4d2d] p-3 shadow-lg shadow-[#ee4d2d]/10">
               <LayoutDashboard className="text-white" size={24} />
             </div>
             <div>
@@ -173,7 +173,7 @@ export function ReviewManagementPage() {
             </div>
           </div>
           <Button
-            className="h-11 rounded-lg bg-[#21294a] px-6 font-bold text-white shadow-lg shadow-[#21294a]/10"
+            className="h-11 rounded-lg bg-[#ee4d2d] px-6 font-bold text-white shadow-lg shadow-[#ee4d2d]/10"
             startContent={<Plus size={18} />}
             onPress={openCreate}
           >
@@ -329,7 +329,7 @@ export function ReviewManagementPage() {
                     <input
                       type="file"
                       accept="image/*"
-                      className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-[#21294a] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white"
+                      className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-[#ee4d2d] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white"
                       onChange={(e) => handleImageUpload(e.target.files?.[0] || null)}
                       disabled={uploadingImage}
                     />
@@ -374,7 +374,7 @@ export function ReviewManagementPage() {
                   className="min-h-[120px] w-full rounded-xl border border-slate-200 bg-white p-4 text-sm outline-none disabled:bg-slate-100"
                   placeholder="Meta description"
                 />
-                <Button onPress={handleSave} isLoading={saving} className="h-11 w-full bg-[#21294a] font-bold text-white">
+                <Button onPress={handleSave} isLoading={saving} className="h-11 w-full bg-[#ee4d2d] font-bold text-white">
                   {editingId ? "Lưu cập nhật" : "Tạo Review"}
                 </Button>
               </div>

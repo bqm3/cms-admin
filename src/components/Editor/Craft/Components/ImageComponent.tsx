@@ -187,11 +187,11 @@ const ImageSettings = () => {
         <input
           type="file"
           accept="image/*"
-          className="block w-full text-xs text-zinc-300 file:mr-3 file:rounded-lg file:border-0 file:bg-[#21294a] file:px-3 file:py-2 file:font-bold file:text-white"
+          className="block w-full text-xs text-zinc-300 file:mr-3 file:rounded-lg file:border-0 file:bg-[#ee4d2d] file:px-3 file:py-2 file:font-bold file:text-white"
           onChange={(e) => handleUpload(e.target.files?.[0] || null)}
           disabled={uploading}
         />
-        <Button size="sm" className="w-full bg-[#21294a] text-white" isLoading={uploading} isDisabled={uploading}>
+        <Button size="sm" className="w-full bg-[#ee4d2d] text-white" isLoading={uploading} isDisabled={uploading}>
           {uploading ? "Đang upload..." : "Upload vào hệ thống"}
         </Button>
         {previewSrc ? <img src={previewSrc} alt="Preview" className="h-28 w-full rounded-lg object-cover" /> : null}

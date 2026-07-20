@@ -184,7 +184,7 @@ export function UserManagementPage() {
             <div className="mb-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-[#21294a] p-3 rounded-xl shadow-[#21294a]/10 shadow-lg">
+                        <div className="bg-[#ee4d2d] p-3 rounded-xl shadow-[#ee4d2d]/10 shadow-lg">
                             <Users className="text-white" size={24} />
                         </div>
                         <div>
@@ -196,7 +196,7 @@ export function UserManagementPage() {
                     </div>
                     <Button
                         onPress={createModal.onOpen}
-                        className="bg-[#21294a] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#21294a]/10"
+                        className="bg-[#ee4d2d] text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-[#ee4d2d]/10"
                         startContent={<Plus size={18} />}
                     >
                         Thêm người dùng
@@ -206,11 +206,11 @@ export function UserManagementPage() {
                 {/* Search & Date Filter Bar */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#21294a] transition-colors" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#ee4d2d] transition-colors" size={18} />
                         <input
                             type="text"
                             placeholder="Tìm kiếm người dùng (Tên, Email, Username)..."
-                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#21294a]/20 focus:border-[#21294a] w-full shadow-sm transition-all"
+                            className="h-11 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#ee4d2d]/20 focus:border-[#ee4d2d] w-full shadow-sm transition-all"
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -276,13 +276,13 @@ export function UserManagementPage() {
                                             className="w-11 h-11 rounded-xl object-cover shadow-sm ring-2 ring-white border border-slate-100"
                                         />
                                     ) : (
-                                        <div className="w-11 h-11 rounded-xl bg-[#21294a]/5 flex items-center justify-center font-bold text-[#21294a] uppercase shadow-sm ring-2 ring-white border border-[#21294a]/10">
+                                        <div className="w-11 h-11 rounded-xl bg-[#ee4d2d]/5 flex items-center justify-center font-bold text-[#ee4d2d] uppercase shadow-sm ring-2 ring-white border border-[#ee4d2d]/10">
                                             {user.username.substring(0, 1)}
                                         </div>
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <h4 className="font-bold text-slate-800 text-sm leading-tight group-hover:text-[#21294a] transition-colors">
+                                    <h4 className="font-bold text-slate-800 text-sm leading-tight group-hover:text-[#ee4d2d] transition-colors">
                                         {user.fullName || user.username}
                                     </h4>
                                     <p className="text-xs font-medium text-slate-400 mt-1 font-mono">
@@ -310,7 +310,7 @@ export function UserManagementPage() {
                     {
                         header: 'Vai trò',
                         render: (user) => (
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border transition-all ${user.role === 'admin' ? 'bg-[#21294a]/5 text-[#21294a] border-[#21294a]/10 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border transition-all ${user.role === 'admin' ? 'bg-[#ee4d2d]/5 text-[#ee4d2d] border-[#ee4d2d]/10 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
                                 {user.role === 'admin' ? <Shield size={12} /> : <div className="w-2 h-2 rounded-full bg-slate-300"></div>}
                                 {user.role}
                             </span>
@@ -325,7 +325,7 @@ export function UserManagementPage() {
                                     isIconOnly
                                     size="sm"
                                     variant="flat"
-                                    className="bg-[#21294a]/5 text-[#21294a] rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#21294a]/10"
+                                    className="bg-[#ee4d2d]/5 text-[#ee4d2d] rounded-lg h-8 w-8 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#ee4d2d]/10"
                                     onPress={() => startEdit(user)}
                                 >
                                     <UserCog size={16} />
@@ -415,7 +415,7 @@ export function UserManagementPage() {
                                         <select
                                             value={newRole}
                                             onChange={(e) => setNewRole(e.target.value)}
-                                            className="bg-white h-12 px-4 rounded-xl outline-none text-sm font-semibold text-slate-700 shadow-sm border border-slate-200 focus:ring-2 focus:ring-[#21294a]/20"
+                                            className="bg-white h-12 px-4 rounded-xl outline-none text-sm font-semibold text-slate-700 shadow-sm border border-slate-200 focus:ring-2 focus:ring-[#ee4d2d]/20"
                                         >
                                             <option value="user">User</option>
                                             <option value="admin">Admin</option>
@@ -454,7 +454,7 @@ export function UserManagementPage() {
                                 <Button variant="light" size="sm" onPress={onClose} className="font-bold rounded-xl h-10 px-6">Hủy</Button>
                                 <Button
                                     isLoading={creating}
-                                    className="bg-[#21294a] text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-[#21294a]/10"
+                                    className="bg-[#ee4d2d] text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-[#ee4d2d]/10"
                                     onPress={handleCreateUser}
                                 >
                                     Tạo người dùng
@@ -504,7 +504,7 @@ export function UserManagementPage() {
                                         <select
                                             value={editRole}
                                             onChange={(e) => setEditRole(e.target.value)}
-                                            className="bg-white h-12 px-4 rounded-xl outline-none text-sm font-semibold text-slate-700 shadow-sm border border-slate-200 focus:ring-2 focus:ring-[#21294a]/20"
+                                            className="bg-white h-12 px-4 rounded-xl outline-none text-sm font-semibold text-slate-700 shadow-sm border border-slate-200 focus:ring-2 focus:ring-[#ee4d2d]/20"
                                         >
                                             <option value="user">User</option>
                                             <option value="admin">Admin</option>
@@ -546,7 +546,7 @@ export function UserManagementPage() {
                                 <Button variant="light" size="sm" onPress={onClose} className="font-bold rounded-xl h-10 px-6">Hủy</Button>
                                 <Button
                                     isLoading={updating}
-                                    className="bg-[#21294a] text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-[#21294a]/10"
+                                    className="bg-[#ee4d2d] text-white font-bold h-10 px-8 rounded-xl shadow-lg shadow-[#ee4d2d]/10"
                                     onPress={handleUpdate}
                                 >
                                     Lưu thay đổi
