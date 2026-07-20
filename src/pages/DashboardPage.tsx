@@ -195,6 +195,17 @@ export function DashboardPage() {
     }
   };
 
+  const handleToggleHot = async (id: number, currentHot: boolean) => {
+    try {
+      const formData = new FormData();
+      formData.append("is_hot", String(!currentHot));
+      await api.put(`/posts/${id}`, formData);
+      fetchPosts();
+    } catch (err) {
+      alert("Thao tác thất bại");
+    }
+  };
+
   const openLinkDialog = (post: any) => {
     setSelectedPostId(post.id);
     setSelectedPostTitle(post.title);
@@ -367,6 +378,7 @@ export function DashboardPage() {
                   <div className="flex items-center gap-2">
                     <h4 className="truncate text-sm font-bold text-slate-800">{post.title}</h4>
                     {post.is_hidden ? <span className="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-600">Ẩn</span> : null}
+                    {post.is_hot ? <span className="rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-[10px] font-bold text-red-500">🔥 Hot</span> : null}
                   </div>
                   <div className="mt-1 flex items-center gap-1.5">
                     <span className="truncate font-mono text-xs font-medium text-slate-400">/{post.slug || post.id}</span>
@@ -454,6 +466,11 @@ export function DashboardPage() {
                 {user.role === "admin" ? (
                   <Button isIconOnly size="sm" variant="flat" className={post.is_hidden ? "bg-amber-50 text-amber-600" : "bg-green-50 text-green-600"} onClick={() => handleToggleHidden(post.id, post.is_hidden)}>
                     {post.is_hidden ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </Button>
+                ) : null}
+                {user.role === "admin" ? (
+                  <Button isIconOnly size="sm" variant="flat" className={post.is_hot ? "bg-red-300 text-red-500" : "bg-slate-50 text-slate-400"} onClick={() => handleToggleHot(post.id, !!post.is_hot)} title={post.is_hot ? "Bỏ Hot" : "Đánh dấu Hot"}>
+                    🔥
                   </Button>
                 ) : null}
                 <a href={`/${post.slug || post.id}`} target="_blank" rel="noreferrer">

@@ -38,19 +38,19 @@ function CountdownDisplay({ endDate }: { endDate: string | null }) {
   if (!time) return null;
   if (time.expired) return (
     <div className="flex items-center gap-1 text-xs font-bold text-red-400">
-      <Clock size={12} /> Expired
+      <Clock size={15} /> Expired
     </div>
   );
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-sm font-semibold text-white/80">Hunt for Hot Deals inside:</span>
+      <span className="text-sm text-[20px] font-semibold text-white/80">Hunt for Hot Deals inside:</span>
       {[time.hours, time.minutes, time.seconds].map((val, i) => (
-        <div key={i} className="flex items-center gap-1.5">
-          <div className="bg-[#ee4d2d] text-white font-black text-sm w-9 h-9 flex items-center justify-center rounded-lg tabular-nums shadow-inner">
+        <div key={i} className="flex items-center gap-1.5 text-[20px]">
+          <div className="bg-[#ee4d2d] text-[20px] text-white font-black text-sm w-9 h-9 flex items-center justify-center rounded-lg tabular-nums shadow-inner">
             {pad(val)}
           </div>
-          {i < 2 && <span className="text-white font-black text-base">:</span>}
+          {i < 2 && <span className="text-white font-black text-base text-[18px]">:</span>}
         </div>
       ))}
     </div>
@@ -70,14 +70,14 @@ function FeaturedDealCard({ deal }: { deal: any }) {
   return (
     <div
       onClick={handleClick}
-      className={`group relative flex flex-row items-stretch rounded-2xl overflow-hidden border-2 border-[#ee4d2d]/70 bg-gradient-to-r from-[#1a2240] to-[#ee4d2d] shadow-lg hover:shadow-xl transition-all duration-300 min-h-[110px] ${deal.url ? "cursor-pointer" : ""}`}
+      className={`group relative flex flex-row rounded-2xl overflow-hidden border-2 border-[#ee4d2d]/70 bg-gradient-to-r from-[#1a2240] to-[#1a2240] hover:shadow-xl transition-all duration-300 h-[240px] ${deal.url ? "cursor-pointer" : ""}`}
     >
-      {/* Left: text content */}
-      <div className="flex flex-col justify-center gap-2 px-5 py-4 w-1/2 min-w-0">
+      {/* Left: text content — takes exactly half width */}
+      <div className="flex flex-col justify-center gap-3 px-8 py-6 w-1/2 min-w-0 shrink-0 z-10">
         {/* Top label */}
         <div className="flex items-center gap-2">
-          <Flame size={14} className="text-orange-400 shrink-0" />
-          <span className="text-white/70 text-xs font-bold uppercase tracking-widest">Featured Deal</span>
+          <Flame size={16} className="text-orange-400 shrink-0" />
+          <span className="text-white/70 text-sm font-bold uppercase tracking-widest">Featured Deal</span>
         </div>
 
         {/* Countdown */}
@@ -86,13 +86,13 @@ function FeaturedDealCard({ deal }: { deal: any }) {
         )}
 
         {/* Title */}
-        <h3 className="text-white font-black text-lg md:text-xl leading-tight line-clamp-1 group-hover:text-orange-200 transition-colors">
+        <h3 className="text-white font-black text-2xl md:text-3xl leading-tight line-clamp-2 group-hover:text-orange-200 transition-colors">
           {deal.title}
         </h3>
 
         {/* Description */}
         {deal.description && (
-          <p className="text-white/60 text-xs leading-relaxed line-clamp-2">
+          <p className="text-white/70 text-sm leading-relaxed line-clamp-2">
             {deal.description}
           </p>
         )}
@@ -104,22 +104,24 @@ function FeaturedDealCard({ deal }: { deal: any }) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="mt-1 inline-flex items-center gap-1.5 text-orange-300 hover:text-orange-200 text-xs font-bold transition-colors w-fit"
+            className="mt-1 inline-flex items-center gap-1.5 text-orange-300 hover:text-orange-200 text-sm font-bold transition-colors w-fit"
           >
-            Find More <ExternalLink size={12} />
+            Find More <ExternalLink size={14} />
           </a>
         )}
       </div>
 
-      {/* Right: image */}
+      {/* Right: image — absolute, fills exactly the right half, full height */}
       {imageUrl && (
-        <div className="w-1/2 shrink-0 relative overflow-hidden m-1">
+        <div className="absolute right-0 top-0 bottom-0 w-1/2">
           <img
             src={imageUrl}
             alt={deal.title}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-xl"
+            className="w-full h-full object-[inherit]  transition-transform duration-500"
             loading="lazy"
           />
+          {/* left edge fade so text doesn't clash */}
+          <div className="absolute inset-y-0 left-0 w-16  pointer-events-none" />
         </div>
       )}
     </div>
@@ -180,7 +182,6 @@ export function ClientHomePage() {
       });
       setLatestPosts(res.data.posts || []);
     } catch (err) {
-      console.error("Error fetching latest posts:", err);
     }
   }, []);
 
@@ -361,14 +362,14 @@ export function ClientHomePage() {
               </section>
             )}
 
-            {/* ── 2. DANH MỤC PHỔ BIẾN (scroll ngang) ────────────────── */}
+            {/* ── 2. DANH MỤC PHỔ BIẾN ────────────────── */}
             {activeParents.length > 0 && (
               <section>
                 <div className="flex items-center gap-2 mb-6">
                   <Tag size={22} className="text-[#ee4d2d]" />
                   <h2 className="text-[28px] font-bold text-[#1a1a1a] tracking-tight">Popular Categories</h2>
                 </div>
-                <div className="flex gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory custom-scrollbar">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                   {activeParents.map((pc) => {
                     const sub = categories.filter((c) => c.parent_id === pc.id && !c.is_deleted);
                     const imgUrl = pc.image
@@ -378,7 +379,7 @@ export function ClientHomePage() {
                       <button
                         key={pc.id}
                         onClick={() => navigateToCategory(String(pc.slug || pc.id), "")}
-                        className="snap-start flex-shrink-0 group flex flex-col items-center justify-center gap-2 bg-white border-2 border-[#e6e6e6] hover:border-[#ee4d2d] rounded-xl px-4 py-3 min-w-[150px] text-center transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                        className="group flex flex-col items-center justify-center gap-2 bg-white border-2 border-[#e6e6e6] hover:border-[#ee4d2d] rounded-xl px-4 py-5 text-center transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
                       >
                         <div className="w-12 h-12 rounded-xl bg-[#f3f4f6] group-hover:bg-[#ee4d2d]/10 flex items-center justify-center transition-colors overflow-hidden">
                           {imgUrl ? (
