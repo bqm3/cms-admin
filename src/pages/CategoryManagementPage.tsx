@@ -18,9 +18,11 @@ export function CategoryManagementPage() {
     const [endDate, setEndDate] = useState('');
 
     const [name, setName] = useState('');
+    const [nameVi, setNameVi] = useState('');
     const [slug, setSlug] = useState('');
     const [editingCategory, setEditingCategory] = useState<any>(null);
     const [editName, setEditName] = useState('');
+    const [editNameVi, setEditNameVi] = useState('');
     const [editSlug, setEditSlug] = useState('');
     const [parentId, setParentId] = useState<string>('');
     const [editParentId, setEditParentId] = useState<string>('');
@@ -92,11 +94,13 @@ export function CategoryManagementPage() {
         try {
             await api.post('/categories', { 
                 name, 
+                name_vi: nameVi,
                 slug,
                 parent_id: parentId || null,
                 sequence_number: parseInt(sequenceNumber) || 0
             });
             setName('');
+            setNameVi('');
             setSlug('');
             setParentId('');
             setSequenceNumber('0');
@@ -122,6 +126,7 @@ export function CategoryManagementPage() {
     const startEdit = (cat: any) => {
         setEditingCategory(cat);
         setEditName(cat.name);
+        setEditNameVi(cat.name_vi || '');
         setEditSlug(cat.slug || '');
         setEditParentId(cat.parent_id ? String(cat.parent_id) : '');
         setEditSequenceNumber(cat.sequence_number ? String(cat.sequence_number) : '0');
@@ -133,6 +138,7 @@ export function CategoryManagementPage() {
         try {
             await api.put(`/categories/${editingCategory.id}`, { 
                 name: editName, 
+                name_vi: editNameVi,
                 slug: editSlug,
                 parent_id: editParentId || null,
                 sequence_number: parseInt(editSequenceNumber) || 0
@@ -246,13 +252,19 @@ export function CategoryManagementPage() {
                                     <div className="flex items-center gap-2 mt-0.5">
                                         {cat.parent && (
                                             <span className="px-1.5 py-0.5 bg-purple-50 text-purple-600 border border-purple-100 rounded text-[9px] font-bold uppercase tracking-wider">
-                                                {cat.parent.name}
+                                                {cat.parent.name_vi || cat.parent.name}
                                             </span>
                                         )}
                                         <p className="text-xs font-medium text-slate-400 font-mono">{cat.slug}</p>
                                     </div>
                                 </div>
                             </div>
+                        )
+                    },
+                    {
+                        header: 'Tên tiếng Việt',
+                        render: (cat) => (
+                            <p className="font-bold text-slate-800 text-sm">{cat.name_vi || '-'}</p>
                         )
                     },
                     {
@@ -343,6 +355,14 @@ export function CategoryManagementPage() {
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
                             <Input
+                                label="Tên danh mục (Tiếng Việt)"
+                                placeholder="Ví dụ: Hồ sơ năng lực, Tin tức..."
+                                variant="flat"
+                                value={nameVi}
+                                onChange={(e) => setNameVi(e.target.value)}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
+                            />
+                            <Input
                                 label="Slug (URL)"
                                 placeholder="tu-dong-tao-tu-ten"
                                 variant="flat"
@@ -368,7 +388,7 @@ export function CategoryManagementPage() {
                                 >
                                     <option value="">Không có danh mục cha</option>
                                     {parentCategories.map(pc => (
-                                        <option key={pc.id} value={pc.id}>{pc.name}</option>
+                                        <option key={pc.id} value={pc.id}>{pc.name_vi || pc.name}</option>
                                     ))}
                                 </select>
                             </div>
@@ -416,6 +436,13 @@ export function CategoryManagementPage() {
                                 classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
                             />
                             <Input
+                                label="Tên danh mục (Tiếng Việt)"
+                                variant="flat"
+                                value={editNameVi}
+                                onChange={(e) => setEditNameVi(e.target.value)}
+                                classNames={{ inputWrapper: "bg-white shadow-sm rounded-xl h-12" }}
+                            />
+                            <Input
                                 label="Slug (URL)"
                                 variant="flat"
                                 value={editSlug}
@@ -439,7 +466,7 @@ export function CategoryManagementPage() {
                                 >
                                     <option value="">Không có danh mục cha</option>
                                     {parentCategories.map(pc => (
-                                        <option key={pc.id} value={pc.id}>{pc.name}</option>
+                                        <option key={pc.id} value={pc.id}>{pc.name_vi || pc.name}</option>
                                     ))}
                                 </select>
                             </div>

@@ -485,12 +485,12 @@ export function TemplateEditorPage() {
                     </option>
                     {/* Group categories by parent */}
                     {parentCategories.map((parent) => (
-                      <optgroup key={parent.id} label={parent.name} className="bg-zinc-900 text-zinc-500 italic">
+                      <optgroup key={parent.id} label={parent.name_vi || parent.name} className="bg-zinc-900 text-zinc-500 italic">
                         {categories
                           .filter((cat) => cat.parent_id === parent.id)
                           .map((cat) => (
                             <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
-                              {cat.name}
+                              {cat.name_vi || cat.name}
                             </option>
                           ))}
                       </optgroup>
@@ -501,7 +501,7 @@ export function TemplateEditorPage() {
                         .filter((cat) => !cat.parent_id)
                         .map((cat) => (
                           <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
-                            {cat.name}
+                            {cat.name_vi || cat.name}
                           </option>
                         ))}
                     </optgroup>
@@ -525,12 +525,12 @@ export function TemplateEditorPage() {
                   Danh mục
                 </option>
                 {parentCategories.map((parent) => (
-                  <optgroup key={parent.id} label={parent.name} className="bg-zinc-900 text-zinc-500 italic">
+                  <optgroup key={parent.id} label={parent.name_vi || parent.name} className="bg-zinc-900 text-zinc-500 italic">
                     {categories
                       .filter((cat) => cat.parent_id === parent.id)
                       .map((cat) => (
                         <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
-                          {cat.name}
+                          {cat.name_vi || cat.name}
                         </option>
                       ))}
                   </optgroup>
@@ -540,7 +540,7 @@ export function TemplateEditorPage() {
                     .filter((cat) => !cat.parent_id)
                     .map((cat) => (
                       <option key={cat.id} className="bg-zinc-900 text-white not-italic" value={cat.id}>
-                        {cat.name}
+                        {cat.name_vi || cat.name}
                       </option>
                     ))}
                 </optgroup>

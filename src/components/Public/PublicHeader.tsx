@@ -129,7 +129,8 @@ export function PublicHeader({
             onSubmit={(e) => {
               e.preventDefault();
               if (isPreview) return;
-              onSearchSubmit(e);
+              onSearchChange(localSearch);
+              navigate(`/category?search=${encodeURIComponent((localSearch || "").trim())}`);
             }}
             className="flex-1 max-w-xl hidden lg:flex items-center relative group"
           >
@@ -174,9 +175,8 @@ export function PublicHeader({
               }}
             >
               <button
-                className={`flex items-center gap-1.5 px-4 py-2 text-[15px] font-semibold rounded-lg transition-all ${
-                  catDropdownOpen ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
-                }`}
+                className={`flex items-center gap-1.5 px-4 py-2 text-[15px] font-semibold rounded-lg transition-all ${catDropdownOpen ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
+                  }`}
                 aria-haspopup="true"
                 aria-expanded={catDropdownOpen}
               >
@@ -189,9 +189,8 @@ export function PublicHeader({
 
               {/* Level 1: parent categories */}
               <div
-                className={`absolute top-full left-0 pt-1 transition-all duration-200 z-[60] ${
-                  catDropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"
-                }`}
+                className={`absolute top-full left-0 pt-1 transition-all duration-200 z-[60] ${catDropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"
+                  }`}
                 onMouseEnter={() => {
                   if (catCloseTimer.current) clearTimeout(catCloseTimer.current);
                 }}
@@ -222,9 +221,8 @@ export function PublicHeader({
                       >
                         <button
                           onClick={() => { handleCategoryClick(String(pc.slug)); setCatDropdownOpen(false); }}
-                          className={`w-full flex items-center justify-between px-3 py-2 text-[14px] font-medium rounded-lg transition-all ${
-                            isHovered ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
-                          }`}
+                          className={`w-full flex items-center justify-between px-3 py-2 text-[14px] font-medium rounded-lg transition-all ${isHovered ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
+                            }`}
                         >
                           <span>{pc.name}</span>
                           {sub.length > 0 && <ChevronDown size={13} className="-rotate-90 text-gray-500" />}
@@ -233,9 +231,8 @@ export function PublicHeader({
                         {/* Level 2: sub categories — extended hit area to prevent gap-close */}
                         {sub.length > 0 && (
                           <div
-                            className={`absolute top-0 left-full transition-all duration-150 z-[70] ${
-                              isHovered ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 translate-x-2 pointer-events-none"
-                            }`}
+                            className={`absolute top-0 left-full transition-all duration-150 z-[70] ${isHovered ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 translate-x-2 pointer-events-none"
+                              }`}
                             style={{ paddingLeft: "8px" }}
                             onMouseEnter={() => {
                               if (subCloseTimer.current) clearTimeout(subCloseTimer.current);
@@ -307,9 +304,8 @@ export function PublicHeader({
 
         {/* panel */}
         <div
-          className={`fixed top-0 left-0 h-full w-[86%] max-w-[360px] z-[90] bg-white shadow-2xl transition-transform duration-300 ${
-            mobileOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`fixed top-0 left-0 h-full w-[86%] max-w-[360px] z-[90] bg-white shadow-2xl transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           {/* header panel */}
           <div className="h-16 px-4 border-b border-[#e6e6e6] flex items-center justify-between">
@@ -351,15 +347,13 @@ export function PublicHeader({
                 return (
                   <div
                     key={pSlug}
-                    className={`border rounded-2xl overflow-hidden transition-all ${
-                      isOpen ? "border-[#ee4d2d] bg-[#f6f8ff]" : "border-slate-200 bg-white"
-                    }`}
+                    className={`border rounded-2xl overflow-hidden transition-all ${isOpen ? "border-[#ee4d2d] bg-[#f6f8ff]" : "border-slate-200 bg-white"
+                      }`}
                   >
                     {/* header row */}
                     <div
-                      className={`flex items-center justify-between px-3 py-3 ${
-                        isOpen ? "bg-[#eef2ff]" : "bg-white"
-                      }`}
+                      className={`flex items-center justify-between px-3 py-3 ${isOpen ? "bg-[#eef2ff]" : "bg-white"
+                        }`}
                     >
                       {/* click title => navigate parent */}
                       <button
@@ -369,9 +363,8 @@ export function PublicHeader({
                           handleCategoryClick(pSlug);
                           setMobileOpen(false);
                         }}
-                        className={`flex-1 text-left font-semibold text-[15px] ${
-                          isOpen ? "text-[#ee4d2d]" : "text-[#1a1a1a]"
-                        }`}
+                        className={`flex-1 text-left font-semibold text-[15px] ${isOpen ? "text-[#ee4d2d]" : "text-[#1a1a1a]"
+                          }`}
                       >
                         {pc.name}
                       </button>
@@ -384,9 +377,8 @@ export function PublicHeader({
                           onParentCategoryChange?.(pSlug);
                           setOpenParentId((prev) => (prev === pSlug ? "" : pSlug));
                         }}
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                          isOpen ? "bg-[#ee4d2d] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
-                        }`}
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${isOpen ? "bg-[#ee4d2d] text-white" : "bg-[#f3f4f6] text-[#1a1a1a]"
+                          }`}
                         aria-label={isOpen ? "Collapse" : "Expand"}
                       >
                         <ChevronDown

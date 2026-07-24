@@ -297,7 +297,7 @@ export function DashboardPage() {
               >
                 <option value="">Tất cả danh mục cha</option>
                 {parentCategories.map((pc) => (
-                  <option key={pc.id} value={pc.id}>{pc.name}</option>
+                  <option key={pc.id} value={pc.id}>{pc.name_vi || pc.name}</option>
                 ))}
               </select>
             </div>
@@ -315,7 +315,7 @@ export function DashboardPage() {
                 {categories
                   .filter((cat: any) => !selectedParentCategory || cat.parent_id === Number(selectedParentCategory))
                   .map((cat: any) => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    <option key={cat.id} value={cat.id}>{cat.name_vi || cat.name}</option>
                   ))}
               </select>
             </div>
@@ -399,7 +399,7 @@ export function DashboardPage() {
             render: (post) => (
               <div className="flex flex-col gap-1">
                 <span className="w-fit rounded-md border border-[#ee4d2d]/10 bg-[#ee4d2d]/5 px-2 py-0.5 text-xs font-bold text-[#ee4d2d]">
-                  {post.category?.name || "Chưa phân loại"}
+                  {post.category?.name_vi || post.category?.name || "Chưa phân loại"}
                 </span>
                 <span className="text-xs font-semibold text-slate-400">@{post.creator?.username || "vô danh"}</span>
               </div>

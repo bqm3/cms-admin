@@ -12,6 +12,7 @@ import type { StoreCouponModuleCoupon, StoreCouponModuleData } from "../Public/S
 type CategoryOption = {
   id: number;
   name: string;
+  name_vi?: string;
 };
 
 type ModuleFormData = Omit<StoreCouponModuleData, "slug"> & {
@@ -677,7 +678,7 @@ export function ModuleEditorPage() {
                   <option value="">-- Select category --</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
-                      {cat.name}
+                      {cat.name_vi || cat.name}
                     </option>
                   ))}
                 </select>

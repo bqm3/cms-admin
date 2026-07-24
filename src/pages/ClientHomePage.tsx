@@ -70,10 +70,10 @@ function FeaturedDealCard({ deal }: { deal: any }) {
   return (
     <div
       onClick={handleClick}
-      className={`group relative flex flex-row rounded-2xl overflow-hidden border-2 border-[#ee4d2d]/70 bg-gradient-to-r from-[#1a2240] to-[#1a2240] hover:shadow-xl transition-all duration-300 h-[240px] ${deal.url ? "cursor-pointer" : ""}`}
+      className={`group relative flex flex-row rounded-2xl overflow-hidden border-2 border-[#ee4d2d]/70 bg-gradient-to-r from-[#1a2240] to-[#1a2240] hover:shadow-xl transition-all duration-300 h-[320px] ${deal.url ? "cursor-pointer" : ""}`}
     >
-      {/* Left: text content — takes exactly half width */}
-      <div className="flex flex-col justify-center gap-3 px-8 py-6 w-1/2 min-w-0 shrink-0 z-10">
+      {/* Left: text content */}
+      <div className="flex flex-col justify-center gap-3 px-8 py-6 w-full md:w-2/3 lg:w-1/2 min-w-0 z-10">
         {/* Top label */}
         <div className="flex items-center gap-2">
           <Flame size={16} className="text-orange-400 shrink-0" />
@@ -111,17 +111,17 @@ function FeaturedDealCard({ deal }: { deal: any }) {
         )}
       </div>
 
-      {/* Right: image — absolute, fills exactly the right half, full height */}
+      {/* Full Background Image */}
       {imageUrl && (
-        <div className="absolute right-0 top-0 bottom-0 w-1/2">
+        <div className="absolute inset-0 z-0">
           <img
             src={imageUrl}
             alt={deal.title}
-            className="w-full h-full object-[inherit]  transition-transform duration-500"
+            className="w-full h-full object-cover"
             loading="lazy"
           />
-          {/* left edge fade so text doesn't clash */}
-          <div className="absolute inset-y-0 left-0 w-16  pointer-events-none" />
+          {/* Dark gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/10 pointer-events-none" />
         </div>
       )}
     </div>
@@ -191,7 +191,6 @@ export function ClientHomePage() {
       const res = await api.get("/featured-deals/public");
       setFeaturedDeals(res.data.deals || []);
     } catch (err) {
-      console.error("Error fetching featured deals:", err);
     }
   }, []);
 
@@ -285,7 +284,7 @@ export function ClientHomePage() {
               <div
                 key={banner.id}
                 className="relative w-full overflow-hidden"
-                style={{ minHeight: "320px" }}
+                style={{ minHeight: "400px" }}
               >
                 {/* Full background image */}
                 {imgUrl && (
@@ -300,7 +299,7 @@ export function ClientHomePage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
 
                 {/* Content — left aligned */}
-                <div className="relative z-10 flex flex-col justify-center gap-4 px-8 md:px-16 py-16 max-w-2xl h-full min-h-[320px]">
+                <div className="relative z-10 flex flex-col justify-center gap-4 px-8 md:px-16 py-16 max-w-2xl h-full min-h-[400px]">
                   <h2 className="text-3xl md:text-5xl font-black text-white leading-tight drop-shadow-lg">
                     {banner.title}
                   </h2>

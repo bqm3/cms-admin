@@ -18,6 +18,7 @@ export function ParentCategoryManagementPage() {
     const [endDate, setEndDate] = useState('');
 
     const [name, setName] = useState('');
+    const [nameVi, setNameVi] = useState('');
     const [slug, setSlug] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
@@ -25,6 +26,7 @@ export function ParentCategoryManagementPage() {
 
     const [editingCategory, setEditingCategory] = useState<any>(null);
     const [editName, setEditName] = useState('');
+    const [editNameVi, setEditNameVi] = useState('');
     const [editSlug, setEditSlug] = useState('');
     const [editImageFile, setEditImageFile] = useState<File | null>(null);
     const [editImagePreview, setEditImagePreview] = useState<string>('');
@@ -87,6 +89,7 @@ export function ParentCategoryManagementPage() {
         try {
             const formData = new FormData();
             formData.append('name', name);
+            formData.append('name_vi', nameVi);
             formData.append('slug', slug);
             formData.append('sequence_number', sequenceNumber);
             if (imageFile) formData.append('image', imageFile);
@@ -95,6 +98,7 @@ export function ParentCategoryManagementPage() {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setName('');
+            setNameVi('');
             setSlug('');
             setSequenceNumber('0');
             setImageFile(null);
@@ -121,6 +125,7 @@ export function ParentCategoryManagementPage() {
     const startEdit = (cat: any) => {
         setEditingCategory(cat);
         setEditName(cat.name);
+        setEditNameVi(cat.name_vi || '');
         setEditSlug(cat.slug || '');
         setEditSequenceNumber(cat.sequence_number ? String(cat.sequence_number) : '0');
         setEditImageFile(null);
@@ -133,6 +138,7 @@ export function ParentCategoryManagementPage() {
         try {
             const formData = new FormData();
             formData.append('name', editName);
+            formData.append('name_vi', editNameVi);
             formData.append('slug', editSlug);
             formData.append('sequence_number', editSequenceNumber);
             if (editImageFile) formData.append('image', editImageFile);
@@ -258,13 +264,19 @@ export function ParentCategoryManagementPage() {
                         )
                     },
                     {
+                        header: 'Tên tiếng Việt',
+                        render: (cat) => (
+                            <p className="font-bold text-slate-800 text-sm">{cat.name_vi || '-'}</p>
+                        )
+                    },
+                    {
                         header: 'Danh mục con',
                         render: (cat) => (
                             <div className="flex flex-wrap gap-1">
                                 {cat.subcategories?.length > 0 ? (
                                     cat.subcategories.map((sub: any) => (
                                         <span key={sub.id} className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-bold uppercase tracking-wider">
-                                            {sub.name}
+                                            {sub.name_vi || sub.name}
                                         </span>
                                     ))
                                 ) : (
@@ -341,6 +353,12 @@ export function ParentCategoryManagementPage() {
                                     setSlug(slugify(e.target.value));
                                 }} 
                             />
+                            <Input 
+                                label="Tên danh mục (Tiếng Việt)" 
+                                variant="flat" 
+                                value={nameVi} 
+                                onChange={(e) => setNameVi(e.target.value)} 
+                            />
                             <Input label="Slug (URL)" variant="flat" value={slug} onChange={(e) => setSlug(e.target.value)} />
                             <Input label="Thứ tự (STT)" type="number" variant="flat" value={sequenceNumber} onChange={(e) => setSequenceNumber(e.target.value)} />
 
@@ -395,6 +413,7 @@ export function ParentCategoryManagementPage() {
                     <ModalBody>
                         <div className="space-y-4">
                             <Input label="Tên danh mục" variant="flat" value={editName} onChange={(e) => setEditName(e.target.value)} />
+                            <Input label="Tên danh mục (Tiếng Việt)" variant="flat" value={editNameVi} onChange={(e) => setEditNameVi(e.target.value)} />
                             <Input label="Thứ tự (STT)" type="number" variant="flat" value={editSequenceNumber} onChange={(e) => setEditSequenceNumber(e.target.value)} />
                             <Input label="Slug" variant="flat" value={editSlug} onChange={(e) => setEditSlug(e.target.value)} />
 

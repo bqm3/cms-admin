@@ -700,7 +700,7 @@ export function EditorPage() {
                     {parentCategories.map((parent) => (
                       <optgroup
                         key={parent.id}
-                        label={parent.name}
+                        label={parent.name_vi || parent.name}
                         className="bg-zinc-900 text-zinc-500 italic"
                       >
                         {categories
@@ -711,7 +711,7 @@ export function EditorPage() {
                               className="bg-zinc-900 text-white not-italic"
                               value={cat.id}
                             >
-                              {cat.name}
+                              {cat.name_vi || cat.name}
                             </option>
                           ))}
                       </optgroup>
@@ -726,7 +726,7 @@ export function EditorPage() {
                             className="bg-zinc-900 text-white not-italic"
                             value={cat.id}
                           >
-                            {cat.name}
+                            {cat.name_vi || cat.name}
                           </option>
                         ))}
                     </optgroup>
@@ -751,7 +751,7 @@ export function EditorPage() {
                 {parentCategories.map((parent) => (
                   <optgroup
                     key={parent.id}
-                    label={parent.name}
+                    label={parent.name_vi || parent.name}
                     className="bg-zinc-900 text-zinc-500 italic"
                   >
                     {categories
@@ -762,7 +762,7 @@ export function EditorPage() {
                           className="bg-zinc-900 text-white not-italic"
                           value={cat.id}
                         >
-                          {cat.name}
+                          {cat.name_vi || cat.name}
                         </option>
                       ))}
                   </optgroup>
@@ -777,7 +777,7 @@ export function EditorPage() {
                         className="bg-zinc-900 text-white not-italic"
                         value={cat.id}
                       >
-                        {cat.name}
+                        {cat.name_vi || cat.name}
                       </option>
                     ))}
                 </optgroup>

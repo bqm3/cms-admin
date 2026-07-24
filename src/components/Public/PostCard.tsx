@@ -6,6 +6,26 @@ interface PostCardProps {
   post: any;
 }
 
+// Helper function to highlight numbers and %
+function renderHighlightedText(text: string) {
+  if (!text) return "";
+  
+  // Split by numbers and %
+  const regex = /(\d+(?:[.,]\d+)*%?|%)/g;
+  const parts = text.split(regex);
+  
+  return parts.map((part, index) => {
+    if (/^\d|%/.test(part)) {
+      return (
+        <span key={index} className="text-[#ee4d2d] text-[1.15em] font-extrabold">
+          {part}
+        </span>
+      );
+    }
+    return part;
+  });
+}
+
 export function PostCard({ post }: PostCardProps) {
   const imageUrl = post.logo
     ? post.logo.startsWith("http") || post.logo.startsWith("data:") || post.logo.startsWith("blob:")
@@ -55,7 +75,7 @@ export function PostCard({ post }: PostCardProps) {
 
           {/* Title */}
           <h3 className="flex-1 text-[15px] font-bold text-[#1a1a1a] group-hover:text-[#ee4d2d] transition-colors line-clamp-3 leading-snug tracking-tight">
-            {post.title}
+            {renderHighlightedText(post.title)}
           </h3>
         </div>
 
@@ -68,7 +88,7 @@ export function PostCard({ post }: PostCardProps) {
             }}
             className="w-full flex items-center justify-between gap-2 text-left text-[13px] font-semibold hover:text-[#d9431f] border-t border-slate-100 pt-2 transition-colors group/link relative z-20"
           >
-            <span className="truncate">{firstLink.title}</span>
+            <span className="truncate">{renderHighlightedText(firstLink.title)}</span>
             <ExternalLink size={13} className="shrink-0 opacity-60 group-hover/link:opacity-100 transition-opacity" />
           </button>
         )}
