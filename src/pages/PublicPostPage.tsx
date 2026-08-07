@@ -203,6 +203,7 @@ export function PublicPostPage() {
   const [countdown, setCountdown] = useState(5);
   const hasFetched = useRef(false);
   const [articleTitle, setArticleTitle] = useState("Store");
+  const [affiliateUrl, setAffiliateUrl] = useState<string | null>(null);
 
   const [seo, setSeo] = useState<{
     title: string;
@@ -282,6 +283,10 @@ export function PublicPostPage() {
         setContent(post.content);
         document.title = metaTitle;
 
+        // Lấy affiliate URL từ module data hoặc post
+        const parsedAffiliate = moduleContent?.affiliateUrl || post.affiliate_url || null;
+        setAffiliateUrl(parsedAffiliate);
+
         setSeo({
           title: metaTitle,
           description: finalDesc,
@@ -301,6 +306,14 @@ export function PublicPostPage() {
     fetchPost();
   }, [slug, searchParams]);
 
+  // Mở tab affiliate sau 5 giây khi trang đã load xong
+  useEffect(() => {
+    if (loading || !affiliateUrl) return;
+    const timer = window.setTimeout(() => {
+      window.open(affiliateUrl, "_blank", "noopener,noreferrer");
+    }, 5000);
+    return () => window.clearTimeout(timer);
+  }, [loading, affiliateUrl]);
 
   const frameData = useMemo(() => {
     if (!content || moduleData) return null;
