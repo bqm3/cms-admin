@@ -283,8 +283,17 @@ export function PublicPostPage() {
         setContent(post.content);
         document.title = metaTitle;
 
-        // Lấy affiliate URL từ module data hoặc post
-        const parsedAffiliate = moduleContent?.affiliateUrl || post.affiliate_url || null;
+        // Lấy affiliate URL từ module data, post hoặc danh sách links (href đầu tiên)
+        const firstLinkHref = Array.isArray(post.links)
+          ? post.links.find((l: any) => l && typeof l.href === "string" && l.href.trim())?.href
+          : null;
+
+        const parsedAffiliate =
+          (moduleContent?.affiliateUrl && String(moduleContent.affiliateUrl).trim()) ||
+          (post.affiliate_url && String(post.affiliate_url).trim()) ||
+          (firstLinkHref && String(firstLinkHref).trim()) ||
+          null;
+
         setAffiliateUrl(parsedAffiliate);
 
         setSeo({
