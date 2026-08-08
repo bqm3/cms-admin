@@ -57,14 +57,44 @@ export const ScriptComponent = ({
       const s = document.createElement("script");
       s.type = "application/ld+json";
       s.id = markerId;
-      s.text = trimmed;
+      // Trích xuất nội dung nếu user lỡ nhập <script>...</script>
+      let jsonContent = trimmed;
+      if (jsonContent.startsWith("<script") && jsonContent.endsWith("</script>")) {
+        jsonContent = jsonContent.replace(/^<script[^>]*>/i, "").replace(/<\/script>$/i, "").trim();
+      }
+      s.text = jsonContent;
       el = s;
     } else {
-      const s = document.createElement("script");
-      s.type = "text/javascript";
-      s.id = markerId;
-      s.text = trimmed;
-      el = s;
+      // Nếu user nhập code chứa thẻ HTML như <script>...</script> hoặc các thẻ khác
+      if (trimmed.toLowerCase().includes("<script") || trimmed.startsWith("<")) {
+        // Tạo container tạm thời để parse HTML string
+        const container = document.createElement("div");
+        container.innerHTML = trimmed;
+        
+        // Nếu có script tag bên trong, lấy script tag đầu tiên hoặc tạo fragment
+        const scriptEl = container.querySelector("script");
+        if (scriptEl) {
+          const s = document.createElement("script");
+          s.id = markerId;
+          Array.from(scriptEl.attributes).forEach(attr => {
+            s.setAttribute(attr.name, attr.value);
+          });
+          s.text = scriptEl.text || scriptEl.textContent || "";
+          el = s;
+        } else {
+          // Nếu không phải script tag, tạo span/div bọc lại
+          const wrapper = document.createElement("div");
+          wrapper.id = markerId;
+          wrapper.innerHTML = trimmed;
+          el = wrapper;
+        }
+      } else {
+        const s = document.createElement("script");
+        s.type = "text/javascript";
+        s.id = markerId;
+        s.text = trimmed;
+        el = s;
+      }
     }
 
     const target = location === "head" ? document.head : document.body;
