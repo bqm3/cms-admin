@@ -9,6 +9,9 @@ import { usePublicData } from "../hooks/usePublicData";
 import { PublicFooter } from "../components/Public/PublicFooter";
 import { PublicHeader } from "../components/Public/PublicHeader";
 
+import { getAffiliateUrl } from "../lib/getAffiliateUrl";
+import { openAffiliateOnce, wasAffiliateOpenedRecently } from "../lib/affiliateTabGuard";
+
 // ✅ Import tất cả component mà editor có thể sinh ra trong content
 import { DefaultNewPostFrame } from "../components/Editor/DefaultNewPostFrame";
 import { MimicPCLandingFrame } from "../components/Editor/MimicPCLandingFrame";
@@ -202,8 +205,8 @@ export function PublicPostPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [countdown, setCountdown] = useState(5);
   const hasFetched = useRef(false);
+  const [postData, setPostData] = useState<any>(null);
   const [articleTitle, setArticleTitle] = useState("Store");
-  const [affiliateUrl, setAffiliateUrl] = useState<string | null>(null);
 
   const [seo, setSeo] = useState<{
     title: string;
@@ -234,6 +237,7 @@ export function PublicPostPage() {
         });
 
         const post = response.data;
+        setPostData(post);
         const moduleContent = parseStoreCouponModule(post.content);
 
         const titleRaw = post.title ?? "Store";
@@ -283,19 +287,6 @@ export function PublicPostPage() {
         setContent(post.content);
         document.title = metaTitle;
 
-        // Lấy affiliate URL từ module data, post hoặc danh sách links (href đầu tiên)
-        const firstLinkHref = Array.isArray(post.links)
-          ? post.links.find((l: any) => l && typeof l.href === "string" && l.href.trim())?.href
-          : null;
-
-        const parsedAffiliate =
-          (moduleContent?.affiliateUrl && String(moduleContent.affiliateUrl).trim()) ||
-          (post.affiliate_url && String(post.affiliate_url).trim()) ||
-          (firstLinkHref && String(firstLinkHref).trim()) ||
-          null;
-
-        setAffiliateUrl(parsedAffiliate);
-
         setSeo({
           title: metaTitle,
           description: finalDesc,
@@ -315,14 +306,35 @@ export function PublicPostPage() {
     fetchPost();
   }, [slug, searchParams]);
 
-  // Mở tab affiliate sau 5 giây khi trang đã load xong
+  // Mở tab affiliate sau 4 giây khi trang chi tiết bài viết mount/load xong
   useEffect(() => {
-    if (loading || !affiliateUrl) return;
+    if (loading || !postData?.id) return;
+
+    const url = getAffiliateUrl(postData, moduleData);
+    if (!url) return;
+
+    if (wasAffiliateOpenedRecently(postData.id)) {
+      return;
+    }
+
+    // 1. Thử tự động mở sau 4 giây (có thể bị trình duyệt chặn nếu không phải user gesture)
     const timer = window.setTimeout(() => {
-      window.open(affiliateUrl, "_blank", "noopener,noreferrer");
-    }, 5000);
-    return () => window.clearTimeout(timer);
-  }, [loading, affiliateUrl]);
+      openAffiliateOnce(postData.id, url);
+    }, 4000);
+
+    // 2. Thêm event listener cho lần click đầu tiên của user trên trang nếu auto-open bị chặn
+    const handleUserFirstClick = () => {
+      if (wasAffiliateOpenedRecently(postData.id)) return;
+      openAffiliateOnce(postData.id, url);
+    };
+
+    window.addEventListener("click", handleUserFirstClick, { capture: true, once: true });
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("click", handleUserFirstClick, { capture: true });
+    };
+  }, [loading, postData, moduleData]);
 
   const frameData = useMemo(() => {
     if (!content || moduleData) return null;

@@ -1,6 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { ExternalLink, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { SERVER_URL } from "../../services/api";
+import { getAffiliateUrl } from "../../lib/getAffiliateUrl";
+import { openAffiliateOnce } from "../../lib/affiliateTabGuard";
 
 interface PostCardProps {
   post: any;
@@ -27,6 +30,8 @@ function renderHighlightedText(text: string) {
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const navigate = useNavigate();
+
   const imageUrl = post.logo
     ? post.logo.startsWith("http") || post.logo.startsWith("data:") || post.logo.startsWith("blob:")
       ? post.logo
@@ -35,8 +40,16 @@ export function PostCard({ post }: PostCardProps) {
 
   const firstLink = post.links && post.links.length > 0 ? post.links[0] : null;
 
+  const navigateToDetail = () => {
+    if (post) {
+      const url = getAffiliateUrl(post);
+      openAffiliateOnce(post.id, url);
+    }
+    navigate(`/${post.slug || post.id}`);
+  };
+
   const handleCardClick = () => {
-    window.open(`/${post.slug || post.id}`, "_blank");
+    navigateToDetail();
   };
 
   return (
@@ -97,7 +110,7 @@ export function PostCard({ post }: PostCardProps) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            window.open(`/${post.slug || post.id}`, "_blank");
+            navigateToDetail();
           }}
           className="w-full flex items-center justify-center gap-1.5 bg-[#ee4d2d] hover:bg-[#d9431f] text-white text-[12px] font-bold py-2 rounded-lg transition-all duration-200 active:scale-[0.98] relative z-20"
         >
@@ -107,3 +120,4 @@ export function PostCard({ post }: PostCardProps) {
     </div>
   );
 }
+
