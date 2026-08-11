@@ -57,7 +57,13 @@ function resolveAssetUrl(url?: string) {
   return `${SERVER_URL}${url}`;
 }
 
-export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData }) {
+export function StoreCouponModuleView({
+  data,
+  disableAutoPopup = false,
+}: {
+  data: StoreCouponModuleData;
+  disableAutoPopup?: boolean;
+}) {
   const [popupOpen, setPopupOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [clickedPopupData, setClickedPopupData] = useState<{
@@ -94,10 +100,11 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
   };
 
   useEffect(() => {
+    if (disableAutoPopup) return;
     if (!data.popup?.enabled) return;
     const timer = window.setTimeout(() => setPopupOpen(true), Math.max(0, data.popup.delayMs || 0));
     return () => window.clearTimeout(timer);
-  }, [data.popup]);
+  }, [data.popup, disableAutoPopup]);
 
   const logoSrc = useMemo(() => resolveAssetUrl(data.logoUrl), [data.logoUrl]);
   const galleryItems = useMemo(
@@ -251,11 +258,11 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
               <X size={18} />
             </button>
             <div className="grid gap-0 ">
-              {/* <div className="bg-slate-100">
+              <div className="bg-slate-100">
                 {currentPopup.imageUrl ? (
                   <img src={resolveAssetUrl(currentPopup.imageUrl)} alt={currentPopup.title} className="h-full w-full object-cover md:min-h-[320px]" />
                 ) : null}
-              </div> */}
+              </div>
               <div className="p-6 text-center">
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-600">Special offer</p>
                 <div className="mt-3 flex items-center justify-center gap-2">
@@ -279,7 +286,10 @@ export function StoreCouponModuleView({ data }: { data: StoreCouponModuleData })
                 <p className="mt-4 text-sm leading-7 text-slate-600">{currentPopup.description}</p>
                 <button
                   type="button"
-                  onClick={() => handleOpen(currentPopup.buttonHref)}
+                  onClick={() => {
+                    handleClosePopup();
+                    handleOpen(currentPopup.buttonHref);
+                  }}
                   className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-[#ee4d2d] px-5 text-sm font-bold text-white transition hover:bg-[#161d36]"
                 >
                   {currentPopup.buttonText || "Open offer"}

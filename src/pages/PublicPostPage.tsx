@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Editor, Frame } from "@craftjs/core";
 import { Helmet } from "react-helmet-async";
+import { X } from "lucide-react";
 import api, { SERVER_URL } from "../services/api";
 import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
 import { usePublicData } from "../hooks/usePublicData";
@@ -207,6 +208,7 @@ export function PublicPostPage() {
   const hasFetched = useRef(false);
   const [postData, setPostData] = useState<any>(null);
   const [articleTitle, setArticleTitle] = useState("Store");
+  const [entryPopupOpen, setEntryPopupOpen] = useState(false);
 
   const [seo, setSeo] = useState<{
     title: string;
@@ -310,31 +312,71 @@ export function PublicPostPage() {
   useEffect(() => {
     if (loading || !postData?.id) return;
 
-    const url = getAffiliateUrl(postData, moduleData);
-    if (!url) return;
-
-    if (wasAffiliateOpenedRecently(postData.id)) {
-      return;
-    }
 
     // 1. Thử tự động mở sau 4 giây (có thể bị trình duyệt chặn nếu không phải user gesture)
     const timer = window.setTimeout(() => {
-      openAffiliateOnce(postData.id, url);
-    }, 4000);
+      setEntryPopupOpen(true);
+    }, 300);
 
     // 2. Thêm event listener cho lần click đầu tiên của user trên trang nếu auto-open bị chặn
-    const handleUserFirstClick = () => {
-      if (wasAffiliateOpenedRecently(postData.id)) return;
-      openAffiliateOnce(postData.id, url);
-    };
-
-    window.addEventListener("click", handleUserFirstClick, { capture: true, once: true });
-
     return () => {
       window.clearTimeout(timer);
-      window.removeEventListener("click", handleUserFirstClick, { capture: true });
     };
   }, [loading, postData, moduleData]);
+
+  const entryPopupLogo = useMemo(() => {
+    const raw = moduleData?.logoUrl || postData?.logo || "";
+    if (!raw) return "";
+    if (raw.startsWith("http") || raw.startsWith("data:") || raw.startsWith("blob:")) return raw;
+    return `${SERVER_URL}${raw}`;
+  }, [moduleData, postData]);
+
+  const handleCloseEntryPopup = () => {
+    setEntryPopupOpen(false);
+  };
+
+  const handleEntryPopupGetCode = () => {
+    const url = getAffiliateUrl(postData, moduleData);
+    setEntryPopupOpen(false);
+    if (!postData?.id || !url) return;
+    openAffiliateOnce(postData.id, url);
+  };
+
+  const entryPopupModal = entryPopupOpen ? (
+    <div
+      className="fixed inset-0 z-[120] flex items-center justify-center px-4"
+      role="button"
+      tabIndex={0}
+      onClick={handleEntryPopupGetCode}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleEntryPopupGetCode();
+        }
+      }}
+    >
+      <div className="absolute inset-0 bg-black/55" />
+      <div
+        className="relative z-[121] block w-full max-w-md overflow-hidden rounded-[28px] bg-white p-6 text-center shadow-2xl"
+      >
+        <div className="absolute right-3 top-3 rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200">
+          <X size={18} />
+        </div>
+
+        {entryPopupLogo ? (
+          <div className="mx-auto flex h-28 w-28 items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-4">
+            <img src={entryPopupLogo} alt={articleTitle} className="max-h-full max-w-full object-contain" />
+          </div>
+        ) : null}
+
+        <h3 className="mt-5 text-2xl font-black tracking-tight text-slate-900">{articleTitle}</h3>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Click Get code to continue to the offer page.</p>
+        <div className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-[#ee4d2d] px-6 text-sm font-bold text-white transition hover:bg-[#161d36]">
+          Get code
+        </div>
+      </div>
+    </div>
+  ) : null;
 
   const frameData = useMemo(() => {
     if (!content || moduleData) return null;
@@ -402,7 +444,7 @@ export function PublicPostPage() {
           categories={categories}
         />
 
-        <StoreCouponModuleView data={moduleData as StoreCouponModuleData} />
+        <StoreCouponModuleView data={moduleData as StoreCouponModuleData} disableAutoPopup />
         <PublicCouponGuideBlocks
           brandName={articleTitle}
           siteBrand={getSiteBrandFromHostname(window.location.hostname)}
@@ -413,6 +455,7 @@ export function PublicPostPage() {
           categories={categories}
           onCategoryClick={navigateToCategory}
         />
+        {entryPopupModal}
       </div>
     );
   }
@@ -500,6 +543,7 @@ export function PublicPostPage() {
         categories={categories}
         onCategoryClick={navigateToCategory}
       />
+      {entryPopupModal}
     </div>
   );
 }
