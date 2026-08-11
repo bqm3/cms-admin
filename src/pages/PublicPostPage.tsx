@@ -371,9 +371,7 @@ export function PublicPostPage() {
 
         <h3 className="mt-5 text-2xl font-black tracking-tight text-slate-900">{articleTitle}</h3>
         <p className="mt-2 text-sm leading-6 text-slate-600">Click Get code to continue to the offer page.</p>
-        <div className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-[#ee4d2d] px-6 text-sm font-bold text-white transition hover:bg-[#161d36]">
-          Get code
-        </div>
+       
       </div>
     </div>
   ) : null;
