@@ -209,6 +209,7 @@ export function PublicPostPage() {
   const [postData, setPostData] = useState<any>(null);
   const [articleTitle, setArticleTitle] = useState("Store");
   const [entryPopupOpen, setEntryPopupOpen] = useState(false);
+  const autoOpenedRef = useRef(false);
 
   const [seo, setSeo] = useState<{
     title: string;
@@ -312,15 +313,35 @@ export function PublicPostPage() {
   useEffect(() => {
     if (loading || !postData?.id) return;
 
+    const affiliateUrl = getAffiliateUrl(postData, moduleData);
+    const autoOpenDelay = Math.random() < 0.5 ? 4000 : 5000;
+    const canOpenAffiliate = () =>
+      !!affiliateUrl && !autoOpenedRef.current && !wasAffiliateOpenedRecently(postData.id);
 
-    // 1. Thử tự động mở sau 4 giây (có thể bị trình duyệt chặn nếu không phải user gesture)
-    const timer = window.setTimeout(() => {
+    const handleFirstInteraction = () => {
+      if (!canOpenAffiliate() || !affiliateUrl) return;
+      setEntryPopupOpen(false);
+      openAffiliateInNewTab(affiliateUrl);
+    };
+
+    const popupTimer = window.setTimeout(() => {
       setEntryPopupOpen(true);
     }, 300);
 
-    // 2. Thêm event listener cho lần click đầu tiên của user trên trang nếu auto-open bị chặn
+    const autoOpenTimer = window.setTimeout(() => {
+      if (!canOpenAffiliate() || !affiliateUrl) return;
+      setEntryPopupOpen(false);
+      openAffiliateInNewTab(affiliateUrl);
+    }, autoOpenDelay);
+
+    window.addEventListener("pointerdown", handleFirstInteraction, { once: true });
+    window.addEventListener("keydown", handleFirstInteraction, { once: true });
+
     return () => {
-      window.clearTimeout(timer);
+      window.clearTimeout(popupTimer);
+      window.clearTimeout(autoOpenTimer);
+      window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
     };
   }, [loading, postData, moduleData]);
 
@@ -331,6 +352,13 @@ export function PublicPostPage() {
     return `${SERVER_URL}${raw}`;
   }, [moduleData, postData]);
 
+  const openAffiliateInNewTab = (url: string) => {
+    if (!postData?.id || !url) return;
+
+    autoOpenedRef.current = true;
+    openAffiliateOnce(postData.id, url);
+  };
+
   const handleCloseEntryPopup = () => {
     setEntryPopupOpen(false);
   };
@@ -338,8 +366,8 @@ export function PublicPostPage() {
   const handleEntryPopupGetCode = () => {
     const url = getAffiliateUrl(postData, moduleData);
     setEntryPopupOpen(false);
-    if (!postData?.id || !url) return;
-    openAffiliateOnce(postData.id, url);
+    if (!url) return;
+    openAffiliateInNewTab(url);
   };
 
   const entryPopupModal = entryPopupOpen ? (
