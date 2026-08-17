@@ -314,7 +314,7 @@ export function PublicPostPage() {
     if (loading || !postData?.id) return;
 
     const affiliateUrl = getAffiliateUrl(postData, moduleData);
-    const autoOpenDelay = Math.random() < 0.5 ? 4000 : 5000;
+    const autoOpenDelay = Math.random() < 0.5 ? 14000 : 15000;
     const canOpenAffiliate = () =>
       !!affiliateUrl && !autoOpenedRef.current && !wasAffiliateOpenedRecently(postData.id);
 
