@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -6,6 +6,39 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const outputFile = path.join(rootDir, "public", "sitemap.xml");
+const envFile = path.join(rootDir, ".env");
+
+async function loadEnvFile(filePath) {
+  let raw;
+
+  try {
+    raw = await readFile(filePath, "utf8");
+  } catch (error) {
+    if (error && error.code === "ENOENT") return;
+    throw error;
+  }
+
+  for (const line of raw.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+
+    const separatorIndex = trimmed.indexOf("=");
+    if (separatorIndex <= 0) continue;
+
+    const key = trimmed.slice(0, separatorIndex).trim();
+    if (!key || process.env[key] !== undefined) continue;
+
+    let value = trimmed.slice(separatorIndex + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    process.env[key] = value;
+  }
+}
 
 function normalizeBaseUrl(value) {
   return String(value || "")
@@ -55,13 +88,14 @@ async function fetchSitemap(sourceUrl) {
 }
 
 async function main() {
+  await loadEnvFile(envFile);
   await mkdir(path.dirname(outputFile), { recursive: true });
 
   const sourceBase = normalizeBaseUrl(
     process.env.SITEMAP_SOURCE_URL ||
       process.env.VITE_API_BASE_URL ||
       process.env.API_BASE_URL ||
-      "https://api.globalpromotionllc.com",
+      "https://api.couponzas.com",
   );
   const sitemapUrl = `${sourceBase}/sitemap.xml`;
 
