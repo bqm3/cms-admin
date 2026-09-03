@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from "react-helmet-async";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Card, CardBody } from "@heroui/card";
@@ -30,13 +31,19 @@ export function LoginPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-[#ee4d2d]/10 selection:text-[#ee4d2d]">
-            <Card className="w-full max-w-[420px] bg-white shadow-xl shadow-[#ee4d2d]/10 border-none rounded-2xl overflow-hidden">
-                <CardBody className="p-0">
-                    <div className="bg-[#ee4d2d] p-10 text-center relative overflow-hidden">
-                        {/* Background pattern */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 opacity-30"></div>
-                        <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#ee4d2d]/20 rounded-full -ml-10 -mb-10 opacity-30"></div>
+        <>
+            <Helmet>
+                <title>Login | Couponza</title>
+                <meta name="robots" content="noindex,nofollow,noarchive" />
+                <link rel="canonical" href="https://couponzas.com/login" />
+            </Helmet>
+            <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-[#ee4d2d]/10 selection:text-[#ee4d2d]">
+                <Card className="w-full max-w-[420px] bg-white shadow-xl shadow-[#ee4d2d]/10 border-none rounded-2xl overflow-hidden">
+                    <CardBody className="p-0">
+                        <div className="bg-[#ee4d2d] p-10 text-center relative overflow-hidden">
+                            {/* Background pattern */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 opacity-30"></div>
+                            <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#ee4d2d]/20 rounded-full -ml-10 -mb-10 opacity-30"></div>
 
                         <div className="bg-white/10 w-16 h-16 rounded-2xl backdrop-blur-md mx-auto flex items-center justify-center mb-5 shadow-xl">
                             <Shield className="text-white" size={32} />
@@ -94,9 +101,10 @@ export function LoginPage() {
                         <p className="text-center text-slate-400 text-[10px] font-bold tracking-tight uppercase">
                             Protected by secure encryption
                         </p>
-                    </form>
-                </CardBody>
-            </Card>
-        </div>
+                        </form>
+                    </CardBody>
+                </Card>
+            </div>
+        </>
     );
 }

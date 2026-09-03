@@ -1,4 +1,20 @@
 User-agent: *
 Allow: /
+Disallow: /login
+Disallow: /dashboard
+Disallow: /editor/
+Disallow: /module/
+Disallow: /preview
+Disallow: /categories
+Disallow: /parent-categories
+Disallow: /users
+Disallow: /sheets
+Disallow: /media
+Disallow: /footer-links
+Disallow: /reviews
+Disallow: /featured-deals
+Disallow: /banners
+Disallow: /template-dashboard
+Disallow: /template-editor/
 
 Sitemap: https://couponzas.com/sitemap.xml
