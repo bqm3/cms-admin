@@ -7,7 +7,6 @@
     "prebuild": "node scripts/generate-sitemap.mjs",
     "dev": "vite",
     "build": "tsc && vite build",
-    "postbuild": "node scripts/prerender-react-pages.mjs",
     "lint": "eslint --fix",
     "preview": "vite preview"
   },

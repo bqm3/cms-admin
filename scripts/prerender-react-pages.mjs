@@ -175,10 +175,19 @@ async function main() {
 
   try {
     await waitForPreviewServer();
-    browser = await puppeteer.launch({
-      headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-web-security"],
-    });
+    try {
+      browser = await puppeteer.launch({
+        headless: "new",
+        args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-web-security"],
+      });
+    } catch (launchError) {
+      console.warn(
+        "\n[prerender] Warning: Could not launch Puppeteer Chrome for postbuild prerendering:\n",
+        launchError.message || launchError,
+        "\n[prerender] Skipping static file prerender pass. Dynamic serverless prerendering via /api/render remains active.\n",
+      );
+      return;
+    }
 
     const page = await browser.newPage();
     page.setDefaultTimeout(25000);
@@ -228,6 +237,7 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error("[prerender] failed:", error);
-  process.exit(1);
+  console.warn("[prerender] warning:", error?.message || error);
+  // Do not block build on prerender script error
+  process.exit(0);
 });
