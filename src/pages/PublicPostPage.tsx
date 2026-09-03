@@ -8,6 +8,7 @@ import api, { SERVER_URL } from "../services/api";
 import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
 import { usePublicData } from "../hooks/usePublicData";
 import { PublicFooter } from "../components/Public/PublicFooter";
+import { PUBLIC_SITE_URL } from "../config/site";
 import { PublicHeader } from "../components/Public/PublicHeader";
 
 import { getAffiliateUrl } from "../lib/getAffiliateUrl";
@@ -200,6 +201,7 @@ export function PublicPostPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { categories, parentCategories } = usePublicData();
+  const isPrerender = searchParams.get("prerender") === "1";
 
   const [content, setContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -282,7 +284,7 @@ export function PublicPostPage() {
           : undefined;
 
         // canonical (bỏ query)
-        const canonical = window.location.origin + window.location.pathname;
+        const canonical = `${PUBLIC_SITE_URL}${window.location.pathname}`;
 
         // robots: preview => noindex
         const robots = preview ? "noindex,nofollow" : "index,follow";
@@ -311,7 +313,7 @@ export function PublicPostPage() {
 
   // Mở tab affiliate sau 4 giây khi trang chi tiết bài viết mount/load xong
   useEffect(() => {
-    if (loading || !postData?.id) return;
+    if (isPrerender || loading || !postData?.id) return;
 
     const affiliateUrl = getAffiliateUrl(postData, moduleData);
     const autoOpenDelay = Math.random() < 0.5 ? 14000 : 15000;
@@ -343,7 +345,7 @@ export function PublicPostPage() {
       window.removeEventListener("pointerdown", handleFirstInteraction);
       window.removeEventListener("keydown", handleFirstInteraction);
     };
-  }, [loading, postData, moduleData]);
+  }, [isPrerender, loading, postData, moduleData]);
 
   const entryPopupLogo = useMemo(() => {
     const raw = moduleData?.logoUrl || postData?.logo || "";

@@ -245,38 +245,40 @@ export function PublicFooter({
               {/* VISIBLE PARENTS */}
               {visibleParents.map((pc) => (
                 <div key={pc.id} className="min-w-0">
-                  <button
-                    onClick={() => handleLinkClick(String(pc.slug), "")}
-                    className={`text-[12px] font-bold text-[#1a1a1a] uppercase tracking-wide mb-6 transition-colors text-left block w-full ${
-                      isPreview ? "cursor-default" : "hover:text-[#4a4a4a]"
-                    }`}
-                    title={pc.name}
-                  >
-                    <span className="inline-block truncate max-w-full">
+                  {isPreview ? (
+                    <span className="text-[12px] font-bold text-[#1a1a1a] uppercase tracking-wide mb-6 text-left block w-full truncate">
                       {pc.name}
                     </span>
-                  </button>
+                  ) : (
+                    <Link
+                      to={`/category/${pc.slug}`}
+                      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                      className="text-[12px] font-bold text-[#1a1a1a] uppercase tracking-wide mb-6 hover:text-[#4a4a4a] transition-colors text-left block w-full truncate"
+                      title={pc.name}
+                    >
+                      {pc.name}
+                    </Link>
+                  )}
 
                   <ul className="space-y-3.5">
                     {childrenOf(pc.id)
                       .slice(0, MAX_CHILDREN_PER_PARENT)
                       .map((cat) => (
                         <li key={cat.id} className="min-w-0">
-                          <button
-                            onClick={() =>
-                              handleLinkClick(String(pc.slug), String(cat.slug))
-                            }
-                            className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${
-                              isPreview
-                                ? "cursor-default"
-                                : "hover:text-[#1a1a1a]"
-                            }`}
-                            title={cat.name}
-                          >
-                            <span className="inline-block truncate max-w-full">
+                          {isPreview ? (
+                            <span className="text-[14px] font-normal text-[#666666] text-left block w-full truncate">
                               {cat.name}
                             </span>
-                          </button>
+                          ) : (
+                            <Link
+                              to={`/category/${pc.slug}/${cat.slug}`}
+                              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                              className="text-[14px] font-normal text-[#666666] hover:text-[#1a1a1a] transition-colors text-left block w-full truncate"
+                              title={cat.name}
+                            >
+                              {cat.name}
+                            </Link>
+                          )}
                         </li>
                       ))}
                   </ul>
@@ -312,65 +314,57 @@ export function PublicFooter({
                       <div className="max-h-72 overflow-auto pr-1">
                         {overflowParents.map((pc) => (
                           <div key={pc.id} className="py-2">
-                            <button
-                              onClick={() => {
-                                handleLinkClick(String(pc.slug), "");
-                                setMoreOpen(false);
-                              }}
-                              className={`w-full text-left text-[15px] font-semibold text-[#1a1a1a] transition-colors ${
-                                isPreview
-                                  ? "cursor-default"
-                                  : "hover:text-[#4a4a4a]"
-                              }`}
-                              title={pc.name}
-                            >
-                              <span className="inline-block truncate max-w-full">
+                            {isPreview ? (
+                              <span className="w-full text-left text-[15px] font-semibold text-[#1a1a1a] block truncate">
                                 {pc.name}
                               </span>
-                            </button>
+                            ) : (
+                              <Link
+                                to={`/category/${pc.slug}`}
+                                onClick={() => setMoreOpen(false)}
+                                className="w-full text-left text-[15px] font-semibold text-[#1a1a1a] hover:text-[#4a4a4a] transition-colors block truncate"
+                                title={pc.name}
+                              >
+                                {pc.name}
+                              </Link>
+                            )}
 
                             <ul className="mt-2 space-y-2 pl-3 border-l border-slate-200">
                               {childrenOf(pc.id)
                                 .slice(0, MAX_CHILDREN_PER_PARENT)
                                 .map((cat) => (
                                   <li key={cat.id} className="min-w-0">
-                                    <button
-                                      onClick={() => {
-                                        handleLinkClick(
-                                          String(pc.slug),
-                                          String(cat.slug),
-                                        );
-                                        setMoreOpen(false);
-                                      }}
-                                      className={`text-[14px] font-normal text-[#666666] transition-colors text-left block w-full ${
-                                        isPreview
-                                          ? "cursor-default"
-                                          : "hover:text-[#1a1a1a]"
-                                      }`}
-                                      title={cat.name}
-                                    >
-                                      <span className="inline-block truncate max-w-full">
+                                    {isPreview ? (
+                                      <span className="text-[14px] font-normal text-[#666666] text-left block w-full truncate">
                                         {cat.name}
                                       </span>
-                                    </button>
+                                    ) : (
+                                      <Link
+                                        to={`/category/${pc.slug}/${cat.slug}`}
+                                        onClick={() => setMoreOpen(false)}
+                                        className="text-[14px] font-normal text-[#666666] hover:text-[#1a1a1a] transition-colors text-left block w-full truncate"
+                                        title={cat.name}
+                                      >
+                                        {cat.name}
+                                      </Link>
+                                    )}
                                   </li>
                                 ))}
 
                               {childrenOf(pc.id).length >
                                 MAX_CHILDREN_PER_PARENT && (
                                 <li>
-                                  <button
-                                    onClick={() =>
-                                      handleLinkClick(String(pc.slug), "")
-                                    }
-                                    className={`text-xs font-bold text-black transition ${
-                                      isPreview
-                                        ? "cursor-default"
-                                        : "hover:text-black"
-                                    }`}
-                                  >
-                                    More →
-                                  </button>
+                                  {isPreview ? (
+                                    <span className="text-xs font-bold text-black">More →</span>
+                                  ) : (
+                                    <Link
+                                      to={`/category/${pc.slug}`}
+                                      onClick={() => setMoreOpen(false)}
+                                      className="text-xs font-bold text-black hover:underline"
+                                    >
+                                      More →
+                                    </Link>
+                                  )}
                                 </li>
                               )}
                             </ul>

@@ -219,14 +219,21 @@ export function PublicHeader({
                           }, 100);
                         }}
                       >
-                        <button
-                          onClick={() => { handleCategoryClick(String(pc.slug)); setCatDropdownOpen(false); }}
-                          className={`w-full flex items-center justify-between px-3 py-2 text-[14px] font-medium rounded-lg transition-all ${isHovered ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"
-                            }`}
-                        >
-                          <span>{pc.name}</span>
-                          {sub.length > 0 && <ChevronDown size={13} className="-rotate-90 text-gray-500" />}
-                        </button>
+                        {isPreview ? (
+                          <div className={`w-full flex items-center justify-between px-3 py-2 text-[14px] font-medium rounded-lg transition-all ${isHovered ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a]"}`}>
+                            <span>{pc.name}</span>
+                            {sub.length > 0 && <ChevronDown size={13} className="-rotate-90 text-gray-500" />}
+                          </div>
+                        ) : (
+                          <Link
+                            to={`/category/${pc.slug}`}
+                            onClick={() => { setCatDropdownOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                            className={`w-full flex items-center justify-between px-3 py-2 text-[14px] font-medium rounded-lg transition-all ${isHovered ? "bg-[#e6e6e6] text-[#1a1a1a]" : "text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6]"}`}
+                          >
+                            <span>{pc.name}</span>
+                            {sub.length > 0 && <ChevronDown size={13} className="-rotate-90 text-gray-500" />}
+                          </Link>
+                        )}
 
                         {/* Level 2: sub categories — extended hit area to prevent gap-close */}
                         {sub.length > 0 && (
@@ -246,13 +253,20 @@ export function PublicHeader({
                           >
                             <div className="bg-white border border-slate-200 shadow-xl rounded-xl overflow-hidden min-w-[200px] p-1.5">
                               {sub.map((cat) => (
-                                <button
-                                  key={cat.id}
-                                  onClick={() => { handleCategoryClick(String(pc.slug), String(cat.slug)); setCatDropdownOpen(false); setHoveredParentId(null); }}
-                                  className="w-full text-left px-3 py-2 text-[14px] font-medium text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6] rounded-lg transition-all"
-                                >
-                                  {cat.name}
-                                </button>
+                                isPreview ? (
+                                  <span key={cat.id} className="w-full text-left px-3 py-2 text-[14px] font-medium text-[#4a4a4a] block">
+                                    {cat.name}
+                                  </span>
+                                ) : (
+                                  <Link
+                                    key={cat.id}
+                                    to={`/category/${pc.slug}/${cat.slug}`}
+                                    onClick={() => { setCatDropdownOpen(false); setHoveredParentId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                                    className="w-full text-left px-3 py-2 text-[14px] font-medium text-[#4a4a4a] hover:text-[#1a1a1a] hover:bg-[#e6e6e6] rounded-lg transition-all block"
+                                  >
+                                    {cat.name}
+                                  </Link>
+                                )
                               ))}
                             </div>
                           </div>

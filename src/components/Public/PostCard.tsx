@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { ExternalLink, ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { SERVER_URL } from "../../services/api";
 import { getAffiliateUrl } from "../../lib/getAffiliateUrl";
 import { openAffiliateOnce } from "../../lib/affiliateTabGuard";
@@ -39,17 +39,20 @@ export function PostCard({ post }: PostCardProps) {
     : "";
 
   const firstLink = post.links && post.links.length > 0 ? post.links[0] : null;
+  const postPath = `/${post.slug || post.id}`;
 
-  const navigateToDetail = () => {
+  const triggerAffiliate = () => {
     if (post) {
       const url = getAffiliateUrl(post);
       openAffiliateOnce(post.id, url);
     }
-    navigate(`/${post.slug || post.id}`);
   };
 
-  const handleCardClick = () => {
-    navigateToDetail();
+  const handleCardClick = (e: React.MouseEvent) => {
+    // If user clicked link inside card, don't double navigate
+    if ((e.target as HTMLElement).closest("a")) return;
+    triggerAffiliate();
+    navigate(postPath);
   };
 
   return (
@@ -68,7 +71,11 @@ export function PostCard({ post }: PostCardProps) {
         {/* Top row: image + title */}
         <div className="flex items-center gap-3">
           {/* Image 64x64 */}
-          <div className="w-8 h-8 shrink-0 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
+          <Link
+            to={postPath}
+            onClick={triggerAffiliate}
+            className="w-8 h-8 shrink-0 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 block"
+          >
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -84,40 +91,42 @@ export function PostCard({ post }: PostCardProps) {
                 {post.title?.substring(0, 2)}
               </div>
             )}
-          </div>
+          </Link>
 
           {/* Title */}
           <h3 className="flex-1 text-[15px] font-bold text-[#1a1a1a] group-hover:text-[#ee4d2d] transition-colors line-clamp-3 leading-snug tracking-tight">
-            {renderHighlightedText(post.title)}
+            <Link to={postPath} onClick={triggerAffiliate} className="hover:underline">
+              {renderHighlightedText(post.title)}
+            </Link>
           </h3>
         </div>
 
         {/* First link — text style, 1 only */}
         {firstLink && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              window.open(firstLink.href, "_blank");
-            }}
+          <a
+            href={firstLink.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
             className="w-full flex items-center justify-between gap-2 text-left text-[13px] font-semibold hover:text-[#d9431f] border-t border-slate-100 pt-2 transition-colors group/link relative z-20"
           >
             <span className="truncate">{renderHighlightedText(firstLink.title)}</span>
             <ExternalLink size={13} className="shrink-0 opacity-60 group-hover/link:opacity-100 transition-opacity" />
-          </button>
+          </a>
         )}
 
         {/* See details */}
-        <button
+        <Link
+          to={postPath}
           onClick={(e) => {
             e.stopPropagation();
-            navigateToDetail();
+            triggerAffiliate();
           }}
           className="w-full flex items-center justify-center gap-1.5 bg-[#ee4d2d] hover:bg-[#d9431f] text-white text-[12px] font-bold py-2 rounded-lg transition-all duration-200 active:scale-[0.98] relative z-20"
         >
           See Details <ChevronRight size={13} strokeWidth={2.5} />
-        </button>
+        </Link>
       </div>
     </div>
   );
 }
-

@@ -106,6 +106,10 @@
       "source": "/robots.txt",
       "destination": "https://api.couponzas.com/robots.txt"
     },
+    {
+      "source": "/:slug([a-zA-Z0-9_-]+)",
+      "destination": "/api/render?slug=:slug"
+    },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
