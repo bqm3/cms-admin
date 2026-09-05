@@ -2,8 +2,6 @@
 import { ExternalLink, ChevronRight } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { SERVER_URL } from "../../services/api";
-import { getAffiliateUrl } from "../../lib/getAffiliateUrl";
-import { openAffiliateOnce } from "../../lib/affiliateTabGuard";
 
 interface PostCardProps {
   post: any;
@@ -41,17 +39,9 @@ export function PostCard({ post }: PostCardProps) {
   const firstLink = post.links && post.links.length > 0 ? post.links[0] : null;
   const postPath = `/${post.slug || post.id}`;
 
-  const triggerAffiliate = () => {
-    if (post) {
-      const url = getAffiliateUrl(post);
-      openAffiliateOnce(post.id, url);
-    }
-  };
-
   const handleCardClick = (e: React.MouseEvent) => {
     // If user clicked link inside card, don't double navigate
     if ((e.target as HTMLElement).closest("a")) return;
-    triggerAffiliate();
     navigate(postPath);
   };
 
@@ -73,7 +63,6 @@ export function PostCard({ post }: PostCardProps) {
           {/* Image 64x64 */}
           <Link
             to={postPath}
-            onClick={triggerAffiliate}
             className="w-8 h-8 shrink-0 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 block"
           >
             {imageUrl ? (
@@ -93,12 +82,12 @@ export function PostCard({ post }: PostCardProps) {
             )}
           </Link>
 
-          {/* Title */}
-          <h3 className="flex-1 text-[15px] font-bold text-[#1a1a1a] group-hover:text-[#ee4d2d] transition-colors line-clamp-3 leading-snug tracking-tight">
-            <Link to={postPath} onClick={triggerAffiliate} className="hover:underline">
-              {renderHighlightedText(post.title)}
-            </Link>
-          </h3>
+        {/* Title */}
+        <h3 className="flex-1 text-[15px] font-bold text-[#1a1a1a] group-hover:text-[#ee4d2d] transition-colors line-clamp-3 leading-snug tracking-tight">
+          <Link to={postPath} className="hover:underline">
+            {renderHighlightedText(post.title)}
+          </Link>
+        </h3>
         </div>
 
         {/* First link — text style, 1 only */}
@@ -118,10 +107,7 @@ export function PostCard({ post }: PostCardProps) {
         {/* See details */}
         <Link
           to={postPath}
-          onClick={(e) => {
-            e.stopPropagation();
-            triggerAffiliate();
-          }}
+          onClick={(e) => e.stopPropagation()}
           className="w-full flex items-center justify-center gap-1.5 bg-[#ee4d2d] hover:bg-[#d9431f] text-white text-[12px] font-bold py-2 rounded-lg transition-all duration-200 active:scale-[0.98] relative z-20"
         >
           See Details <ChevronRight size={13} strokeWidth={2.5} />
