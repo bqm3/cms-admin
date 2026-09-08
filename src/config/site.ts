@@ -7,3 +7,12 @@ export const PUBLIC_SITE_URL =
     : configuredSiteUrl || "https://couponzas.com").replace(/\/+$/, "");
 
 export const PUBLIC_SITE_HOST = new URL(PUBLIC_SITE_URL).hostname;
+
+export function buildCanonicalUrl(pathname = "/") {
+  const cleanPath = `/${String(pathname || "/")
+    .split(/[?#]/)[0]
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")}`;
+
+  return cleanPath === "/" ? `${PUBLIC_SITE_URL}/` : `${PUBLIC_SITE_URL}${cleanPath}`;
+}

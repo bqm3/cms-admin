@@ -8,6 +8,7 @@ import api, { SERVER_URL } from "../services/api";
 import { usePublicData } from "../hooks/usePublicData";
 import { PublicHeader } from "../components/Public/PublicHeader";
 import { PublicFooter } from "../components/Public/PublicFooter";
+import { buildCanonicalUrl } from "../config/site";
 
 function stripHtml(html: string) {
   if (!html) return "";
@@ -30,6 +31,8 @@ export function PublicReviewListPage() {
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0, limit: 9 });
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [headerSearch, setHeaderSearch] = useState("");
+  const canonicalUrl = buildCanonicalUrl("/review");
+  const robots = searchParams.get("search") ? "noindex,follow" : "index,follow";
 
   const fetchReviews = async (pageValue: number, searchValue: string) => {
     try {
@@ -63,6 +66,9 @@ export function PublicReviewListPage() {
       <Helmet>
         <title>Reviews</title>
         <meta name="description" content="Review list" />
+        <meta name="robots" content={robots} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:url" content={canonicalUrl} />
       </Helmet>
 
       <PublicHeader

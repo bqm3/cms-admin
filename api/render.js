@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const PUBLIC_SITE_URL = (process.env.VITE_PUBLIC_SITE_URL || "https://couponzas.com").replace(/\/+$/, "");
+
 function escHtml(str = "") {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -36,6 +38,15 @@ function buildAutoMetaFromTitle(titleRaw) {
   const meta_description = `Use couponzas.com to find the latest discount codes and best deals when shopping online at ${t} through couponzas.com. Save more on every order with our verified discount codes, food coupons, and cashback offers.`;
   const meta_keyword = `${t}, ${t} promotion, ${t} promotion newest`;
   return { meta_title, meta_description, meta_keyword };
+}
+
+function buildCanonicalUrl(pathname = "/") {
+  const cleanPath = `/${String(pathname || "/")
+    .split(/[?#]/)[0]
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")}`;
+
+  return cleanPath === "/" ? `${PUBLIC_SITE_URL}/` : `${PUBLIC_SITE_URL}${cleanPath}`;
 }
 
 function getIndexHtmlTemplate() {
@@ -160,7 +171,7 @@ module.exports = async function handler(req, res) {
       const headTags = `
         <title>${slug === "login" ? "Login | Couponza" : "Admin Dashboard | Couponza"}</title>
         <meta name="robots" content="noindex,nofollow,noarchive" />
-        <link rel="canonical" href="https://couponzas.com/${escHtml(slug)}" />
+        <link rel="canonical" href="${escHtml(buildCanonicalUrl(slug))}" />
       `;
       res.setHeader("Content-Type", "text/html; charset=utf-8");
       res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
@@ -174,11 +185,11 @@ module.exports = async function handler(req, res) {
         <title>${escHtml(pageInfo.title)}</title>
         <meta name="description" content="${escHtml(pageInfo.description)}" />
         <meta name="robots" content="index,follow" />
-        <link rel="canonical" href="https://couponzas.com/${escHtml(slug)}" />
+        <link rel="canonical" href="${escHtml(buildCanonicalUrl(slug))}" />
         <meta property="og:title" content="${escHtml(pageInfo.title)}" />
         <meta property="og:description" content="${escHtml(pageInfo.description)}" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://couponzas.com/${escHtml(slug)}" />
+        <meta property="og:url" content="${escHtml(buildCanonicalUrl(slug))}" />
       `;
       res.setHeader("Content-Type", "text/html; charset=utf-8");
       return res.status(200).send(injectHeadAndBody(htmlTemplate, headTags, ""));
@@ -224,7 +235,7 @@ module.exports = async function handler(req, res) {
         ? (String(post.meta_keyword || "").trim() || autoMeta.meta_keyword)
         : autoMeta.meta_keyword;
 
-      const canonicalUrl = `https://couponzas.com/${encodeURIComponent(slug)}`;
+      const canonicalUrl = buildCanonicalUrl(encodeURIComponent(slug));
 
       let ogImage = post.logo ? post.logo : "";
       if (ogImage && !ogImage.startsWith("http")) {
@@ -254,7 +265,7 @@ module.exports = async function handler(req, res) {
       const bodyContent = `
         <div style="max-w-[1180px]; margin: 0 auto; padding: 24px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1e293b;">
           <header style="margin-bottom: 24px;">
-            <a href="https://couponzas.com/" style="font-weight: bold; color: #ee4d2d; text-decoration: none;">Home</a> &gt; 
+            <a href="${escHtml(buildCanonicalUrl("/"))}" style="font-weight: bold; color: #ee4d2d; text-decoration: none;">Home</a> &gt; 
             <span>${escHtml(titleRaw)}</span>
           </header>
           <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px; color: #0f172a;">${escHtml(titleRaw)}</h1>
@@ -284,7 +295,7 @@ module.exports = async function handler(req, res) {
       <div style="max-width: 600px; margin: 80px auto; padding: 32px; text-align: center; font-family: system-ui, -apple-system, sans-serif;">
         <h1 style="font-size: 2.5rem; font-weight: 900; color: #1e293b; margin-bottom: 16px;">404 - Page Not Found</h1>
         <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 24px;">The project or page "<strong>${escHtml(slug)}</strong>" does not exist or has been removed.</p>
-        <a href="https://couponzas.com/" style="display: inline-block; background-color: #ee4d2d; color: #ffffff; font-weight: 700; padding: 12px 24px; border-radius: 12px; text-decoration: none;">Return to Homepage</a>
+        <a href="${escHtml(buildCanonicalUrl("/"))}" style="display: inline-block; background-color: #ee4d2d; color: #ffffff; font-weight: 700; padding: 12px 24px; border-radius: 12px; text-decoration: none;">Return to Homepage</a>
       </div>
     `;
 

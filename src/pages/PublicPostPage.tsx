@@ -8,7 +8,7 @@ import api, { SERVER_URL } from "../services/api";
 import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
 import { usePublicData } from "../hooks/usePublicData";
 import { PublicFooter } from "../components/Public/PublicFooter";
-import { PUBLIC_SITE_URL } from "../config/site";
+import { buildCanonicalUrl } from "../config/site";
 import { PublicHeader } from "../components/Public/PublicHeader";
 
 import { getAffiliateUrl } from "../lib/getAffiliateUrl";
@@ -224,7 +224,7 @@ export function PublicPostPage() {
     title: "Store",
     description: "Store",
     keywords: "Store",
-    canonical: typeof window !== "undefined" ? window.location.href : "",
+    canonical: buildCanonicalUrl(slug ? `/${slug}` : "/"),
     robots: "index,follow",
   });
 
@@ -284,7 +284,7 @@ export function PublicPostPage() {
           : undefined;
 
         // canonical (bỏ query)
-        const canonical = `${PUBLIC_SITE_URL}${window.location.pathname}`;
+        const canonical = buildCanonicalUrl(slug ? `/${slug}` : "/");
 
         // robots: preview => noindex
         const robots = preview ? "noindex,nofollow" : "index,follow";

@@ -1,4 +1,14 @@
 {
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "www.couponzas.com" }
+      ],
+      "destination": "https://couponzas.com/$1",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/login",

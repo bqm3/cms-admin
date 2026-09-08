@@ -3,6 +3,7 @@ import { PublicHeader } from "../../components/Public/PublicHeader";
 import { PublicFooter } from "../../components/Public/PublicFooter";
 import { usePublicData } from "../../hooks/usePublicData";
 import { useNavigate } from "react-router-dom";
+import { buildCanonicalUrl } from "../../config/site";
 
 export function PrivacyPolicy() {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ export function PrivacyPolicy() {
         <meta name="title" content="Privacy Policy - Couponza" />
         <meta name="description" content="View our Privacy Policy. We value your privacy and are committed to protecting your personal data." />
         <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={buildCanonicalUrl("/privacy-policy")} />
+        <meta property="og:url" content={buildCanonicalUrl("/privacy-policy")} />
       </Helmet>
 
       <PublicHeader

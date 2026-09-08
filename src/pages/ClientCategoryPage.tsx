@@ -9,7 +9,7 @@ import { usePublicData } from "../hooks/usePublicData";
 import { PostCard } from "../components/Public/PostCard";
 import { PublicHeader } from "../components/Public/PublicHeader";
 import { PublicFooter } from "../components/Public/PublicFooter";
-import { PUBLIC_SITE_HOST } from "../config/site";
+import { PUBLIC_SITE_HOST, buildCanonicalUrl } from "../config/site";
 
 export function ClientCategoryPage() {
   const { parentSlug: pathParentSlug, categorySlug: pathCategorySlug } = useParams();
@@ -119,6 +119,11 @@ export function ClientCategoryPage() {
   const pageDescription = `Use ${PUBLIC_SITE_HOST} to find the latest discount codes and best deals when shopping online at ${brandName}. Save more on every order with our verified discount codes, food coupons, and cashback offers.`;
 
   const pageKeywords = `${brandName}, ${brandName.toLowerCase()} promotion, ${brandName.toLowerCase()} promotion newest`;
+  const canonicalPath = selectedParentCategory
+    ? `/category/${selectedParentCategory}${selectedCategory ? `/${selectedCategory}` : ""}`
+    : "/category";
+  const canonicalUrl = buildCanonicalUrl(canonicalPath);
+  const robots = search ? "noindex,follow" : "index,follow";
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-slate-200 selection:text-slate-900">
@@ -130,7 +135,9 @@ export function ClientCategoryPage() {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
-        <meta name="robots" content="index,follow" />
+        <meta name="robots" content={robots} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:url" content={canonicalUrl} />
       </Helmet>
 
       <PublicHeader

@@ -3,6 +3,7 @@ import { PublicHeader } from "../../components/Public/PublicHeader";
 import { PublicFooter } from "../../components/Public/PublicFooter";
 import { usePublicData } from "../../hooks/usePublicData";
 import { useNavigate } from "react-router-dom";
+import { buildCanonicalUrl } from "../../config/site";
 
 export function Contact() {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ export function Contact() {
         <meta name="title" content="Contact - Couponza" />
         <meta name="description" content="Get in touch with Couponza. Have questions or feedback? We'd love to hear from you." />
         <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={buildCanonicalUrl("/contact")} />
+        <meta property="og:url" content={buildCanonicalUrl("/contact")} />
       </Helmet>
 
       <PublicHeader

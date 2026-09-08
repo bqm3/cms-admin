@@ -3,6 +3,7 @@ import { PublicHeader } from "../../components/Public/PublicHeader";
 import { PublicFooter } from "../../components/Public/PublicFooter";
 import { usePublicData } from "../../hooks/usePublicData";
 import { useNavigate } from "react-router-dom";
+import { buildCanonicalUrl } from "../../config/site";
 
 export function AboutUs() {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ export function AboutUs() {
         <meta name="title" content="About Us - Couponza" />
         <meta name="description" content="Welcome to Couponza, your trusted partner in navigating the vast world of digital commerce." />
         <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={buildCanonicalUrl("/about-us")} />
+        <meta property="og:url" content={buildCanonicalUrl("/about-us")} />
       </Helmet>
 
       <PublicHeader

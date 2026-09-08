@@ -6,6 +6,7 @@ import { Button } from "@heroui/button";
 import { Card, CardBody } from "@heroui/card";
 import { Shield, ArrowRight, User as UserIcon, Lock } from 'lucide-react';
 import api from '../services/api';
+import { buildCanonicalUrl } from '../config/site';
 
 export function LoginPage() {
     const [username, setUsername] = useState('');
@@ -35,7 +36,7 @@ export function LoginPage() {
             <Helmet>
                 <title>Login | Couponza</title>
                 <meta name="robots" content="noindex,nofollow,noarchive" />
-                <link rel="canonical" href="https://couponzas.com/login" />
+                <link rel="canonical" href={buildCanonicalUrl("/login")} />
             </Helmet>
             <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-[#ee4d2d]/10 selection:text-[#ee4d2d]">
                 <Card className="w-full max-w-[420px] bg-white shadow-xl shadow-[#ee4d2d]/10 border-none rounded-2xl overflow-hidden">

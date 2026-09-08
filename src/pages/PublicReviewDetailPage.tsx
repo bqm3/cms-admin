@@ -6,6 +6,7 @@ import api, { SERVER_URL } from "../services/api";
 import { usePublicData } from "../hooks/usePublicData";
 import { PublicHeader } from "../components/Public/PublicHeader";
 import { PublicFooter } from "../components/Public/PublicFooter";
+import { buildCanonicalUrl } from "../config/site";
 
 function stripHtml(html: string) {
   if (!html) return "";
@@ -47,6 +48,7 @@ export function PublicReviewDetailPage() {
     const source = review?.meta_description || stripHtml(review?.description || "");
     return source || review?.title || "Review";
   }, [review]);
+  const canonicalUrl = buildCanonicalUrl(`/review/${slug || ""}`);
 
   const navigateToCategory = (parentSlug: string, categorySlug: string) => {
     navigate(categorySlug ? `/category/${parentSlug}/${categorySlug}` : `/category/${parentSlug}`);
@@ -67,6 +69,9 @@ export function PublicReviewDetailPage() {
         <title>{review.meta_title || review.title}</title>
         <meta name="description" content={descriptionText} />
         <meta name="keywords" content={review.meta_keyword || review.title} />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:url" content={canonicalUrl} />
         {ogImage ? <meta property="og:image" content={ogImage} /> : null}
       </Helmet>
 

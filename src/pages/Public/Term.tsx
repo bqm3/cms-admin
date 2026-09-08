@@ -3,6 +3,7 @@ import { PublicHeader } from "../../components/Public/PublicHeader";
 import { PublicFooter } from "../../components/Public/PublicFooter";
 import { usePublicData } from "../../hooks/usePublicData";
 import { useNavigate } from "react-router-dom";
+import { buildCanonicalUrl } from "../../config/site";
 
 export function Term() {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ export function Term() {
         <meta name="title" content="Terms of Service - Couponza" />
         <meta name="description" content="Read our Terms of Service to understand how you can use our website and services." />
         <meta name="robots" content="index,follow" />
+        <link rel="canonical" href={buildCanonicalUrl("/terms")} />
+        <meta property="og:url" content={buildCanonicalUrl("/terms")} />
       </Helmet>
 
       <PublicHeader

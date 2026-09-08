@@ -2,8 +2,9 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { Editor, Frame } from "@craftjs/core";
 import { Helmet } from "react-helmet-async";
-import api from "../services/api";
+import api, { SERVER_URL } from "../services/api";
 import { CRAFT_RESOLVER } from "../components/Editor/Craft/craftResolver";
+import { buildCanonicalUrl } from "../config/site";
 
 import { DefaultNewPostFrame } from "../components/Editor/DefaultNewPostFrame";
 import { MimicPCLandingFrame } from "../components/Editor/MimicPCLandingFrame";
@@ -71,7 +72,7 @@ export function PublicTemplatePage() {
   }>({
     title: "Template",
     description: "Template",
-    canonical: typeof window !== "undefined" ? window.location.href : "",
+    canonical: buildCanonicalUrl(slug ? `/template/${slug}` : "/template"),
     robots: "index,follow",
   });
 
@@ -102,10 +103,10 @@ export function PublicTemplatePage() {
         const ogImage = ogImageRaw
           ? ogImageRaw.startsWith("http")
             ? ogImageRaw
-            : `${window.location.origin}${ogImageRaw}`
+            : `${SERVER_URL}${ogImageRaw}`
           : undefined;
 
-        const canonical = window.location.origin + window.location.pathname;
+        const canonical = buildCanonicalUrl(slug ? `/template/${slug}` : "/template");
         const robots = preview ? "noindex,nofollow" : "index,follow";
 
         setContent(rawContent);

@@ -9,7 +9,7 @@ import { usePublicData } from "../hooks/usePublicData";
 import { PostCard } from "../components/Public/PostCard";
 import { PublicHeader } from "../components/Public/PublicHeader";
 import { PublicFooter } from "../components/Public/PublicFooter";
-import { PUBLIC_SITE_HOST, PUBLIC_SITE_URL } from "../config/site";
+import { PUBLIC_SITE_HOST, buildCanonicalUrl } from "../config/site";
 
 // ─── Countdown hook ──────────────────────────────────────────────────────────
 function useCountdown(endDate: string | null) {
@@ -255,11 +255,11 @@ export function ClientHomePage() {
         <meta name="description" content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`} />
         <meta name="keywords" content="Couponza, couponza latest, couponza coupons" />
         <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={`${PUBLIC_SITE_URL}/`} />
+        <link rel="canonical" href={buildCanonicalUrl("/")} />
         <meta property="og:title" content="Couponza latest" />
         <meta property="og:description" content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`${PUBLIC_SITE_URL}/`} />
+        <meta property="og:url" content={buildCanonicalUrl("/")} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Couponza latest" />
         <meta name="twitter:description" content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`} />
