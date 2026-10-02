@@ -117,6 +117,14 @@
       "destination": "https://api.couponzas.com/robots.txt"
     },
     {
+      "source": "/category/:path*",
+      "destination": "/api/render?route=category&path=:path*"
+    },
+    {
+      "source": "/review/:slug",
+      "destination": "/api/render?route=review&slug=:slug"
+    },
+    {
       "source": "/:slug([a-zA-Z0-9_-]+)",
       "destination": "/api/render?slug=:slug"
     },

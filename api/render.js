@@ -25,18 +25,26 @@ function truncate(str = "", max = 160) {
   return s.slice(0, max - 1).trimEnd() + "…";
 }
 
+function titleCase(str = "") {
+  return String(str || "")
+    .replace(/[-_]+/g, " ")
+    .split(" ")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
+
 function buildAutoMetaFromTitle(titleRaw) {
   const t = String(titleRaw || "").trim();
   if (!t) {
     return {
-      meta_title: "Store",
-      meta_description: "Store",
-      meta_keyword: "Store",
+      meta_title: "Store Coupons & Discount Codes | Couponza",
+      meta_description: "Find the latest verified discount codes, coupons, and promo codes at couponzas.com.",
+      meta_keyword: "coupons, discount codes, promo codes, deals",
     };
   }
-  const meta_title = `${t} promotion latest`;
-  const meta_description = `Use couponzas.com to find the latest discount codes and best deals when shopping online at ${t} through couponzas.com. Save more on every order with our verified discount codes, food coupons, and cashback offers.`;
-  const meta_keyword = `${t}, ${t} promotion, ${t} promotion newest`;
+  const meta_title = `${t} Promotion & Verified Coupon Codes | Couponza`;
+  const meta_description = `Use couponzas.com to find the latest discount codes and best deals when shopping online at ${t}. Save more on every order with verified promo codes and cashback offers.`;
+  const meta_keyword = `${t}, ${t} promotion, ${t} coupon codes, ${t} discount code`;
   return { meta_title, meta_description, meta_keyword };
 }
 
@@ -157,14 +165,15 @@ const STATIC_PUBLIC_PAGES = {
 
 module.exports = async function handler(req, res) {
   try {
-    // Determine slug from request
+    const rawUrlPath = (req.url || "/").split("?")[0].replace(/^\/+|\/+$/g, "");
     let slug = (req.query.slug || "").toString().trim();
-    if (!slug) {
-      const urlPath = (req.url || "/").split("?")[0].replace(/^\/+|\/+$/g, "");
-      slug = urlPath;
+    if (!slug && rawUrlPath) {
+      slug = rawUrlPath;
     }
 
+    const routeType = (req.query.route || "").toString().trim().toLowerCase();
     const htmlTemplate = getIndexHtmlTemplate();
+    const backendApiUrl = process.env.VITE_SERVER_URL || "https://api.couponzas.com";
 
     // 1. System Admin / Auth Routes
     if (STATIC_ADMIN_ROUTES.has(slug.toLowerCase())) {
@@ -179,7 +188,7 @@ module.exports = async function handler(req, res) {
     }
 
     // 2. Static Public Pages
-    if (STATIC_PUBLIC_PAGES[slug.toLowerCase()]) {
+    if (STATIC_PUBLIC_PAGES[slug.toLowerCase()] && !routeType) {
       const pageInfo = STATIC_PUBLIC_PAGES[slug.toLowerCase()];
       const headTags = `
         <title>${escHtml(pageInfo.title)}</title>
@@ -195,14 +204,126 @@ module.exports = async function handler(req, res) {
       return res.status(200).send(injectHeadAndBody(htmlTemplate, headTags, ""));
     }
 
-    // 3. Post / Project Pages (Dynamic fetch from Backend API)
-    const backendApiUrl = process.env.VITE_SERVER_URL || "https://api.couponzas.com";
+    // 3. Category Routes (/category/*)
+    if (routeType === "category" || rawUrlPath.startsWith("category/")) {
+      const catPath = (req.query.path || rawUrlPath.replace(/^category\/?/, "") || "").toString();
+      const parts = catPath.split("/").filter(Boolean);
+      const targetSlug = parts[parts.length - 1] || "All Categories";
+      const catTitle = titleCase(targetSlug);
+
+      const metaTitle = `${catTitle} Coupons, Promo Codes & Discount Deals | Couponza`;
+      const metaDescription = `Browse verified ${catTitle} coupon codes, promo codes, and daily deals to save more on couponzas.com.`;
+      const canonicalUrl = buildCanonicalUrl(rawUrlPath || `category/${catPath}`);
+
+      const headTags = `
+        <title>${escHtml(metaTitle)}</title>
+        <meta name="description" content="${escHtml(metaDescription)}" />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href="${escHtml(canonicalUrl)}" />
+        <meta property="og:title" content="${escHtml(metaTitle)}" />
+        <meta property="og:description" content="${escHtml(metaDescription)}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="${escHtml(canonicalUrl)}" />
+      `;
+
+      const bodyContent = `
+        <div style="max-width: 1180px; margin: 0 auto; padding: 24px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1e293b;">
+          <header style="margin-bottom: 24px;">
+            <a href="${escHtml(buildCanonicalUrl("/"))}" style="font-weight: bold; color: #ee4d2d; text-decoration: none;">Home</a> &gt; 
+            <a href="${escHtml(buildCanonicalUrl("/category"))}" style="color: #64748b; text-decoration: none;">Categories</a> &gt; 
+            <span>${escHtml(catTitle)}</span>
+          </header>
+          <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px; color: #0f172a;">${escHtml(catTitle)} Coupon Codes & Deals</h1>
+          <p style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;">${escHtml(metaDescription)}</p>
+        </div>
+      `;
+
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      return res.status(200).send(injectHeadAndBody(htmlTemplate, headTags, bodyContent));
+    }
+
+    // 4. Review Routes (/review/:slug)
+    if (routeType === "review" || rawUrlPath.startsWith("review/")) {
+      const revSlug = slug.replace(/^review\/?/, "");
+      const apiEndpoint = `${backendApiUrl.replace(/\/+$/, "")}/api/reviews/public/${encodeURIComponent(revSlug)}`;
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+      let apiRes = null;
+      try {
+        apiRes = await fetch(apiEndpoint, {
+          signal: controller.signal,
+          headers: { Accept: "application/json" },
+        });
+      } catch (e) {
+        console.error(`Review API Fetch Error for slug "${revSlug}":`, e?.message);
+      } finally {
+        clearTimeout(timeoutId);
+      }
+
+      if (apiRes && apiRes.ok) {
+        const review = await apiRes.json();
+        const titleRaw = review.title || titleCase(revSlug);
+        const metaTitle = review.meta_title || `${titleRaw} Review & Guide | Couponza`;
+        const metaDescription = truncate(review.meta_description || stripTags(review.content) || metaTitle, 160);
+        const canonicalUrl = buildCanonicalUrl(`review/${revSlug}`);
+
+        const headTags = `
+          <title>${escHtml(metaTitle)}</title>
+          <meta name="description" content="${escHtml(metaDescription)}" />
+          <meta name="robots" content="index,follow" />
+          <link rel="canonical" href="${escHtml(canonicalUrl)}" />
+          <meta property="og:title" content="${escHtml(metaTitle)}" />
+          <meta property="og:description" content="${escHtml(metaDescription)}" />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content="${escHtml(canonicalUrl)}" />
+        `;
+
+        const bodyContent = `
+          <div style="max-width: 1180px; margin: 0 auto; padding: 24px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1e293b;">
+            <header style="margin-bottom: 24px;">
+              <a href="${escHtml(buildCanonicalUrl("/"))}" style="font-weight: bold; color: #ee4d2d; text-decoration: none;">Home</a> &gt; 
+              <a href="${escHtml(buildCanonicalUrl("/review"))}" style="color: #64748b; text-decoration: none;">Reviews</a> &gt; 
+              <span>${escHtml(titleRaw)}</span>
+            </header>
+            <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px; color: #0f172a;">${escHtml(titleRaw)}</h1>
+            <p style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;">${escHtml(metaDescription)}</p>
+          </div>
+        `;
+
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        return res.status(200).send(injectHeadAndBody(htmlTemplate, headTags, bodyContent));
+      }
+
+      if (apiRes && apiRes.status === 404) {
+        // Genuine 404
+        const notFoundTitle = "404 - Review Not Found | Couponza";
+        const headTags404 = `<title>${escHtml(notFoundTitle)}</title><meta name="robots" content="noindex,nofollow" />`;
+        return res.status(404).send(injectHeadAndBody(htmlTemplate, headTags404, ""));
+      }
+
+      // Fallback 200 for timeout / network issues
+      const fallbackTitle = `${titleCase(revSlug)} Review | Couponza`;
+      const fallbackDesc = `Read in-depth reviews and user feedback for ${titleCase(revSlug)} on couponzas.com.`;
+      const canonicalUrl = buildCanonicalUrl(`review/${revSlug}`);
+      const headTagsFallback = `
+        <title>${escHtml(fallbackTitle)}</title>
+        <meta name="description" content="${escHtml(fallbackDesc)}" />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href="${escHtml(canonicalUrl)}" />
+      `;
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      return res.status(200).send(injectHeadAndBody(htmlTemplate, headTagsFallback, ""));
+    }
+
+    // 5. Post / Project Pages (Dynamic fetch from Backend API)
     const apiEndpoint = `${backendApiUrl.replace(/\/+$/, "")}/api/posts/public/${encodeURIComponent(slug)}`;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    let apiRes;
+    let apiRes = null;
     try {
       apiRes = await fetch(apiEndpoint, {
         signal: controller.signal,
@@ -217,7 +338,7 @@ module.exports = async function handler(req, res) {
     // If Post Found (HTTP 200)
     if (apiRes && apiRes.ok) {
       const post = await apiRes.json();
-      const titleRaw = post.title || "Store";
+      const titleRaw = post.title || titleCase(slug);
       const autoMeta = buildAutoMetaFromTitle(titleRaw);
       const override = post.meta_override === true || post.meta_override === "true" || post.meta_override === 1;
 
@@ -263,7 +384,7 @@ module.exports = async function handler(req, res) {
       `;
 
       const bodyContent = `
-        <div style="max-w-[1180px]; margin: 0 auto; padding: 24px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1e293b;">
+        <div style="max-width: 1180px; margin: 0 auto; padding: 24px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1e293b;">
           <header style="margin-bottom: 24px;">
             <a href="${escHtml(buildCanonicalUrl("/"))}" style="font-weight: bold; color: #ee4d2d; text-decoration: none;">Home</a> &gt; 
             <span>${escHtml(titleRaw)}</span>
@@ -282,25 +403,50 @@ module.exports = async function handler(req, res) {
       return res.status(200).send(injectHeadAndBody(htmlTemplate, headTags, bodyContent));
     }
 
-    // If Post Not Found or deleted (HTTP 404)
-    const notFoundTitle = "404 - Page Not Found | Couponza";
-    const notFoundDesc = `The requested project or page "${slug}" does not exist on couponzas.com.`;
-    const headTags404 = `
-      <title>${escHtml(notFoundTitle)}</title>
-      <meta name="description" content="${escHtml(notFoundDesc)}" />
-      <meta name="robots" content="noindex,nofollow" />
+    // Only return explicit 404 if API confirmed HTTP 404
+    if (apiRes && apiRes.status === 404) {
+      const notFoundTitle = "404 - Page Not Found | Couponza";
+      const notFoundDesc = `The requested project or page "${slug}" does not exist on couponzas.com.`;
+      const headTags404 = `
+        <title>${escHtml(notFoundTitle)}</title>
+        <meta name="description" content="${escHtml(notFoundDesc)}" />
+        <meta name="robots" content="noindex,nofollow" />
+      `;
+
+      const bodyContent404 = `
+        <div style="max-width: 600px; margin: 80px auto; padding: 32px; text-align: center; font-family: system-ui, -apple-system, sans-serif;">
+          <h1 style="font-size: 2.5rem; font-weight: 900; color: #1e293b; margin-bottom: 16px;">404 - Page Not Found</h1>
+          <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 24px;">The project or page "<strong>${escHtml(slug)}</strong>" does not exist or has been removed.</p>
+          <a href="${escHtml(buildCanonicalUrl("/"))}" style="display: inline-block; background-color: #ee4d2d; color: #ffffff; font-weight: 700; padding: 12px 24px; border-radius: 12px; text-decoration: none;">Return to Homepage</a>
+        </div>
+      `;
+
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      return res.status(404).send(injectHeadAndBody(htmlTemplate, headTags404, bodyContent404));
+    }
+
+    // Fallback 200 OK for API timeout / server network delay so Googlebot doesn't deindex the page
+    const titleRaw = titleCase(slug);
+    const autoMeta = buildAutoMetaFromTitle(titleRaw);
+    const canonicalUrl = buildCanonicalUrl(encodeURIComponent(slug));
+
+    const headTagsFallback = `
+      <title>${escHtml(autoMeta.meta_title)}</title>
+      <meta name="description" content="${escHtml(autoMeta.meta_description)}" />
+      <meta name="keywords" content="${escHtml(autoMeta.meta_keyword)}" />
+      <meta name="robots" content="index,follow" />
+      <link rel="canonical" href="${escHtml(canonicalUrl)}" />
     `;
 
-    const bodyContent404 = `
-      <div style="max-width: 600px; margin: 80px auto; padding: 32px; text-align: center; font-family: system-ui, -apple-system, sans-serif;">
-        <h1 style="font-size: 2.5rem; font-weight: 900; color: #1e293b; margin-bottom: 16px;">404 - Page Not Found</h1>
-        <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 24px;">The project or page "<strong>${escHtml(slug)}</strong>" does not exist or has been removed.</p>
-        <a href="${escHtml(buildCanonicalUrl("/"))}" style="display: inline-block; background-color: #ee4d2d; color: #ffffff; font-weight: 700; padding: 12px 24px; border-radius: 12px; text-decoration: none;">Return to Homepage</a>
+    const bodyContentFallback = `
+      <div style="max-width: 1180px; margin: 0 auto; padding: 24px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1e293b;">
+        <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 16px; color: #0f172a;">${escHtml(titleRaw)}</h1>
+        <p style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;">${escHtml(autoMeta.meta_description)}</p>
       </div>
     `;
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");
-    return res.status(404).send(injectHeadAndBody(htmlTemplate, headTags404, bodyContent404));
+    return res.status(200).send(injectHeadAndBody(htmlTemplate, headTagsFallback, bodyContentFallback));
 
   } catch (err) {
     console.error("Render Handler Error:", err);
