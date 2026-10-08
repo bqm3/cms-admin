@@ -34,8 +34,8 @@ export function LoginPage() {
     return (
         <>
             <Helmet>
-                <title>Login | Couponza</title>
-                <meta name="robots" content="index,follow,archive" />
+                <title>Login | Couponzas</title>
+                <meta name="robots" content="noindex,nofollow,noarchive" />
                 <link rel="canonical" href={buildCanonicalUrl("/login")} />
             </Helmet>
             <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6 selection:bg-[#ee4d2d]/10 selection:text-[#ee4d2d]">

@@ -1,11 +1,25 @@
 import axios from 'axios';
 
-const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const env = typeof process !== "undefined" ? process.env : {};
+const viteEnv =
+    typeof import.meta !== "undefined" && (import.meta as any).env
+        ? (import.meta as any).env
+        : {};
+
+const RAW_BASE_URL =
+    env.NEXT_PUBLIC_API_BASE_URL ||
+    viteEnv.VITE_API_BASE_URL ||
+    'https://api.couponzas.com';
+const isLocalApiUrl = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(RAW_BASE_URL);
+const EFFECTIVE_BASE_URL =
+    (env.NODE_ENV === "production" || viteEnv.PROD) && isLocalApiUrl
+        ? "https://api.couponzas.com"
+        : RAW_BASE_URL;
 
 // đảm bảo có /api ở cuối
-const API_BASE_URL = RAW_BASE_URL.endsWith('/api')
-    ? RAW_BASE_URL
-    : `${RAW_BASE_URL}/api`;
+const API_BASE_URL = EFFECTIVE_BASE_URL.endsWith('/api')
+    ? EFFECTIVE_BASE_URL
+    : `${EFFECTIVE_BASE_URL}/api`;
 
 // server url luôn là base (không /api)
 export const SERVER_URL = API_BASE_URL.replace(/\/api$/, '');
@@ -15,7 +29,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+    const token = typeof window !== "undefined" ? localStorage.getItem('token') : null;
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,14 +46,16 @@ api.interceptors.response.use(
             try {
                 const res = await axios.post(`${API_BASE_URL}/auth/refresh`, {}, { withCredentials: true });
                 const { token } = res.data;
-                localStorage.setItem('token', token);
+                if (typeof window !== "undefined") localStorage.setItem('token', token);
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 originalRequest.headers['Authorization'] = `Bearer ${token}`;
                 return api(originalRequest);
             } catch (refreshError) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '/login';
+                if (typeof window !== "undefined") {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/login';
+                }
                 return Promise.reject(refreshError);
             }
         }

@@ -12,6 +12,9 @@ import { buildCanonicalUrl } from "../config/site";
 
 function stripHtml(html: string) {
   if (!html) return "";
+  if (typeof document === "undefined") {
+    return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  }
   const div = document.createElement("div");
   div.innerHTML = html;
   return (div.textContent || div.innerText || "").replace(/\s+/g, " ").trim();
@@ -22,13 +25,13 @@ function truncate(text: string, max = 180) {
   return text.length > max ? `${text.slice(0, max).trimEnd()}...` : text;
 }
 
-export function PublicReviewListPage() {
+export function PublicReviewListPage({ initialData }: { initialData?: any } = {}) {
   const navigate = useNavigate();
   const { categories, parentCategories } = usePublicData();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [reviews, setReviews] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0, limit: 9 });
+  const [reviews, setReviews] = useState<any[]>(initialData?.reviews || []);
+  const [loading, setLoading] = useState(!initialData?.reviews);
+  const [pagination, setPagination] = useState(initialData?.pagination || { page: 1, totalPages: 1, total: 0, limit: 9 });
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [headerSearch, setHeaderSearch] = useState("");
   const canonicalUrl = buildCanonicalUrl("/review");
@@ -50,11 +53,12 @@ export function PublicReviewListPage() {
   };
 
   useEffect(() => {
+    if (initialData?.reviews) return;
     const pageValue = Number(searchParams.get("page") || 1);
     const searchValue = searchParams.get("search") || "";
     setSearch(searchValue);
     fetchReviews(pageValue, searchValue);
-  }, [searchParams]);
+  }, [searchParams, initialData?.reviews]);
 
   const navigateToCategory = (parentSlug: string, categorySlug: string) => {
     navigate(categorySlug ? `/category/${parentSlug}/${categorySlug}` : `/category/${parentSlug}`);

@@ -61,6 +61,9 @@ import type { StoreCouponModuleData } from "../components/Public/StoreCouponModu
 
 function stripHtmlToText(html: string) {
   if (!html) return "";
+  if (typeof document === "undefined") {
+    return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  }
   const tmp = document.createElement("div");
   tmp.innerHTML = html;
   return (tmp.textContent || tmp.innerText || "").replace(/\s+/g, " ").trim();
@@ -196,20 +199,20 @@ function PublicCouponGuideBlocks({
   );
 }
 
-export function PublicPostPage() {
+export function PublicPostPage({ initialData }: { initialData?: any } = {}) {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { categories, parentCategories } = usePublicData();
   const isPrerender = searchParams.get("prerender") === "1";
 
-  const [content, setContent] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState<string | null>(initialData?.post?.content || null);
+  const [loading, setLoading] = useState(!initialData?.post);
   const [searchQuery, setSearchQuery] = useState("");
   const [countdown, setCountdown] = useState(5);
   const hasFetched = useRef(false);
-  const [postData, setPostData] = useState<any>(null);
-  const [articleTitle, setArticleTitle] = useState("Store");
+  const [postData, setPostData] = useState<any>(initialData?.post || null);
+  const [articleTitle, setArticleTitle] = useState(initialData?.post?.title || "Store");
   const [entryPopupOpen, setEntryPopupOpen] = useState(false);
   const autoOpenedRef = useRef(false);
 
@@ -221,16 +224,18 @@ export function PublicPostPage() {
     ogImage?: string;
     robots: string;
   }>({
-    title: "Store",
-    description: "Store",
-    keywords: "Store",
+    title: initialData?.seo?.title || "Store",
+    description: initialData?.seo?.description || "Store",
+    keywords: initialData?.seo?.keywords || "Store",
     canonical: buildCanonicalUrl(slug ? `/${slug}` : "/"),
-    robots: "index,follow",
+    robots: initialData?.seo?.robots || "index,follow",
+    ogImage: initialData?.seo?.ogImage,
   });
 
   const moduleData = useMemo(() => parseStoreCouponModule(content), [content]);
 
   useEffect(() => {
+    if (initialData?.post) return;
     const fetchPost = async () => {
       if (hasFetched.current) return;
       hasFetched.current = true;
@@ -309,7 +314,7 @@ export function PublicPostPage() {
     };
 
     fetchPost();
-  }, [slug, searchParams]);
+  }, [slug, searchParams, initialData?.post]);
 
   // Mở tab affiliate sau 4 giây khi trang chi tiết bài viết mount/load xong
   useEffect(() => {
@@ -475,7 +480,9 @@ export function PublicPostPage() {
         <StoreCouponModuleView data={moduleData as StoreCouponModuleData} disableAutoPopup />
         <PublicCouponGuideBlocks
           brandName={articleTitle}
-          siteBrand={getSiteBrandFromHostname(window.location.hostname)}
+          siteBrand={getSiteBrandFromHostname(
+            typeof window !== "undefined" ? window.location.hostname : "couponzas.com",
+          )}
         />
 
         <PublicFooter
@@ -563,7 +570,9 @@ export function PublicPostPage() {
 
       <PublicCouponGuideBlocks
         brandName={articleTitle}
-        siteBrand={getSiteBrandFromHostname(window.location.hostname)}
+        siteBrand={getSiteBrandFromHostname(
+          typeof window !== "undefined" ? window.location.hostname : "couponzas.com",
+        )}
       />
 
       <PublicFooter

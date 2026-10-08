@@ -11,14 +11,14 @@ import { PublicHeader } from "../components/Public/PublicHeader";
 import { PublicFooter } from "../components/Public/PublicFooter";
 import { PUBLIC_SITE_HOST, buildCanonicalUrl } from "../config/site";
 
-export function ClientCategoryPage() {
+export function ClientCategoryPage({ initialData }: { initialData?: any } = {}) {
   const { parentSlug: pathParentSlug, categorySlug: pathCategorySlug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { categories, parentCategories, loading: dataLoading } = usePublicData();
 
-  const [posts, setPosts] = useState<any[]>([]);
-  const [postsLoading, setPostsLoading] = useState(true);
+  const [posts, setPosts] = useState<any[]>(initialData?.posts || []);
+  const [postsLoading, setPostsLoading] = useState(!initialData?.posts);
 
   // Params from URL
   const search = searchParams.get("search") || "";
@@ -27,8 +27,8 @@ export function ClientCategoryPage() {
   const page = parseInt(searchParams.get("page") || "1");
   const limit = 12;
 
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(initialData?.pagination?.totalPages || 1);
+  const [totalItems, setTotalItems] = useState(initialData?.pagination?.total || initialData?.totalItems || 0);
 
   const fetchPosts = useCallback(async () => {
     try {
@@ -67,8 +67,9 @@ export function ClientCategoryPage() {
   }, [search, selectedCategory, selectedParentCategory, page, limit]);
 
   useEffect(() => {
+    if (initialData?.posts) return;
     fetchPosts();
-  }, [fetchPosts]);
+  }, [fetchPosts, initialData?.posts]);
 
   const updateParams = useCallback(
     (newParams: Record<string, string>) => {
@@ -112,7 +113,7 @@ export function ClientCategoryPage() {
   const categoryName = categories.find((c) => String(c.slug) === String(selectedCategory))?.name || "";
 
   // Ưu tiên category con > category cha
-  const brandName = categoryName || parentName || "Couponza";
+  const brandName = categoryName || parentName || "Couponzas";
 
   const pageTitle = `${brandName} promotion latest`;
 

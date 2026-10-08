@@ -12,6 +12,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "react-router-dom": [
+        "./src/lib/nextRouterShim.tsx"
       ]
     },
     /* Bundler mode */
@@ -20,23 +23,31 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     /* Linting */
     "strict": true,
-     "noUnusedLocals": false,
+    "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    
     "types": [
-      "vite/client"
-    ]
+      "vite/client",
+      "node"
+    ],
+    "allowJs": true,
+    "incremental": true,
+    "esModuleInterop": true
   },
   "include": [
-    "src"
+    "next-env.d.ts",
+    "src",
+    "pages"
   ],
   "references": [
     {
       "path": "./tsconfig.node.json"
     }
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

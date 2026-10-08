@@ -1,11 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect, useCallback } from "react";
 import api from "../services/api";
+import { useInitialPublicData } from "../context/PublicDataInitialContext";
 
 export function usePublicData() {
-    const [categories, setCategories] = useState<any[]>([]);
-    const [parentCategories, setParentCategories] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const initialData = useInitialPublicData();
+    const [categories, setCategories] = useState<any[]>(initialData.categories || []);
+    const [parentCategories, setParentCategories] = useState<any[]>(initialData.parentCategories || []);
+    const [loading, setLoading] = useState(!initialData.categories && !initialData.parentCategories);
 
     const fetchData = useCallback(async () => {
         try {
@@ -24,8 +26,9 @@ export function usePublicData() {
     }, []);
 
     useEffect(() => {
+        if (initialData.categories || initialData.parentCategories) return;
         fetchData();
-    }, [fetchData]);
+    }, [fetchData, initialData.categories, initialData.parentCategories]);
 
     return { categories, parentCategories, loading, refetch: fetchData };
 }

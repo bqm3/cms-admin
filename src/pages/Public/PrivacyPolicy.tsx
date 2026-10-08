@@ -19,8 +19,8 @@ export function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
-        <title>Privacy Policy - Couponza</title>
-        <meta name="title" content="Privacy Policy - Couponza" />
+        <title>Privacy Policy - Couponzas</title>
+        <meta name="title" content="Privacy Policy - Couponzas" />
         <meta name="description" content="View our Privacy Policy. We value your privacy and are committed to protecting your personal data." />
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={buildCanonicalUrl("/privacy-policy")} />

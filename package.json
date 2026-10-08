@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "prebuild": "node scripts/generate-sitemap.mjs",
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "next dev",
+    "dev:vite": "vite",
+    "build": "next build",
+    "build:vite": "tsc && vite build",
     "lint": "eslint --fix",
-    "preview": "vite preview"
+    "preview": "next start",
+    "preview:vite": "vite preview"
   },
   "dependencies": {
     "@heroui/accordion": "^2.2.24",
@@ -62,6 +65,7 @@
     "clsx": "2.1.1",
     "framer-motion": "11.18.2",
     "lucide-react": "^0.562.0",
+    "next": "^14.2.35",
     "react": "18.3.1",
     "react-contenteditable": "^3.3.7",
     "react-dom": "18.3.1",

@@ -37,12 +37,12 @@ function buildAutoMetaFromTitle(titleRaw) {
   const t = String(titleRaw || "").trim();
   if (!t) {
     return {
-      meta_title: "Store Coupons & Discount Codes | Couponza",
+      meta_title: "Store Coupons & Discount Codes | Couponzas",
       meta_description: "Find the latest verified discount codes, coupons, and promo codes at couponzas.com.",
       meta_keyword: "coupons, discount codes, promo codes, deals",
     };
   }
-  const meta_title = `${t} Promotion & Verified Coupon Codes | Couponza`;
+  const meta_title = `${t} Promotion & Verified Coupon Codes | Couponzas`;
   const meta_description = `Use couponzas.com to find the latest discount codes and best deals when shopping online at ${t}. Save more on every order with verified promo codes and cashback offers.`;
   const meta_keyword = `${t}, ${t} promotion, ${t} coupon codes, ${t} discount code`;
   return { meta_title, meta_description, meta_keyword };
@@ -138,27 +138,27 @@ const STATIC_ADMIN_ROUTES = new Set([
 
 const STATIC_PUBLIC_PAGES = {
   "privacy-policy": {
-    title: "Privacy Policy | Couponza",
+    title: "Privacy Policy | Couponzas",
     description: "Read the Privacy Policy for couponzas.com to learn how we handle your data.",
   },
   terms: {
-    title: "Terms of Service | Couponza",
+    title: "Terms of Service | Couponzas",
     description: "Read the Terms of Service for couponzas.com.",
   },
   "about-us": {
-    title: "About Us | Couponza",
+    title: "About Us | Couponzas",
     description: "Learn more about couponzas.com, your trusted source for verified coupons and deals.",
   },
   contact: {
-    title: "Contact Us | Couponza",
+    title: "Contact Us | Couponzas",
     description: "Get in touch with couponzas.com team for inquiries or feedback.",
   },
   review: {
-    title: "Reviews & Recommendations | Couponza",
+    title: "Reviews & Recommendations | Couponzas",
     description: "Explore in-depth product reviews, store recommendations, and savings guides.",
   },
   category: {
-    title: "Explore Categories & Store Deals | Couponza",
+    title: "Explore Categories & Store Deals | Couponzas",
     description: "Browse deals and discount coupons by store category on couponzas.com.",
   },
 };
@@ -178,7 +178,7 @@ module.exports = async function handler(req, res) {
     // 1. System Admin / Auth Routes
     if (STATIC_ADMIN_ROUTES.has(slug.toLowerCase())) {
       const headTags = `
-        <title>${slug === "login" ? "Login | Couponza" : "Admin Dashboard | Couponza"}</title>
+        <title>${slug === "login" ? "Login | Couponzas" : "Admin Dashboard | Couponzas"}</title>
         <meta name="robots" content="index,follow,archive" />
         <link rel="canonical" href="${escHtml(buildCanonicalUrl(slug))}" />
       `;
@@ -211,7 +211,7 @@ module.exports = async function handler(req, res) {
       const targetSlug = parts[parts.length - 1] || "All Categories";
       const catTitle = titleCase(targetSlug);
 
-      const metaTitle = `${catTitle} Coupons, Promo Codes & Discount Deals | Couponza`;
+      const metaTitle = `${catTitle} Coupons, Promo Codes & Discount Deals | Couponzas`;
       const metaDescription = `Browse verified ${catTitle} coupon codes, promo codes, and daily deals to save more on couponzas.com.`;
       const canonicalUrl = buildCanonicalUrl(rawUrlPath || `category/${catPath}`);
 
@@ -265,7 +265,7 @@ module.exports = async function handler(req, res) {
       if (apiRes && apiRes.ok) {
         const review = await apiRes.json();
         const titleRaw = review.title || titleCase(revSlug);
-        const metaTitle = review.meta_title || `${titleRaw} Review & Guide | Couponza`;
+        const metaTitle = review.meta_title || `${titleRaw} Review & Guide | Couponzas`;
         const metaDescription = truncate(review.meta_description || stripTags(review.content) || metaTitle, 160);
         const canonicalUrl = buildCanonicalUrl(`review/${revSlug}`);
 
@@ -298,13 +298,13 @@ module.exports = async function handler(req, res) {
 
       if (apiRes && apiRes.status === 404) {
         // Genuine 404
-        const notFoundTitle = "404 - Review Not Found | Couponza";
+        const notFoundTitle = "404 - Review Not Found | Couponzas";
         const headTags404 = `<title>${escHtml(notFoundTitle)}</title><meta name="robots" content="index,follow" />`;
         return res.status(404).send(injectHeadAndBody(htmlTemplate, headTags404, ""));
       }
 
       // Fallback 200 for timeout / network issues
-      const fallbackTitle = `${titleCase(revSlug)} Review | Couponza`;
+      const fallbackTitle = `${titleCase(revSlug)} Review | Couponzas`;
       const fallbackDesc = `Read in-depth reviews and user feedback for ${titleCase(revSlug)} on couponzas.com.`;
       const canonicalUrl = buildCanonicalUrl(`review/${revSlug}`);
       const headTagsFallback = `
@@ -405,7 +405,7 @@ module.exports = async function handler(req, res) {
 
     // Only return explicit 404 if API confirmed HTTP 404
     if (apiRes && apiRes.status === 404) {
-      const notFoundTitle = "404 - Page Not Found | Couponza";
+      const notFoundTitle = "404 - Page Not Found | Couponzas";
       const notFoundDesc = `The requested project or page "${slug}" does not exist on couponzas.com.`;
       const headTags404 = `
         <title>${escHtml(notFoundTitle)}</title>

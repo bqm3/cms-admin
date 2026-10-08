@@ -95,7 +95,7 @@ export function PublicHeader({
     <div className="flex items-center shrink-0 select-none group">
       <img
         src="/couponzas_logo.png"
-        alt="Couponza"
+        alt="Couponzas"
         width="180"
         height="80"
         className="h-30 w-auto group-hover:opacity-90 transition-opacity duration-200"
@@ -325,7 +325,7 @@ export function PublicHeader({
           <div className="h-16 px-4 border-b border-[#e6e6e6] flex items-center justify-between">
             <img
               src="/logo_coupons.svg"
-              alt="Couponza"
+              alt="Couponzas"
               width="120"
               height="34"
               className="h-9 w-auto"
@@ -444,7 +444,7 @@ export function PublicHeader({
 
           {/* footer */}
           <div className="mt-auto p-4 border-t border-[#e6e6e6] text-xs text-slate-500">
-            © {new Date().getFullYear()} Couponza
+            © {new Date().getFullYear()} Couponzas
           </div>
         </div>
       </div>

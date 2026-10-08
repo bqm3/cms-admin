@@ -152,7 +152,7 @@ export function PublicFooter({
     <div className="flex items-center mb-6">
       <img
         src="/couponzas_logo.png"
-        alt="Couponza"
+        alt="Couponzas"
         width="180"
         height="80"
         // decoding="async"
@@ -382,7 +382,7 @@ export function PublicFooter({
         {/* ✅ giữ chiều cao khu vực bottom bar để không nhảy */}
         <div className="pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 min-h-[30px]">
           <p className="text-xs font-semibold text-gray-700 tracking-wide text-center">
-            © {new Date().getFullYear()} COUPONZA. ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} Couponzas. ALL RIGHTS RESERVED.
           </p>
 
           <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-3">

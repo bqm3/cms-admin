@@ -10,20 +10,24 @@ import { buildCanonicalUrl } from "../config/site";
 
 function stripHtml(html: string) {
   if (!html) return "";
+  if (typeof document === "undefined") {
+    return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  }
   const div = document.createElement("div");
   div.innerHTML = html;
   return (div.textContent || div.innerText || "").trim();
 }
 
-export function PublicReviewDetailPage() {
+export function PublicReviewDetailPage({ initialData }: { initialData?: any } = {}) {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { categories, parentCategories } = usePublicData();
-  const [review, setReview] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [review, setReview] = useState<any>(initialData?.review || null);
+  const [loading, setLoading] = useState(!initialData?.review);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    if (initialData?.review) return;
     const fetchReview = async () => {
       try {
         setLoading(true);
@@ -37,7 +41,7 @@ export function PublicReviewDetailPage() {
       }
     };
     fetchReview();
-  }, [slug]);
+  }, [slug, initialData?.review]);
 
   const ogImage = useMemo(() => {
     if (!review?.img_bg) return undefined;

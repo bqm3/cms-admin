@@ -19,9 +19,9 @@ export function Contact() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
-        <title>Contact - Couponza</title>
-        <meta name="title" content="Contact - Couponza" />
-        <meta name="description" content="Get in touch with Couponza. Have questions or feedback? We'd love to hear from you." />
+        <title>Contact - Couponzas</title>
+        <meta name="title" content="Contact - Couponzas" />
+        <meta name="description" content="Get in touch with Couponzas. Have questions or feedback? We'd love to hear from you." />
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={buildCanonicalUrl("/contact")} />
         <meta property="og:url" content={buildCanonicalUrl("/contact")} />

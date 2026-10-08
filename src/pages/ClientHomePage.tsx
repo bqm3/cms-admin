@@ -130,13 +130,16 @@ function FeaturedDealCard({ deal }: { deal: any }) {
 
 function stripHtml(html: string) {
   if (!html) return "";
+  if (typeof document === "undefined") {
+    return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  }
   const div = document.createElement("div");
   div.innerHTML = html;
   return (div.textContent || div.innerText || "").replace(/\s+/g, " ").trim();
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
-export function ClientHomePage() {
+export function ClientHomePage({ initialData }: { initialData?: any } = {}) {
   const navigate = useNavigate();
   const {
     categories,
@@ -144,12 +147,12 @@ export function ClientHomePage() {
     loading: dataLoading,
   } = usePublicData();
 
-  const [groupedPosts, setGroupedPosts] = useState<Record<string, any[]>>({});
-  const [postsLoading, setPostsLoading] = useState(true);
-  const [latestPosts, setLatestPosts] = useState<any[]>([]);
-  const [featuredDeals, setFeaturedDeals] = useState<any[]>([]);
-  const [latestReviews, setLatestReviews] = useState<any[]>([]);
-  const [banners, setBanners] = useState<any[]>([]);
+  const [groupedPosts, setGroupedPosts] = useState<Record<string, any[]>>(initialData?.groupedPosts || {});
+  const [postsLoading, setPostsLoading] = useState(!initialData?.groupedPosts);
+  const [latestPosts, setLatestPosts] = useState<any[]>(initialData?.latestPosts || []);
+  const [featuredDeals, setFeaturedDeals] = useState<any[]>(initialData?.featuredDeals || []);
+  const [latestReviews, setLatestReviews] = useState<any[]>(initialData?.latestReviews || []);
+  const [banners, setBanners] = useState<any[]>(initialData?.banners || []);
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchGroupedPosts = useCallback(async (parents: any[]) => {
@@ -215,17 +218,19 @@ export function ClientHomePage() {
   }, []);
 
   useEffect(() => {
+    if (initialData?.groupedPosts) return;
     if (parentCategories.length > 0) {
       fetchGroupedPosts(parentCategories.filter((p) => !p.is_deleted));
     }
-  }, [parentCategories, fetchGroupedPosts]);
+  }, [parentCategories, fetchGroupedPosts, initialData?.groupedPosts]);
 
   useEffect(() => {
+    if (initialData?.latestPosts) return;
     fetchLatestPosts();
     fetchFeaturedDeals();
     fetchLatestReviews();
     fetchBanners();
-  }, [fetchLatestPosts, fetchFeaturedDeals, fetchLatestReviews, fetchBanners]);
+  }, [fetchLatestPosts, fetchFeaturedDeals, fetchLatestReviews, fetchBanners, initialData?.latestPosts]);
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -250,28 +255,28 @@ export function ClientHomePage() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
-        <title>Couponza - Verified Discount Codes, Coupons & Best Deals | couponzas.com</title>
-        <meta name="title" content="Couponza - Verified Discount Codes, Coupons & Best Deals | couponzas.com" />
+        <title>Couponzas - Verified Discount Codes, Coupons & Best Deals | couponzas.com</title>
+        <meta name="title" content="Couponzas - Verified Discount Codes, Coupons & Best Deals | couponzas.com" />
         <meta
           name="description"
           content="Find verified discount codes, coupons, and promo codes on couponzas.com. Save more on every online purchase across top stores with daily tested deals."
         />
         <meta
           name="keywords"
-          content="couponzas, couponzas.com, Couponza, promo codes, discount codes, coupons, online deals, vouchers"
+          content="couponzas, couponzas.com, Couponzas, promo codes, discount codes, coupons, online deals, vouchers"
         />
         <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <link rel="canonical" href={buildCanonicalUrl("/")} />
-        <meta property="og:title" content="Couponza - Verified Discount Codes & Promo Deals | couponzas.com" />
+        <meta property="og:title" content="Couponzas - Verified Discount Codes & Promo Deals | couponzas.com" />
         <meta
           property="og:description"
           content="Find verified discount codes, coupons, and promo codes on couponzas.com. Save more on every online purchase across top stores with daily tested deals."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={buildCanonicalUrl("/")} />
-        <meta property="og:site_name" content="Couponza" />
+        <meta property="og:site_name" content="Couponzas" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Couponza - Verified Discount Codes & Promo Deals | couponzas.com" />
+        <meta name="twitter:title" content="Couponzas - Verified Discount Codes & Promo Deals | couponzas.com" />
         <meta
           name="twitter:description"
           content="Find verified discount codes, coupons, and promo codes on couponzas.com. Save more on every online purchase across top stores with daily tested deals."
