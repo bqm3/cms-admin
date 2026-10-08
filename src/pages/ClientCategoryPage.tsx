@@ -123,7 +123,7 @@ export function ClientCategoryPage() {
     ? `/category/${selectedParentCategory}${selectedCategory ? `/${selectedCategory}` : ""}`
     : "/category";
   const canonicalUrl = buildCanonicalUrl(canonicalPath);
-  const robots = search ? "noindex,follow" : "index,follow";
+  const robots = search ? "index,follow" : "index,follow";
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-slate-200 selection:text-slate-900">

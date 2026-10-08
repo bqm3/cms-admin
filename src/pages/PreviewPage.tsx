@@ -96,7 +96,7 @@ export function PreviewPage() {
     <div className="min-h-screen bg-white">
       <Helmet prioritizeSeoTags>
         <title>Xem trước - Couponza</title>
-        <meta name="robots" content="noindex,nofollow" />
+        <meta name="robots" content="index,follow" />
       </Helmet>
 
       <PublicHeader 

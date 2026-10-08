@@ -179,11 +179,11 @@ module.exports = async function handler(req, res) {
     if (STATIC_ADMIN_ROUTES.has(slug.toLowerCase())) {
       const headTags = `
         <title>${slug === "login" ? "Login | Couponza" : "Admin Dashboard | Couponza"}</title>
-        <meta name="robots" content="noindex,nofollow,noarchive" />
+        <meta name="robots" content="index,follow,archive" />
         <link rel="canonical" href="${escHtml(buildCanonicalUrl(slug))}" />
       `;
       res.setHeader("Content-Type", "text/html; charset=utf-8");
-      res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
+      res.setHeader("X-Robots-Tag", "index, follow, archive");
       return res.status(200).send(injectHeadAndBody(htmlTemplate, headTags, ""));
     }
 
@@ -299,7 +299,7 @@ module.exports = async function handler(req, res) {
       if (apiRes && apiRes.status === 404) {
         // Genuine 404
         const notFoundTitle = "404 - Review Not Found | Couponza";
-        const headTags404 = `<title>${escHtml(notFoundTitle)}</title><meta name="robots" content="noindex,nofollow" />`;
+        const headTags404 = `<title>${escHtml(notFoundTitle)}</title><meta name="robots" content="index,follow" />`;
         return res.status(404).send(injectHeadAndBody(htmlTemplate, headTags404, ""));
       }
 
@@ -410,7 +410,7 @@ module.exports = async function handler(req, res) {
       const headTags404 = `
         <title>${escHtml(notFoundTitle)}</title>
         <meta name="description" content="${escHtml(notFoundDesc)}" />
-        <meta name="robots" content="noindex,nofollow" />
+        <meta name="robots" content="index,follow" />
       `;
 
       const bodyContent404 = `

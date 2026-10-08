@@ -18,7 +18,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -27,7 +27,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -36,7 +36,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -45,7 +45,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -54,7 +54,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -63,7 +63,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -72,7 +72,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -81,7 +81,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -90,7 +90,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -99,7 +99,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -108,7 +108,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -117,7 +117,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -126,7 +126,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -135,7 +135,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -144,7 +144,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     },
@@ -153,7 +153,7 @@
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "index, follow, archive"
         }
       ]
     }

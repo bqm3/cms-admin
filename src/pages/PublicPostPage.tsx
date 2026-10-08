@@ -286,8 +286,8 @@ export function PublicPostPage() {
         // canonical (bỏ query)
         const canonical = buildCanonicalUrl(slug ? `/${slug}` : "/");
 
-        // robots: preview => noindex
-        const robots = preview ? "noindex,nofollow" : "index,follow";
+        // robots: preview => index
+        const robots = preview ? "index,follow" : "index,follow";
 
         setContent(post.content);
         document.title = metaTitle;

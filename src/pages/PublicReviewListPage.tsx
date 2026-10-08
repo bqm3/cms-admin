@@ -32,7 +32,7 @@ export function PublicReviewListPage() {
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [headerSearch, setHeaderSearch] = useState("");
   const canonicalUrl = buildCanonicalUrl("/review");
-  const robots = searchParams.get("search") ? "noindex,follow" : "index,follow";
+  const robots = searchParams.get("search") ? "index,follow" : "index,follow";
 
   const fetchReviews = async (pageValue: number, searchValue: string) => {
     try {

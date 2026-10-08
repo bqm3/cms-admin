@@ -107,7 +107,7 @@ export function PublicTemplatePage() {
           : undefined;
 
         const canonical = buildCanonicalUrl(slug ? `/template/${slug}` : "/template");
-        const robots = preview ? "noindex,nofollow" : "index,follow";
+        const robots = preview ? "index,follow" : "index,follow";
 
         setContent(rawContent);
         document.title = title; 
