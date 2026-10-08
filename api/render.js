@@ -246,7 +246,7 @@ module.exports = async function handler(req, res) {
     if (routeType === "review" || rawUrlPath.startsWith("review/")) {
       const revSlug = slug.replace(/^review\/?/, "");
       const apiEndpoint = `${backendApiUrl.replace(/\/+$/, "")}/api/reviews/public/${encodeURIComponent(revSlug)}`;
-      
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000);
 

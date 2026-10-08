@@ -57,7 +57,10 @@ function escapeXml(value = "") {
 }
 
 function buildFallbackSitemap(siteUrl) {
-  const origin = normalizeBaseUrl(siteUrl) || "https://couponzas.com";
+  let origin = normalizeBaseUrl(siteUrl);
+  if (!origin || origin.includes("localhost") || origin.includes("127.0.0.1")) {
+    origin = "https://couponzas.com";
+  }
   return (
     `<?xml version="1.0" encoding="UTF-8"?>` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` +
@@ -91,23 +94,34 @@ async function main() {
   await loadEnvFile(envFile);
   await mkdir(path.dirname(outputFile), { recursive: true });
 
-  const sourceBase = normalizeBaseUrl(
+  const configuredSource = normalizeBaseUrl(
     process.env.SITEMAP_SOURCE_URL ||
       process.env.VITE_API_BASE_URL ||
-      process.env.API_BASE_URL ||
-      "https://api.couponzas.com",
+      process.env.API_BASE_URL,
   );
-  const sitemapUrl = `${sourceBase}/sitemap.xml`;
 
-  let sitemapXml;
-  try {
-    sitemapXml = await fetchSitemap(sitemapUrl);
-    console.log(`[generate-sitemap] fetched ${sitemapUrl}`);
-  } catch (error) {
+  const candidateUrls = [];
+  if (configuredSource) {
+    candidateUrls.push(`${configuredSource}/sitemap.xml`);
+  }
+  if (!configuredSource || configuredSource.includes("localhost") || configuredSource.includes("127.0.0.1")) {
+    candidateUrls.push("https://api.couponzas.com/sitemap.xml");
+  }
+
+  let sitemapXml = null;
+  for (const sitemapUrl of candidateUrls) {
+    try {
+      sitemapXml = await fetchSitemap(sitemapUrl);
+      console.log(`[generate-sitemap] fetched ${sitemapUrl}`);
+      break;
+    } catch (error) {
+      console.warn(`[generate-sitemap] could not fetch ${sitemapUrl}: ${error?.message || error}`);
+    }
+  }
+
+  if (!sitemapXml) {
     sitemapXml = buildFallbackSitemap(process.env.VITE_PUBLIC_SITE_URL || "https://couponzas.com");
-    console.warn(
-      `[generate-sitemap] using fallback sitemap because ${sitemapUrl} could not be fetched: ${error?.message || error}`,
-    );
+    console.warn("[generate-sitemap] using fallback sitemap");
   }
 
   await writeFile(outputFile, sitemapXml, "utf8");

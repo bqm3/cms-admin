@@ -21,34 +21,72 @@
       crossorigin
     />
 
-    <!-- Primary SEO (SPA fallback) -->
-    <title>Couponza</title>
+    <!-- Primary SEO -->
+    <title>Couponza - Verified Discount Codes, Coupons & Best Deals | couponzas.com</title>
     <meta
       name="description"
-      content="Use couponzas.com to find the latest discount codes and best deals when shopping online. Save more on every order with verified discount codes, coupons, and cashback offers."
+      content="Find the latest verified discount codes, coupons, and promo codes on couponzas.com (Couponza). Save money on online shopping every day with tested deals."
     />
-    <meta name="robots" content="index,follow" />
+    <meta
+      name="keywords"
+      content="couponzas, couponzas.com, Couponza, discount codes, promo codes, coupons, online deals, vouchers"
+    />
+    <meta name="author" content="couponzas.com" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://couponzas.com/" />
 
     <!-- Open Graph (social share) -->
-    <meta property="og:title" content="Couponza" />
+    <meta property="og:title" content="Couponza - Verified Discount Codes & Promo Deals | couponzas.com" />
     <meta
       property="og:description"
-      content="Use couponzas.com to find the latest discount codes and best deals when shopping online. Save more on every order with verified discount codes, coupons, and cashback offers."
+      content="Find the latest verified discount codes, coupons, and promo codes on couponzas.com. Save more on every order with daily verified offers."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://couponzas.com/" />
-    <!-- If you have a default share image, enable this -->
-    <!-- <meta property="og:image" content="https://couponzas.com/og-image.png" /> -->
+    <meta property="og:site_name" content="Couponza" />
+    <meta property="og:image" content="https://couponzas.com/couponzas_logo.png" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Couponza" />
+    <meta name="twitter:title" content="Couponza - Verified Discount Codes & Promo Deals | couponzas.com" />
     <meta
       name="twitter:description"
-      content="Use couponzas.com to find the latest discount codes and best deals when shopping online. Save more on every order with verified discount codes, coupons, and cashback offers."
+      content="Find the latest verified discount codes, coupons, and promo codes on couponzas.com. Save more on every order with daily verified offers."
     />
-    <!-- <meta name="twitter:image" content="https://couponzas.com/og-image.png" /> -->
+    <meta name="twitter:image" content="https://couponzas.com/couponzas_logo.png" />
+
+    <!-- Structured Data (Schema.org JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://couponzas.com/#website",
+            "url": "https://couponzas.com/",
+            "name": "Couponza",
+            "alternateName": ["couponzas.com", "Couponzas"],
+            "description": "Find verified discount codes, promo codes, and daily deals at couponzas.com.",
+            "inLanguage": "en-US",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://couponzas.com/review?search={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://couponzas.com/#organization",
+            "name": "Couponza",
+            "url": "https://couponzas.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://couponzas.com/couponzas_logo.png"
+            }
+          }
+        ]
+      }
+    </script>
 
     <!-- Google Site Verification -->
     <meta
@@ -100,7 +138,20 @@
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <div id="root"></div>
+    <div id="root">
+      <main style="display: none;">
+        <h1>Couponza - Verified Discount Codes, Coupons & Best Deals | couponzas.com</h1>
+        <p>Use couponzas.com to find the latest verified discount codes, promo codes, and best deals when shopping online. Save more on every order with daily verified offers.</p>
+        <nav>
+          <a href="/category">Categories</a>
+          <a href="/review">Reviews & Savings Guides</a>
+          <a href="/about-us">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+        </nav>
+      </main>
+    </div>
 
     <!-- Vite entry -->
     <script type="module" src="/src/main.tsx"></script>

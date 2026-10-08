@@ -250,19 +250,32 @@ export function ClientHomePage() {
   return (
     <div className="min-h-screen bg-white text-[#1a1a1a] font-sans selection:bg-blue-100 selection:text-blue-900">
       <Helmet prioritizeSeoTags>
-        <title>Couponza</title>
-        <meta name="title" content="Couponza latest" />
-        <meta name="description" content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`} />
-        <meta name="keywords" content="Couponza, couponza latest, couponza coupons" />
-        <meta name="robots" content="index,follow" />
+        <title>Couponza - Verified Discount Codes, Coupons & Best Deals | couponzas.com</title>
+        <meta name="title" content="Couponza - Verified Discount Codes, Coupons & Best Deals | couponzas.com" />
+        <meta
+          name="description"
+          content="Find verified discount codes, coupons, and promo codes on couponzas.com. Save more on every online purchase across top stores with daily tested deals."
+        />
+        <meta
+          name="keywords"
+          content="couponzas, couponzas.com, Couponza, promo codes, discount codes, coupons, online deals, vouchers"
+        />
+        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <link rel="canonical" href={buildCanonicalUrl("/")} />
-        <meta property="og:title" content="Couponza latest" />
-        <meta property="og:description" content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`} />
+        <meta property="og:title" content="Couponza - Verified Discount Codes & Promo Deals | couponzas.com" />
+        <meta
+          property="og:description"
+          content="Find verified discount codes, coupons, and promo codes on couponzas.com. Save more on every online purchase across top stores with daily tested deals."
+        />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={buildCanonicalUrl("/")} />
+        <meta property="og:site_name" content="Couponza" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Couponza latest" />
-        <meta name="twitter:description" content={`Use ${PUBLIC_SITE_HOST} to find the latest discount codes...`} />
+        <meta name="twitter:title" content="Couponza - Verified Discount Codes & Promo Deals | couponzas.com" />
+        <meta
+          name="twitter:description"
+          content="Find verified discount codes, coupons, and promo codes on couponzas.com. Save more on every online purchase across top stores with daily tested deals."
+        />
       </Helmet>
 
       <PublicHeader
